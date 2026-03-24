@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+.new-claim-root {
+  font-family: 'Inter', sans-serif;
+}
+
+.new-claim-root .font-headline,
+.new-claim-root h1,
+.new-claim-root h2,
+.new-claim-root h3 {
+  font-family: 'Manrope', sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.asymmetric-card {
+  border-top-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.bg-background {
+  background-color: #f7faf7;
+}
+
+.bg-primary {
+  background-color: #115638;
+}
+
+.bg-primary-container {
+  background-color: #2f6f4f;
+}
+
+.bg-primary-fixed {
+  background-color: #aef1c9;
+}
+
+.bg-secondary-container {
+  background-color: #a0f1c4;
+}
+
+.bg-tertiary-fixed-dim {
+  background-color: #bccac0;
+}
+
+.bg-surface-container {
+  background-color: #ebefec;
+}
+
+.bg-surface-container-low {
+  background-color: #f1f4f1;
+}
+
+.bg-surface-container-high {
+  background-color: #e6e9e6;
+}
+
+.bg-surface-container-lowest {
+  background-color: #ffffff;
+}
+
+.bg-error {
+  background-color: #ba1a1a;
+}
+
+.text-primary {
+  color: #115638;
+}
+
+.text-on-surface {
+  color: #181c1b;
+}
+
+.text-on-primary-container {
+  color: #acefc7;
+}
+
+.text-on-secondary-container {
+  color: #1d704c;
+}
+
+.text-on-tertiary-fixed-variant {
+  color: #3d4a43;
+}
+
+.text-error {
+  color: #ba1a1a;
+}
+
+.border-primary {
+  border-color: #115638;
+}
+
+.border-primary-fixed {
+  border-color: #aef1c9;
+}
+
+.border-outline-variant {
+  border-color: #bfc9c0;
+}
+
+.focus\:ring-surface-tint:focus {
+  --tw-ring-color: #296a4a;
+}

@@ -1,0 +1,12 @@
+{
+  "common": {
+    "appName": "Annadata Connect",
+    "subtitle": "Smart agriculture office administration"
+  },
+  "public": {
+    "landingTitle": "Crop Claims, Faster and Fairer",
+    "landingDescription": "Track claim status in real time and get transparent AI-assisted support.",
+    "login": "Login",
+    "register": "Register"
+  }
+}
