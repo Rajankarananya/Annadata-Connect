@@ -21,10 +21,10 @@ export function FarmerDashboardPage() {
         </div>
 
         <nav className="mt-4 flex-1 space-y-1">
-          <a className="ml-4 flex items-center gap-3 rounded-l-full bg-white py-3 pl-4 text-sm font-bold tracking-wide text-[#115638] shadow-sm dark:bg-stone-800 dark:text-[#4ade80]" href="#">
+          <Link className="ml-4 flex items-center gap-3 rounded-l-full bg-white py-3 pl-4 text-sm font-bold tracking-wide text-[#115638] shadow-sm dark:bg-stone-800 dark:text-[#4ade80]" to="/farmer/dashboard">
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
             Home
-          </a>
+          </Link>
           <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
             <span className="material-symbols-outlined">eco</span>
             My Crops
@@ -68,7 +68,7 @@ export function FarmerDashboardPage() {
             <h2 className="font-headline text-xl font-bold tracking-tight text-[#115638]">Dashboard</h2>
             <span className="hidden h-6 w-px bg-stone-200 md:block" />
             <nav className="hidden gap-6 md:flex">
-              <a className="border-b-2 border-[#115638] pb-1 text-sm font-medium text-[#115638]" href="#">Dashboard</a>
+              <Link className="border-b-2 border-[#115638] pb-1 text-sm font-medium text-[#115638]" to="/farmer/dashboard">Dashboard</Link>
               <a className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">Reports</a>
               <a className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">AI Insights</a>
             </nav>
@@ -378,10 +378,10 @@ export function FarmerDashboardPage() {
       </main>
 
       <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[2rem] border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl lg:hidden">
-        <a className="group flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638] transition-transform active:scale-90" href="#">
+        <Link className="group flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638] transition-transform active:scale-90" to="/farmer/dashboard">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>grid_view</span>
           <span className="mt-1 text-[11px] font-bold">Home</span>
-        </a>
+        </Link>
         <a className="group flex flex-col items-center justify-center px-5 py-2 text-stone-400 transition-transform active:scale-90" href="#">
           <span className="material-symbols-outlined">chat_bubble</span>
           <span className="mt-1 text-[11px] font-bold">AI Consult</span>

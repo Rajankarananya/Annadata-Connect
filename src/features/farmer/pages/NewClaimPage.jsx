@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 import './NewClaimPage.css'
 
 export function NewClaimPage() {
@@ -19,9 +21,9 @@ export function NewClaimPage() {
         </div>
 
         <nav className="mt-4 flex-1">
-          <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
+          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/dashboard">
             <span className="material-symbols-outlined">home</span> Home
-          </a>
+          </Link>
           <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
             <span className="material-symbols-outlined">eco</span> My Crops
           </a>
@@ -61,7 +63,7 @@ export function NewClaimPage() {
           <div className="flex items-center gap-6">
             <span className="material-symbols-outlined text-primary lg:hidden">menu</span>
             <nav className="hidden items-center gap-8 md:flex">
-              <a className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">Dashboard</a>
+              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/dashboard">Dashboard</Link>
               <a className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">Reports</a>
               <a className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">AI Insights</a>
             </nav>
@@ -292,10 +294,10 @@ export function NewClaimPage() {
       </main>
 
       <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[2rem] border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl lg:hidden dark:bg-stone-900/90">
-        <a className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" href="#">
+        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/dashboard">
           <span className="material-symbols-outlined">grid_view</span>
           <span className="mt-1 text-[11px] font-bold">Home</span>
-        </a>
+        </Link>
         <a className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" href="#">
           <span className="material-symbols-outlined">chat_bubble</span>
           <span className="mt-1 text-[11px] font-bold">AI Consult</span>
