@@ -11,10 +11,10 @@ from fastapi import APIRouter, Query, HTTPException
 # LangChain imports for RAG pipeline
 from langchain_ollama import OllamaLLM
 from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
-from langchain.chains import RetrievalQA
+from langchain_classic.chains import RetrievalQA
 
 # Initialize the router
 router = APIRouter(tags=["Chat"])
@@ -47,16 +47,16 @@ def initialize_rag():
 
     # Check if schemes directory exists and contains PDF files
     if not schemes_dir.exists():
-        print("📂 /schemes folder not found. Running in direct LLM mode.")
+        print("[INFO] /schemes folder not found. Running in direct LLM mode.")
         return
 
     pdf_files = list(schemes_dir.glob("*.pdf"))
 
     if not pdf_files:
-        print("📄 No PDF files found in /schemes. Running in direct LLM mode.")
+        print("[INFO] No PDF files found in /schemes. Running in direct LLM mode.")
         return
 
-    print(f"📚 Found {len(pdf_files)} PDF file(s). Setting up RAG pipeline...")
+    print(f"[INFO] Found {len(pdf_files)} PDF file(s). Setting up RAG pipeline...")
 
     # ---------------------------------------------------------------------------
     # Step 1: Load all PDF documents
@@ -67,12 +67,12 @@ def initialize_rag():
             loader = PyPDFLoader(str(pdf_path))
             documents = loader.load()
             all_documents.extend(documents)
-            print(f"  ✓ Loaded: {pdf_path.name}")
+            print(f"  [OK] Loaded: {pdf_path.name}")
         except Exception as e:
-            print(f"  ✗ Failed to load {pdf_path.name}: {e}")
+            print(f"  [FAIL] Failed to load {pdf_path.name}: {e}")
 
     if not all_documents:
-        print("⚠️ No documents could be loaded. Running in direct LLM mode.")
+        print("[WARN] No documents could be loaded. Running in direct LLM mode.")
         return
 
     # ---------------------------------------------------------------------------
@@ -85,7 +85,7 @@ def initialize_rag():
         chunk_overlap=50
     )
     splits = text_splitter.split_documents(all_documents)
-    print(f"📝 Created {len(splits)} text chunks from documents")
+    print(f"[INFO] Created {len(splits)} text chunks from documents")
 
     # ---------------------------------------------------------------------------
     # Step 3: Create embeddings using SentenceTransformers
@@ -104,7 +104,7 @@ def initialize_rag():
         embedding=embeddings,
         persist_directory="./chroma_db"
     )
-    print("💾 Vector store created and persisted to ./chroma_db")
+    print("[INFO] Vector store created and persisted to ./chroma_db")
 
     # ---------------------------------------------------------------------------
     # Step 5: Create the RetrievalQA chain
@@ -117,7 +117,7 @@ def initialize_rag():
     )
 
     rag_enabled = True
-    print("✅ RAG pipeline initialized successfully!")
+    print("[OK] RAG pipeline initialized successfully!")
 
 
 # Initialize RAG on module load
