@@ -13,8 +13,10 @@ from langchain_ollama import OllamaLLM
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain_classic.chains import RetrievalQA
+from langchain_chroma import Chroma
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 
 # Initialize the router
 router = APIRouter(tags=["Chat"])
@@ -31,8 +33,13 @@ llm = OllamaLLM(
 # ---------------------------------------------------------------------------
 # RAG Components (initialized on startup)
 # ---------------------------------------------------------------------------
-qa_chain = None  # Will hold the RetrievalQA chain if PDFs are available
+qa_chain = None  # Will hold the RAG chain if PDFs are available
 rag_enabled = False  # Flag to track if RAG is set up
+
+
+def format_docs(docs):
+    """Format retrieved documents into a single string for the prompt."""
+    return "\n\n".join(doc.page_content for doc in docs)
 
 
 def initialize_rag():
@@ -107,13 +114,27 @@ def initialize_rag():
     print("[INFO] Vector store created and persisted to ./chroma_db")
 
     # ---------------------------------------------------------------------------
-    # Step 5: Create the RetrievalQA chain
-    # This combines retrieval from vector store with LLM for answering
+    # Step 5: Create the RAG chain using modern LangChain runnables
+    # This chains together: retriever -> format_docs -> prompt -> LLM -> parser
     # ---------------------------------------------------------------------------
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",  # "stuff" puts all retrieved docs into one prompt
-        retriever=vectorstore.as_retriever()
+    retriever = vectorstore.as_retriever()
+
+    prompt = ChatPromptTemplate.from_template("""
+Answer the question based on the following context:
+
+{context}
+
+Question: {question}
+""")
+
+    qa_chain = (
+        {
+            "context": retriever | format_docs,
+            "question": RunnablePassthrough()
+        }
+        | prompt
+        | llm
+        | StrOutputParser()
     )
 
     rag_enabled = True
@@ -144,8 +165,7 @@ async def chat(query: str = Query(..., description="User's question about agricu
     try:
         if rag_enabled and qa_chain is not None:
             # Use RAG chain to answer from PDF knowledge base
-            result = qa_chain.invoke({"query": query})
-            response_text = result.get("result", "Sorry, I couldn't find an answer.")
+            response_text = qa_chain.invoke({"question": query})
         else:
             # No PDFs available - answer directly using LLM
             response_text = llm.invoke(query)
@@ -190,8 +210,7 @@ async def chat_multilingual(
     try:
         # Get the English response first
         if rag_enabled and qa_chain is not None:
-            result = qa_chain.invoke({"query": query})
-            response_text = result.get("result", "Sorry, I couldn't find an answer.")
+            response_text = qa_chain.invoke({"question": query})
         else:
             response_text = llm.invoke(query)
 

@@ -7,8 +7,10 @@ httpx>=0.26.0
 
 # LangChain core and Ollama integration
 langchain>=0.1.0
+langchain-core>=0.1.0
 langchain-ollama>=0.0.1
 langchain-community>=0.0.10
+langchain-chroma>=0.0.1
 
 # PDF loading for RAG pipeline
 pypdf>=3.17.0
@@ -18,3 +20,6 @@ sentence-transformers>=2.2.0
 
 # Vector database for RAG
 chromadb>=0.4.22
+
+# Environment variable management
+python-dotenv>=1.0.0

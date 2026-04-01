@@ -29,3 +29,13 @@ dist-ssr
 
 # Keep templates tracked
 !.env.example
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# ChromaDB and vector store persistence
+data/
+chroma_db/
