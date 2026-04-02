@@ -33,7 +33,11 @@ async def update_claim_status(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(require_role("field_officer", "admin"))
 ):
-    claim = await claim_svc.update_claim_status(db, claim_id, data)
+    claim = await claim_svc.update_claim_status(
+        db, claim_id, data,
+        actor_id=int(current_user["sub"]),
+        actor_role=current_user["role"]
+    )
     if not claim:
         raise HTTPException(status_code=404, detail="Claim not found")
     return claim
