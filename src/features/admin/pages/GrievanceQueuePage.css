@@ -1,0 +1,154 @@
+.grievance-queue-page {
+  --gq-on-surface: #181c1b;
+  --gq-on-surface-variant: #404942;
+  --gq-on-primary-fixed-variant: #095134;
+  --gq-on-primary-container: #acefc7;
+  --gq-on-secondary-container: #1d704c;
+  --gq-on-error-container: #93000a;
+  --gq-surface: #f7faf7;
+  --gq-surface-container: #ebefec;
+  --gq-surface-container-highest: #e0e3e0;
+  --gq-surface-container-high: #e6e9e6;
+  --gq-surface-container-low: #f1f4f1;
+  --gq-surface-container-lowest: #ffffff;
+  --gq-outline-variant: #bfc9c0;
+  --gq-primary: #115638;
+  --gq-primary-container: #2f6f4f;
+  --gq-secondary: #166b48;
+  --gq-secondary-fixed: #a3f3c7;
+  --gq-secondary-container: #a0f1c4;
+  --gq-tertiary: #77383d;
+  --gq-error-container: #ffdad6;
+}
+
+.grievance-queue-page .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.grievance-queue-page .authoritative-text {
+  letter-spacing: -0.02em;
+}
+
+.grievance-queue-page .label-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.grievance-queue-page .glass-nav {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.grievance-queue-page .cubic-ease {
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.grievance-queue-page .primary-gradient {
+  background: linear-gradient(135deg, var(--gq-primary) 0%, var(--gq-primary-container) 100%);
+}
+
+.grievance-queue-page .bg-surface {
+  background-color: var(--gq-surface);
+}
+
+.grievance-queue-page .bg-surface-container {
+  background-color: var(--gq-surface-container);
+}
+
+.grievance-queue-page .bg-surface-container-highest {
+  background-color: var(--gq-surface-container-highest);
+}
+
+.grievance-queue-page .bg-surface-container-high {
+  background-color: var(--gq-surface-container-high);
+}
+
+.grievance-queue-page .bg-surface-container-low {
+  background-color: var(--gq-surface-container-low);
+}
+
+.grievance-queue-page .bg-surface-container-lowest {
+  background-color: var(--gq-surface-container-lowest);
+}
+
+.grievance-queue-page .bg-primary {
+  background-color: var(--gq-primary);
+}
+
+.grievance-queue-page .bg-primary-container {
+  background-color: var(--gq-primary-container);
+}
+
+.grievance-queue-page .bg-secondary {
+  background-color: var(--gq-secondary);
+}
+
+.grievance-queue-page .bg-secondary-fixed {
+  background-color: var(--gq-secondary-fixed);
+}
+
+.grievance-queue-page .bg-secondary-container {
+  background-color: var(--gq-secondary-container);
+}
+
+.grievance-queue-page .bg-tertiary {
+  background-color: var(--gq-tertiary);
+}
+
+.grievance-queue-page .bg-error-container {
+  background-color: var(--gq-error-container);
+}
+
+.grievance-queue-page .text-on-surface {
+  color: var(--gq-on-surface);
+}
+
+.grievance-queue-page .text-on-surface-variant {
+  color: var(--gq-on-surface-variant);
+}
+
+.grievance-queue-page .text-on-primary-fixed-variant {
+  color: var(--gq-on-primary-fixed-variant);
+}
+
+.grievance-queue-page .text-on-primary-container {
+  color: var(--gq-on-primary-container);
+}
+
+.grievance-queue-page .text-on-secondary-container {
+  color: var(--gq-on-secondary-container);
+}
+
+.grievance-queue-page .text-on-error-container {
+  color: var(--gq-on-error-container);
+}
+
+.grievance-queue-page .text-primary {
+  color: var(--gq-primary);
+}
+
+.grievance-queue-page .text-secondary {
+  color: var(--gq-secondary);
+}
+
+.grievance-queue-page .text-tertiary {
+  color: var(--gq-tertiary);
+}
+
+.grievance-queue-page .bg-on-surface {
+  background-color: var(--gq-on-surface);
+}
+
+.grievance-queue-page .border-primary {
+  border-color: var(--gq-primary);
+}
+
+.grievance-queue-page .border-outline-variant\/10 {
+  border-color: color-mix(in srgb, var(--gq-outline-variant) 10%, transparent);
+}
+
+.grievance-queue-page .divide-outline-variant\/10 > :not([hidden]) ~ :not([hidden]) {
+  border-color: color-mix(in srgb, var(--gq-outline-variant) 10%, transparent);
+}

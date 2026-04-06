@@ -1,0 +1,146 @@
+.admin-settings-page {
+  --as-primary: #115638;
+  --as-primary-container: #2f6f4f;
+  --as-secondary-fixed-dim: #88d7ac;
+  --as-tertiary: #77383d;
+  --as-error: #ba1a1a;
+  --as-outline: #707972;
+  --as-outline-variant: #bfc9c0;
+  --as-surface: #f7faf7;
+  --as-surface-container: #ebefec;
+  --as-surface-container-high: #e6e9e6;
+  --as-surface-container-highest: #e0e3e0;
+  --as-surface-container-low: #f1f4f1;
+  --as-surface-container-lowest: #ffffff;
+  --as-on-surface: #181c1b;
+  --as-on-surface-variant: #404942;
+  --as-on-primary: #ffffff;
+  --as-on-primary-fixed-variant: #095134;
+  --as-on-secondary-container: #1d704c;
+}
+
+.admin-settings-page {
+  font-family: 'Inter', sans-serif;
+  background-color: #f7faf7;
+}
+
+.admin-settings-page .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.admin-settings-page .fill-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.admin-settings-page .primary-gradient {
+  background: linear-gradient(135deg, var(--as-primary) 0%, var(--as-primary-container) 100%);
+}
+
+.admin-settings-page .custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-settings-page .custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-settings-page .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--as-outline-variant);
+  border-radius: 10px;
+}
+
+.admin-settings-page .bg-surface {
+  background-color: var(--as-surface);
+}
+
+.admin-settings-page .bg-surface-container {
+  background-color: var(--as-surface-container);
+}
+
+.admin-settings-page .bg-surface-container-high {
+  background-color: var(--as-surface-container-high);
+}
+
+.admin-settings-page .bg-surface-container-highest {
+  background-color: var(--as-surface-container-highest);
+}
+
+.admin-settings-page .bg-surface-container-low {
+  background-color: var(--as-surface-container-low);
+}
+
+.admin-settings-page .bg-surface-container-lowest {
+  background-color: var(--as-surface-container-lowest);
+}
+
+.admin-settings-page .bg-primary {
+  background-color: var(--as-primary);
+}
+
+.admin-settings-page .bg-primary-container {
+  background-color: var(--as-primary-container);
+}
+
+.admin-settings-page .bg-secondary-fixed-dim {
+  background-color: var(--as-secondary-fixed-dim);
+}
+
+.admin-settings-page .bg-outline-variant {
+  background-color: var(--as-outline-variant);
+}
+
+.admin-settings-page .text-primary {
+  color: var(--as-primary);
+}
+
+.admin-settings-page .text-tertiary {
+  color: var(--as-tertiary);
+}
+
+.admin-settings-page .text-error {
+  color: var(--as-error);
+}
+
+.admin-settings-page .text-outline {
+  color: var(--as-outline);
+}
+
+.admin-settings-page .text-on-surface {
+  color: var(--as-on-surface);
+}
+
+.admin-settings-page .text-on-surface-variant {
+  color: var(--as-on-surface-variant);
+}
+
+.admin-settings-page .text-on-primary {
+  color: var(--as-on-primary);
+}
+
+.admin-settings-page .text-on-primary-fixed-variant {
+  color: var(--as-on-primary-fixed-variant);
+}
+
+.admin-settings-page .text-on-secondary-container {
+  color: var(--as-on-secondary-container);
+}
+
+.admin-settings-page .border-primary {
+  border-color: var(--as-primary);
+}
+
+.admin-settings-page .border-outline-variant {
+  border-color: var(--as-outline-variant);
+}
+
+.admin-settings-page .border-outline-variant\/10 {
+  border-color: color-mix(in srgb, var(--as-outline-variant) 10%, transparent);
+}
+
+.admin-settings-page .border-outline-variant\/20 {
+  border-color: color-mix(in srgb, var(--as-outline-variant) 20%, transparent);
+}
+
+.admin-settings-page .ring-outline-variant\/30 {
+  --tw-ring-color: color-mix(in srgb, var(--as-outline-variant) 30%, transparent);
+}

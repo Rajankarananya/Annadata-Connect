@@ -1,6 +1,5 @@
 import { Navigate, createBrowserRouter } from 'react-router-dom'
 
-import { AppShell } from '../components/layout/AppShell'
 import { ROLES } from '../constants/roles'
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
 import { AdminDashboardPage } from '../features/admin/pages/AdminDashboardPage'
@@ -20,25 +19,6 @@ import { LandingPage } from '../features/public/pages/LandingPage'
 import { LoginPage } from '../features/public/pages/LoginPage'
 import { RegisterPage } from '../features/public/pages/RegisterPage'
 
-const farmerLinks = [
-	{ to: '/farmer/dashboard', label: 'Dashboard' },
-	{ to: '/farmer/new-claim', label: 'New Claim' },
-	{ to: '/farmer/my-claims', label: 'My Claims' },
-	{ to: '/farmer/claim-details', label: 'Claim Details' },
-	{ to: '/farmer/chatbot', label: 'Chatbot' },
-	{ to: '/farmer/grievances', label: 'Grievances' },
-	{ to: '/farmer/profile', label: 'Profile' },
-]
-
-const adminLinks = [
-	{ to: '/admin/dashboard', label: 'Dashboard' },
-	{ to: '/admin/claims-queue', label: 'Claims Queue' },
-	{ to: '/admin/claim-review', label: 'Claim Review' },
-	{ to: '/admin/grievance-queue', label: 'Grievance Queue' },
-	{ to: '/admin/reports', label: 'Reports' },
-	{ to: '/admin/settings', label: 'Settings' },
-]
-
 export const router = createBrowserRouter([
 	{ path: '/', element: <LandingPage /> },
 	{ path: '/login', element: <LoginPage /> },
@@ -53,31 +33,19 @@ export const router = createBrowserRouter([
 			{ path: '/farmer/chatbot', element: <ChatbotPage /> },
 			{ path: '/farmer/grievances', element: <GrievancesPage /> },
 			{ path: '/farmer/profile', element: <ProfilePage /> },
-			{
-				path: '/farmer',
-				element: <AppShell title="Farmer Portal" links={farmerLinks} />,
-				children: [
-					{ index: true, element: <Navigate to="/farmer/dashboard" replace /> },
-				],
-			},
+			{ path: '/farmer', element: <Navigate to="/farmer/dashboard" replace /> },
 		],
 	},
 	{
 		element: <ProtectedRoute allowedRoles={[ROLES.ADMIN]} />,
 		children: [
-			{
-				path: '/admin',
-				element: <AppShell title="Admin Portal" links={adminLinks} />,
-				children: [
-					{ index: true, element: <Navigate to="dashboard" replace /> },
-					{ path: 'dashboard', element: <AdminDashboardPage /> },
-					{ path: 'claims-queue', element: <ClaimsQueuePage /> },
-					{ path: 'claim-review', element: <ClaimReviewPage /> },
-					{ path: 'grievance-queue', element: <GrievanceQueuePage /> },
-					{ path: 'reports', element: <ReportsPage /> },
-					{ path: 'settings', element: <AdminSettingsPage /> },
-				],
-			},
+			{ path: '/admin', element: <Navigate to="/admin/dashboard" replace /> },
+			{ path: '/admin/dashboard', element: <AdminDashboardPage /> },
+			{ path: '/admin/claims-queue', element: <ClaimsQueuePage /> },
+			{ path: '/admin/claim-review', element: <ClaimReviewPage /> },
+			{ path: '/admin/grievance-queue', element: <GrievanceQueuePage /> },
+			{ path: '/admin/reports', element: <ReportsPage /> },
+			{ path: '/admin/settings', element: <AdminSettingsPage /> },
 		],
 	},
 	{ path: '*', element: <Navigate to="/" replace /> },

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './ClaimDetailsPage.css'
 
 export function ClaimDetailsPage() {
@@ -33,51 +34,7 @@ export function ClaimDetailsPage() {
         </div>
       </header>
 
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col bg-[#f1f4f1] dark:bg-stone-900 lg:flex">
-        <div className="p-6 pt-20">
-          <div className="mb-10 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
-            </div>
-            <div>
-              <h2 className="text-lg font-black text-[#115638] dark:text-[#4ade80]">Annadata Connect</h2>
-              <p className="font-manrope text-xs font-bold tracking-wide text-stone-500">Smart Agriculture</p>
-            </div>
-          </div>
-          <nav className="space-y-2">
-            <Link className="flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/dashboard">
-              <span className="material-symbols-outlined">home</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">Home</span>
-            </Link>
-            <button type="button" className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50">
-              <span className="material-symbols-outlined">eco</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">My Crops</span>
-            </button>
-            <Link className="flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/chatbot">
-              <span className="material-symbols-outlined">psychology</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">AI Advisor</span>
-            </Link>
-            <div className="ml-4 flex items-center gap-3 rounded-l-full bg-white py-3 pl-4 shadow-sm text-[#115638] dark:bg-stone-800 dark:text-[#4ade80]">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>assignment_turned_in</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">Claims</span>
-            </div>
-            <button type="button" className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50">
-              <span className="material-symbols-outlined">storefront</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">Market</span>
-            </button>
-          </nav>
-        </div>
-        <div className="mt-auto space-y-2 p-6">
-          <Link className="flex items-center gap-3 rounded-lg px-4 py-2 text-stone-600 transition-colors hover:bg-stone-200/50" to="/farmer/profile">
-            <span className="material-symbols-outlined">settings</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Settings</span>
-          </Link>
-          <Link className="flex items-center gap-3 rounded-lg px-4 py-2 text-stone-600 transition-colors hover:bg-stone-200/50" to="/farmer/grievances">
-            <span className="material-symbols-outlined">help_outline</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Support</span>
-          </Link>
-        </div>
-      </aside>
+      <FarmerSidebar />
 
       <main className="px-6 pb-32 pt-24 lg:ml-64 lg:px-12">
         <header className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">

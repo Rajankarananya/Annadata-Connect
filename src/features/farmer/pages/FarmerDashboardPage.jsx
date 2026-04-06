@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 
+import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './FarmerDashboardPage.css'
 
 export function FarmerDashboardPage() {
@@ -7,60 +8,7 @@ export function FarmerDashboardPage() {
 
   return (
     <div className="bg-background text-on-surface min-h-screen farmer-dashboard-root">
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col border-r-0 bg-[#f1f4f1] lg:flex dark:bg-stone-900">
-        <div className="px-6 py-8">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-on-primary-container">eco</span>
-            </div>
-            <div>
-              <h1 className="text-lg font-black text-[#115638] tracking-tight">Annadata Connect</h1>
-              <p className="text-[10px] uppercase tracking-widest text-stone-500 font-bold">Smart Agriculture</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="mt-4 flex-1 space-y-1">
-          <Link className="ml-4 flex items-center gap-3 rounded-l-full bg-white py-3 pl-4 text-sm font-bold tracking-wide text-[#115638] shadow-sm dark:bg-stone-800 dark:text-[#4ade80]" to="/farmer/dashboard">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
-            Home
-          </Link>
-          <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
-            <span className="material-symbols-outlined">eco</span>
-            My Crops
-          </a>
-          <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
-            <span className="material-symbols-outlined">psychology</span>
-            AI Advisor
-          </a>
-          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/my-claims">
-            <span className="material-symbols-outlined">assignment_turned_in</span>
-            My Claims
-          </Link>
-          <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
-            <span className="material-symbols-outlined">storefront</span>
-            Market
-          </a>
-        </nav>
-
-        <div className="mt-auto border-t border-stone-200/50 p-6">
-          <button className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-on-primary shadow-lg">
-            <span className="material-symbols-outlined text-sm">add</span>
-            New Analysis
-          </button>
-
-          <div className="space-y-4">
-            <a className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-stone-500 transition-colors hover:text-primary" href="#">
-              <span className="material-symbols-outlined text-lg">settings</span>
-              Settings
-            </a>
-            <a className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-stone-500 transition-colors hover:text-primary" href="#">
-              <span className="material-symbols-outlined text-lg">help_outline</span>
-              Support
-            </a>
-          </div>
-        </div>
-      </aside>
+      <FarmerSidebar />
 
       <main className="min-h-screen lg:ml-64">
         <header className="editorial-shadow fixed left-0 right-0 top-0 z-30 flex items-center justify-between bg-[#f7faf7]/80 px-6 py-4 backdrop-blur-md lg:left-64">

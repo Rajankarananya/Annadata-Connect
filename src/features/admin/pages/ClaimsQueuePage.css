@@ -1,0 +1,194 @@
+.claims-queue-page {
+  --cq-on-surface: #181c1b;
+  --cq-on-surface-variant: #404942;
+  --cq-on-tertiary-fixed-variant: #723339;
+  --cq-on-tertiary-fixed: #3a0810;
+  --cq-on-secondary-container: #1d704c;
+  --cq-on-error-container: #93000a;
+  --cq-on-primary-container: #acefc7;
+  --cq-surface: #f7faf7;
+  --cq-surface-container: #ebefec;
+  --cq-surface-container-highest: #e0e3e0;
+  --cq-surface-container-high: #e6e9e6;
+  --cq-surface-container-low: #f1f4f1;
+  --cq-surface-container-lowest: #ffffff;
+  --cq-outline: #707972;
+  --cq-outline-variant: #bfc9c0;
+  --cq-primary: #115638;
+  --cq-primary-container: #2f6f4f;
+  --cq-secondary: #166b48;
+  --cq-secondary-container: #a0f1c4;
+  --cq-secondary-fixed: #a3f3c7;
+  --cq-tertiary: #77383d;
+  --cq-tertiary-fixed: #ffdada;
+  --cq-tertiary-fixed-dim: #ffb2b6;
+  --cq-error: #ba1a1a;
+  --cq-error-container: #ffdad6;
+}
+
+.claims-queue-page .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.claims-queue-page .custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.claims-queue-page .custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.claims-queue-page .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--cq-outline-variant);
+  border-radius: 10px;
+}
+
+.claims-queue-page .editorial-header {
+  letter-spacing: -0.02em;
+}
+
+.claims-queue-page .label-caps {
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.claims-queue-page .cubic-ease {
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.claims-queue-page .bg-surface {
+  background-color: var(--cq-surface);
+}
+
+.claims-queue-page .bg-surface-container {
+  background-color: var(--cq-surface-container);
+}
+
+.claims-queue-page .bg-surface-container-highest {
+  background-color: var(--cq-surface-container-highest);
+}
+
+.claims-queue-page .bg-surface-container-high {
+  background-color: var(--cq-surface-container-high);
+}
+
+.claims-queue-page .bg-surface-container-low {
+  background-color: var(--cq-surface-container-low);
+}
+
+.claims-queue-page .bg-surface-container-lowest {
+  background-color: var(--cq-surface-container-lowest);
+}
+
+.claims-queue-page .bg-primary {
+  background-color: var(--cq-primary);
+}
+
+.claims-queue-page .bg-primary-container {
+  background-color: var(--cq-primary-container);
+}
+
+.claims-queue-page .bg-secondary {
+  background-color: var(--cq-secondary);
+}
+
+.claims-queue-page .bg-secondary-container {
+  background-color: var(--cq-secondary-container);
+}
+
+.claims-queue-page .bg-secondary-fixed {
+  background-color: var(--cq-secondary-fixed);
+}
+
+.claims-queue-page .bg-tertiary {
+  background-color: var(--cq-tertiary);
+}
+
+.claims-queue-page .bg-tertiary-fixed {
+  background-color: var(--cq-tertiary-fixed);
+}
+
+.claims-queue-page .bg-tertiary-fixed-dim {
+  background-color: var(--cq-tertiary-fixed-dim);
+}
+
+.claims-queue-page .bg-error {
+  background-color: var(--cq-error);
+}
+
+.claims-queue-page .bg-error-container {
+  background-color: var(--cq-error-container);
+}
+
+.claims-queue-page .text-on-surface {
+  color: var(--cq-on-surface);
+}
+
+.claims-queue-page .text-on-surface-variant {
+  color: var(--cq-on-surface-variant);
+}
+
+.claims-queue-page .text-on-tertiary-fixed-variant {
+  color: var(--cq-on-tertiary-fixed-variant);
+}
+
+.claims-queue-page .text-on-tertiary-fixed {
+  color: var(--cq-on-tertiary-fixed);
+}
+
+.claims-queue-page .text-on-secondary-container {
+  color: var(--cq-on-secondary-container);
+}
+
+.claims-queue-page .text-on-error-container {
+  color: var(--cq-on-error-container);
+}
+
+.claims-queue-page .text-on-primary-container {
+  color: var(--cq-on-primary-container);
+}
+
+.claims-queue-page .text-primary {
+  color: var(--cq-primary);
+}
+
+.claims-queue-page .text-secondary {
+  color: var(--cq-secondary);
+}
+
+.claims-queue-page .text-tertiary {
+  color: var(--cq-tertiary);
+}
+
+.claims-queue-page .text-error {
+  color: var(--cq-error);
+}
+
+.claims-queue-page .border-primary {
+  border-color: var(--cq-primary);
+}
+
+.claims-queue-page .border-secondary {
+  border-color: var(--cq-secondary);
+}
+
+.claims-queue-page .border-tertiary {
+  border-color: var(--cq-tertiary);
+}
+
+.claims-queue-page .border-outline {
+  border-color: var(--cq-outline);
+}
+
+.claims-queue-page .border-surface-container {
+  border-color: var(--cq-surface-container);
+}
+
+.claims-queue-page .divide-surface-container > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--cq-surface-container);
+}
+
+.claims-queue-page .ring-outline-variant\/30 {
+  --tw-ring-color: color-mix(in srgb, var(--cq-outline-variant) 30%, transparent);
+}
