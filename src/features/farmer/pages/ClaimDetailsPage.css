@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+.claim-details-root {
+  min-height: 100dvh;
+  font-family: 'Inter', sans-serif;
+}
+
+.claim-details-root .font-headline,
+.claim-details-root h1,
+.claim-details-root h2,
+.claim-details-root h3,
+.claim-details-root h4 {
+  font-family: 'Manrope', sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.bg-background {
+  background-color: #f7faf7;
+}
+
+.bg-primary {
+  background-color: #115638;
+}
+
+.bg-primary-container {
+  background-color: #2f6f4f;
+}
+
+.bg-surface-container-low {
+  background-color: #f1f4f1;
+}
+
+.bg-surface-container-high {
+  background-color: #e6e9e6;
+}
+
+.bg-surface-container-lowest {
+  background-color: #ffffff;
+}
+
+.bg-error {
+  background-color: #ba1a1a;
+}
+
+.bg-error-container {
+  background-color: #ffdad6;
+}
+
+.text-primary {
+  color: #115638;
+}
+
+.text-on-surface {
+  color: #181c1b;
+}
+
+.text-on-primary-container {
+  color: #acefc7;
+}
+
+.text-on-error-container {
+  color: #93000a;
+}
+
+.font-body {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-manrope {
+  font-family: 'Manrope', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}

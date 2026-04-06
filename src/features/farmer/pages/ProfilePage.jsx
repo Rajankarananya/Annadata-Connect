@@ -1,12 +1,203 @@
-import { PageHeader } from '../../../components/shared/PageHeader'
+import { Link } from 'react-router-dom'
+
+import './ProfilePage.css'
 
 export function ProfilePage() {
   return (
-    <section>
-      <PageHeader title="Profile and Settings" description="Personal details, language preference, and notifications." />
-      <div className="rounded-lg border border-[var(--color-border)] p-4 text-sm text-[var(--color-text-soft)]">
-        Profile management scaffold.
-      </div>
-    </section>
+    <div className="profile-root min-h-screen bg-background pb-24 text-on-surface lg:pb-0">
+      <nav className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md dark:bg-stone-900/80">
+        <div className="flex w-full max-w-full items-center justify-between px-6 py-3">
+          <div className="flex items-center gap-4">
+            <span className="font-headline text-xl font-bold tracking-tight text-[#115638] dark:text-[#4ade80]">Annadata Connect</span>
+          </div>
+          <div className="hidden items-center gap-8 md:flex">
+            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/dashboard">Dashboard</Link>
+            <button className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" type="button">Reports</button>
+            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/chatbot">AI Insights</Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-low" type="button">
+              <span className="material-symbols-outlined">translate</span>
+            </button>
+            <button className="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-low" type="button">
+              <span className="material-symbols-outlined">notifications</span>
+            </button>
+            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary-fixed shadow-sm">
+              <img alt="User Profile Avatar" className="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeMWnmfCzhUMZEGKBD6rXFigwA0pYchbHXf1XMBBRXRObvKGP66sTpMxQcZZWN2imDtYShsspVfI4qRmEExW9ctqq348BB_2b9knWTV2KYifNkav1BZZ8nnb-I33nubpttMqTYDWNoc_2yHaJ2M2oFx9atji87iegHmiCeh-L-ZI2_36DPZkfNbkDSoqHHkM6VXnyuG73CZiQpfz39njy5gFF08Whkl5k8hJ3muaa-dki2M--gormzCL4r9ra22ixrInh817zdR0m_" />
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main className="mx-auto max-w-3xl space-y-6 px-4 pt-24 lg:ml-64">
+        <header className="mb-8">
+          <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-on-surface">Profile &amp; Settings</h1>
+          <p className="font-medium text-on-surface-variant">Manage your personal details and app preferences</p>
+        </header>
+
+        <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex flex-col items-center justify-center rounded-xl border-b-0 bg-surface-container-lowest p-6 text-center shadow-[0px_4px_12px_rgba(0,0,0,0.03)] md:col-span-1">
+            <div className="group relative mb-4 cursor-pointer">
+              <div className="h-24 w-24 overflow-hidden rounded-full ring-4 ring-primary-container/20 ring-offset-2">
+                <img alt="User Profile Avatar" className="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2pvNGeYhMDJJ-jdIZFKlGQXxN-8g_bzTuyosB2wBy4k8J7RqC3OCrvHH6iNDRJs5KOzH3pu82JnGwj8iDCoSjpczTgonEOtUN2qZG8e1sQ0A773lohs6LzFwT2_lWi8LvshUZCGSDFd_4a7zhQ7vx0A3mxjvzDVId6X6baGbg8C4N-gQ6gPSQKQcqJY_j9Eq8lVCAY5JJysT4Iflv7ofH0Myr-VzBBd_xlqmFSzPymCFO68-ZUQ2jXLC2o39qE7ciCSIj5iwER8ym" />
+              </div>
+              <div className="absolute bottom-0 right-0 rounded-full border-2 border-surface-container-lowest bg-primary p-1.5 text-on-primary shadow-lg">
+                <span className="material-symbols-outlined text-sm">edit</span>
+              </div>
+            </div>
+            <h2 className="text-lg font-bold leading-tight text-on-surface">Rajesh Kumar</h2>
+            <span className="mt-2 rounded-full bg-primary-fixed/30 px-3 py-1 text-sm font-medium text-primary">Premium Farmer</span>
+          </div>
+          <div className="flex flex-col justify-between rounded-xl bg-surface-container-lowest p-6 shadow-[0px_4px_12px_rgba(0,0,0,0.03)] md:col-span-2">
+            <div className="space-y-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-outline">Mobile Number</label>
+                <div className="flex items-center gap-3 rounded-lg bg-surface-container-low px-4 py-2">
+                  <span className="material-symbols-outlined text-primary">call</span>
+                  <span className="font-medium">+91 98765 43210</span>
+                  <span className="material-symbols-outlined ml-auto text-sm text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-outline">Primary Location</label>
+                <div className="flex items-center gap-3 rounded-lg bg-surface-container-low px-4 py-2">
+                  <span className="material-symbols-outlined text-primary">location_on</span>
+                  <span className="font-medium">Jalandhar, Punjab</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h3 className="px-1 text-sm font-bold uppercase tracking-[0.2em] text-outline">App Preferences</h3>
+          <div className="overflow-hidden rounded-xl bg-surface-container-lowest shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
+            <div className="flex items-center justify-between p-5">
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-container-low text-primary">
+                  <span className="material-symbols-outlined">language</span>
+                </div>
+                <div>
+                  <p className="font-bold text-on-surface">Language Selection</p>
+                  <p className="text-xs text-on-surface-variant">Choose your preferred reading language</p>
+                </div>
+              </div>
+              <div className="flex rounded-xl bg-surface-container-low p-1">
+                <button className="rounded-lg bg-surface-container-lowest px-4 py-1.5 text-sm font-bold text-primary shadow-sm transition-all" type="button">EN</button>
+                <button className="rounded-lg px-4 py-1.5 text-sm font-medium text-on-surface-variant transition-all hover:bg-surface-container-high" type="button">हिंदी</button>
+              </div>
+            </div>
+            <div className="mx-5 h-[1px] bg-surface-container-low" />
+            <div className="flex items-center justify-between p-5">
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-container-low text-primary">
+                  <span className="material-symbols-outlined">notifications_active</span>
+                </div>
+                <div>
+                  <p className="font-bold text-on-surface">Weather Alerts</p>
+                  <p className="text-xs text-on-surface-variant">Get notified about extreme conditions</p>
+                </div>
+              </div>
+              <label className="relative inline-flex cursor-pointer items-center">
+                <input className="peer sr-only" defaultChecked type="checkbox" />
+                <div className="h-6 w-11 rounded-full bg-surface-container-high peer-focus:outline-none peer-checked:bg-primary peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-['']" />
+              </label>
+            </div>
+            <div className="mx-5 h-[1px] bg-surface-container-low" />
+            <div className="flex items-center justify-between p-5">
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-container-low text-primary">
+                  <span className="material-symbols-outlined">psychology</span>
+                </div>
+                <div>
+                  <p className="font-bold text-on-surface">AI Insights</p>
+                  <p className="text-xs text-on-surface-variant">Daily crop growth analysis reports</p>
+                </div>
+              </div>
+              <label className="relative inline-flex cursor-pointer items-center">
+                <input className="peer sr-only" defaultChecked type="checkbox" />
+                <div className="h-6 w-11 rounded-full bg-surface-container-high peer-focus:outline-none peer-checked:bg-primary peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-['']" />
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-3 pb-12 pt-6">
+          <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-on-primary shadow-lg shadow-primary/20 transition-all active:scale-95" type="button">
+            <span className="material-symbols-outlined">save</span>
+            Save Preferences
+          </button>
+          <div className="grid grid-cols-2 gap-3">
+            <button className="rounded-xl bg-surface-container-high py-3 text-sm font-bold text-on-surface transition-all active:scale-95" type="button">Cancel</button>
+            <button className="flex items-center justify-center gap-2 rounded-xl bg-error-container py-3 text-sm font-bold text-on-error-container transition-all active:scale-95" type="button">
+              <span className="material-symbols-outlined text-sm">logout</span>
+              Logout
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl dark:border-stone-800 dark:bg-stone-900/90 lg:hidden">
+        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400 transition-transform hover:text-[#2f6f4f] active:scale-90 dark:text-stone-500" to="/farmer/dashboard">
+          <span className="material-symbols-outlined">grid_view</span>
+          <span className="mt-1 font-inter text-[11px] font-bold">Home</span>
+        </Link>
+        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400 transition-transform hover:text-[#2f6f4f] active:scale-90 dark:text-stone-500" to="/farmer/chatbot">
+          <span className="material-symbols-outlined">chat_bubble</span>
+          <span className="mt-1 font-inter text-[11px] font-bold">AI Consult</span>
+        </Link>
+        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400 transition-transform hover:text-[#2f6f4f] active:scale-90 dark:text-stone-500" to="/farmer/my-claims">
+          <span className="material-symbols-outlined">history_edu</span>
+          <span className="mt-1 font-inter text-[11px] font-bold">Claims</span>
+        </Link>
+        <div className="flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638] dark:bg-stone-800 dark:text-[#4ade80]">
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>account_circle</span>
+          <span className="mt-1 font-inter text-[11px] font-bold">Profile</span>
+        </div>
+      </nav>
+
+      <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 flex-col bg-[#f1f4f1] shadow-none dark:bg-stone-900 lg:flex">
+        <div className="px-6 py-8">
+          <div className="mb-8 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-on-primary">
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
+            </div>
+            <div>
+              <h2 className="text-lg font-black leading-none text-[#115638] dark:text-[#4ade80]">Annadata</h2>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-outline">Smart Agriculture</p>
+            </div>
+          </div>
+          <nav className="space-y-2">
+            <Link className="mx-0 flex items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/dashboard">
+              <span className="material-symbols-outlined">home</span>
+              <span className="font-manrope text-sm font-bold tracking-wide">Home</span>
+            </Link>
+            <button className="mx-0 flex w-full items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" type="button">
+              <span className="material-symbols-outlined">eco</span>
+              <span className="font-manrope text-sm font-bold tracking-wide">My Crops</span>
+            </button>
+            <Link className="mx-0 flex items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/chatbot">
+              <span className="material-symbols-outlined">psychology</span>
+              <span className="font-manrope text-sm font-bold tracking-wide">AI Advisor</span>
+            </Link>
+            <div className="ml-4 flex items-center gap-4 rounded-l-full bg-white py-3 pl-4 text-[#115638] shadow-sm transition-all hover:translate-x-1 dark:bg-stone-800 dark:text-[#4ade80]">
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>account_circle</span>
+              <span className="font-manrope text-sm font-bold tracking-wide">Profile</span>
+            </div>
+          </nav>
+        </div>
+        <div className="mt-auto space-y-2 px-6 py-8">
+          <div className="mx-0 flex items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50">
+            <span className="material-symbols-outlined">settings</span>
+            <span className="font-manrope text-sm font-bold tracking-wide">Settings</span>
+          </div>
+          <div className="my-4 h-[1px] bg-outline-variant/20" />
+          <div className="rounded-2xl bg-primary/5 p-4">
+            <p className="mb-2 text-xs font-bold text-primary">Need help?</p>
+            <Link className="block w-full rounded-lg bg-primary py-2 text-center text-xs font-bold text-on-primary" to="/farmer/grievances">Contact Support</Link>
+          </div>
+        </div>
+      </aside>
+    </div>
   )
 }

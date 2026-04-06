@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+.chatbot-root {
+  min-height: max(884px, 100dvh);
+}
+
+.chatbot-root {
+  font-family: 'Inter', sans-serif;
+}
+
+.chatbot-root .font-headline,
+.chatbot-root h1,
+.chatbot-root h2,
+.chatbot-root h3,
+.chatbot-root h4 {
+  font-family: 'Manrope', sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: #bfc9c0;
+  border-radius: 10px;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.asymmetric-card {
+  border-top-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.bg-background {
+  background-color: #f7faf7;
+}
+
+.bg-primary {
+  background-color: #115638;
+}
+
+.bg-primary-container {
+  background-color: #2f6f4f;
+}
+
+.bg-primary-fixed {
+  background-color: #aef1c9;
+}
+
+.bg-secondary {
+  background-color: #166b48;
+}
+
+.bg-secondary-container {
+  background-color: #a0f1c4;
+}
+
+.bg-secondary-fixed {
+  background-color: #a3f3c7;
+}
+
+.bg-surface-container-low {
+  background-color: #f1f4f1;
+}
+
+.bg-surface-container-high {
+  background-color: #e6e9e6;
+}
+
+.bg-surface-container-lowest {
+  background-color: #ffffff;
+}
+
+.bg-error {
+  background-color: #ba1a1a;
+}
+
+.text-primary {
+  color: #115638;
+}
+
+.text-secondary {
+  color: #166b48;
+}
+
+.text-on-surface {
+  color: #181c1b;
+}
+
+.text-on-surface-variant {
+  color: #404942;
+}
+
+.text-on-primary-container {
+  color: #acefc7;
+}
+
+.text-on-secondary-container {
+  color: #1d704c;
+}
+
+.text-on-secondary-fixed-variant {
+  color: #005234;
+}
+
+.border-outline-variant {
+  border-color: #bfc9c0;
+}
+
+.border-primary {
+  border-color: #115638;
+}
+
+.font-body {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-manrope {
+  font-family: 'Manrope', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
