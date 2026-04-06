@@ -33,9 +33,9 @@ export function FarmerDashboardPage() {
             <span className="material-symbols-outlined">psychology</span>
             AI Advisor
           </a>
-          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/new-claim">
+          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/my-claims">
             <span className="material-symbols-outlined">assignment_turned_in</span>
-            Claims
+            My Claims
           </Link>
           <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
             <span className="material-symbols-outlined">storefront</span>

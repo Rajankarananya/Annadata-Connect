@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+.grievances-root {
+  min-height: 100dvh;
+  font-family: 'Inter', sans-serif;
+}
+
+.grievances-root h1,
+.grievances-root h2,
+.grievances-root h3,
+.grievances-root .font-headline {
+  font-family: 'Manrope', sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.editorial-card {
+  border-radius: 1.5rem 0.5rem 1.5rem 0.5rem;
+}
+
+.bg-background {
+  background-color: #f7faf7;
+}
+
+.bg-primary {
+  background-color: #115638;
+}
+
+.bg-primary-container {
+  background-color: #2f6f4f;
+}
+
+.bg-secondary {
+  background-color: #166b48;
+}
+
+.bg-secondary-container {
+  background-color: #a0f1c4;
+}
+
+.bg-surface-container-low {
+  background-color: #f1f4f1;
+}
+
+.bg-surface-container-high {
+  background-color: #e6e9e6;
+}
+
+.bg-surface-container-highest {
+  background-color: #e0e3e0;
+}
+
+.bg-surface-container-lowest {
+  background-color: #ffffff;
+}
+
+.bg-tertiary-container {
+  background-color: #59665e;
+}
+
+.bg-error-container {
+  background-color: #ffdad6;
+}
+
+.text-primary {
+  color: #115638;
+}
+
+.text-on-background {
+  color: #181c1b;
+}
+
+.text-on-surface {
+  color: #181c1b;
+}
+
+.text-on-surface-variant {
+  color: #404942;
+}
+
+.text-on-primary {
+  color: #ffffff;
+}
+
+.text-on-primary-container {
+  color: #acefc7;
+}
+
+.text-on-secondary-container {
+  color: #1d704c;
+}
+
+.text-on-tertiary-container {
+  color: #d5e3da;
+}
+
+.text-on-error-container {
+  color: #93000a;
+}
+
+.border-outline-variant {
+  border-color: #bfc9c0;
+}
+
+.border-primary {
+  border-color: #115638;
+}
+
+.font-manrope {
+  font-family: 'Manrope', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}

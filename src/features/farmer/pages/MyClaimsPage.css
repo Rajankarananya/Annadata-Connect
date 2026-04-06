@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+.my-claims-root {
+  min-height: 100dvh;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.editorial-shadow {
+  box-shadow: 0 24px 48px -12px rgba(18, 28, 27, 0.06);
+}
+
+.signature-gradient {
+  background: linear-gradient(135deg, #115638 0%, #2f6f4f 100%);
+}
+
+.bg-background {
+  background-color: #f7faf7;
+}
+
+.bg-primary {
+  background-color: #115638;
+}
+
+.bg-primary-container {
+  background-color: #2f6f4f;
+}
+
+.bg-primary-fixed {
+  background-color: #aef1c9;
+}
+
+.bg-secondary {
+  background-color: #166b48;
+}
+
+.bg-secondary-container {
+  background-color: #a0f1c4;
+}
+
+.bg-surface-container-low {
+  background-color: #f1f4f1;
+}
+
+.bg-surface-container-high {
+  background-color: #e6e9e6;
+}
+
+.bg-surface-container-highest {
+  background-color: #e0e3e0;
+}
+
+.bg-surface-container-lowest {
+  background-color: #ffffff;
+}
+
+.bg-error {
+  background-color: #ba1a1a;
+}
+
+.bg-error-container {
+  background-color: #ffdad6;
+}
+
+.text-primary {
+  color: #115638;
+}
+
+.text-outline {
+  color: #707972;
+}
+
+.text-on-background {
+  color: #181c1b;
+}
+
+.text-on-surface {
+  color: #181c1b;
+}
+
+.text-on-secondary-container {
+  color: #1d704c;
+}
+
+.text-on-error-container {
+  color: #93000a;
+}
+
+.border-outline-variant {
+  border-color: #bfc9c0;
+}
