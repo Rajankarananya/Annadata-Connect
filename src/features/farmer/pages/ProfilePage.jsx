@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './ProfilePage.css'
 
 export function ProfilePage() {
@@ -156,48 +157,7 @@ export function ProfilePage() {
         </div>
       </nav>
 
-      <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 flex-col bg-[#f1f4f1] shadow-none dark:bg-stone-900 lg:flex">
-        <div className="px-6 py-8">
-          <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-on-primary">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
-            </div>
-            <div>
-              <h2 className="text-lg font-black leading-none text-[#115638] dark:text-[#4ade80]">Annadata</h2>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-outline">Smart Agriculture</p>
-            </div>
-          </div>
-          <nav className="space-y-2">
-            <Link className="mx-0 flex items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/dashboard">
-              <span className="material-symbols-outlined">home</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">Home</span>
-            </Link>
-            <button className="mx-0 flex w-full items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" type="button">
-              <span className="material-symbols-outlined">eco</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">My Crops</span>
-            </button>
-            <Link className="mx-0 flex items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/chatbot">
-              <span className="material-symbols-outlined">psychology</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">AI Advisor</span>
-            </Link>
-            <div className="ml-4 flex items-center gap-4 rounded-l-full bg-white py-3 pl-4 text-[#115638] shadow-sm transition-all hover:translate-x-1 dark:bg-stone-800 dark:text-[#4ade80]">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>account_circle</span>
-              <span className="font-manrope text-sm font-bold tracking-wide">Profile</span>
-            </div>
-          </nav>
-        </div>
-        <div className="mt-auto space-y-2 px-6 py-8">
-          <div className="mx-0 flex items-center gap-4 rounded-lg px-4 py-3 text-stone-600 transition-all hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50">
-            <span className="material-symbols-outlined">settings</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Settings</span>
-          </div>
-          <div className="my-4 h-[1px] bg-outline-variant/20" />
-          <div className="rounded-2xl bg-primary/5 p-4">
-            <p className="mb-2 text-xs font-bold text-primary">Need help?</p>
-            <Link className="block w-full rounded-lg bg-primary py-2 text-center text-xs font-bold text-on-primary" to="/farmer/grievances">Contact Support</Link>
-          </div>
-        </div>
-      </aside>
+      <FarmerSidebar />
     </div>
   )
 }

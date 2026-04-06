@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './GrievancesPage.css'
 
 export function GrievancesPage() {
@@ -26,51 +27,7 @@ export function GrievancesPage() {
         </div>
       </nav>
 
-      <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 flex-col bg-[#f1f4f1] py-6 dark:bg-stone-900 lg:flex">
-        <div className="mb-10 mt-16 px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
-            </div>
-            <div>
-              <h2 className="text-lg font-black leading-none text-[#115638] dark:text-[#4ade80]">Annadata</h2>
-              <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Smart Agriculture</p>
-            </div>
-          </div>
-        </div>
-        <nav className="flex-1 space-y-1">
-          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/dashboard">
-            <span className="material-symbols-outlined">home</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Home</span>
-          </Link>
-          <button className="mx-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" type="button">
-            <span className="material-symbols-outlined">eco</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">My Crops</span>
-          </button>
-          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/chatbot">
-            <span className="material-symbols-outlined">psychology</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">AI Advisor</span>
-          </Link>
-          <Link className="ml-4 flex items-center gap-3 rounded-l-full bg-white py-3 pl-4 text-[#115638] shadow-sm dark:bg-stone-800 dark:text-[#4ade80]" to="/farmer/my-claims">
-            <span className="material-symbols-outlined">assignment_turned_in</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Claims</span>
-          </Link>
-          <button className="mx-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" type="button">
-            <span className="material-symbols-outlined">storefront</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Market</span>
-          </button>
-        </nav>
-        <div className="space-y-1 border-t border-stone-200 px-4 py-6 dark:border-stone-800">
-          <Link className="flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/profile">
-            <span className="material-symbols-outlined">account_circle</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Profile &amp; Settings</span>
-          </Link>
-          <div className="flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50">
-            <span className="material-symbols-outlined">help_outline</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Support</span>
-          </div>
-        </div>
-      </aside>
+      <FarmerSidebar />
 
       <main className="min-h-screen px-6 pb-20 pt-24 lg:ml-64">
         <div className="mx-auto max-w-6xl">

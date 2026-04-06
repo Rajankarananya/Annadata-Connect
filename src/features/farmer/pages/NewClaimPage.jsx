@@ -1,62 +1,12 @@
 import { Link } from 'react-router-dom'
 
+import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './NewClaimPage.css'
 
 export function NewClaimPage() {
   return (
     <div className="new-claim-root bg-background text-on-surface min-h-screen antialiased">
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col border-r-0 bg-[#f1f4f1] lg:flex dark:bg-stone-900">
-        <div className="px-6 py-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container">
-              <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>
-                eco
-              </span>
-            </div>
-            <div>
-              <h1 className="font-headline text-lg font-black tracking-tight text-[#115638]">Annadata Connect</h1>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Smart Agriculture</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="mt-4 flex-1">
-          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" to="/farmer/dashboard">
-            <span className="material-symbols-outlined">home</span> Home
-          </Link>
-          <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
-            <span className="material-symbols-outlined">eco</span> My Crops
-          </a>
-          <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
-            <span className="material-symbols-outlined">psychology</span> AI Advisor
-          </a>
-          <a className="ml-4 flex items-center gap-3 rounded-l-full bg-white py-3 pl-4 text-sm font-bold tracking-wide text-[#115638] shadow-sm transition-transform duration-200 dark:bg-stone-800 dark:text-[#4ade80]" href="#">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-              assignment_turned_in
-            </span>{' '}
-            Claims
-          </a>
-          <a className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold tracking-wide text-stone-600 transition-transform duration-200 hover:translate-x-1 hover:bg-[#e8ece8] dark:text-stone-400 dark:hover:bg-stone-800/50" href="#">
-            <span className="material-symbols-outlined">storefront</span> Market
-          </a>
-        </nav>
-
-        <div className="mb-20 p-4">
-          <button className="font-headline flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-bold text-white shadow-lg transition-all hover:opacity-90">
-            <span className="material-symbols-outlined">add</span>
-            New Analysis
-          </button>
-        </div>
-
-        <div className="mx-4 border-t border-stone-200/50 py-6">
-          <a className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-stone-600 transition-colors hover:text-primary" href="#">
-            <span className="material-symbols-outlined">settings</span> Settings
-          </a>
-          <a className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-stone-600 transition-colors hover:text-primary" href="#">
-            <span className="material-symbols-outlined">help_outline</span> Support
-          </a>
-        </div>
-      </aside>
+      <FarmerSidebar />
 
       <header className="fixed top-0 z-30 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md lg:left-64 lg:w-[calc(100%-16rem)]">
         <div className="flex w-full items-center justify-between px-6 py-3">

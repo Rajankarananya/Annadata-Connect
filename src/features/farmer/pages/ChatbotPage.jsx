@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './ChatbotPage.css'
 
 export function ChatbotPage() {
@@ -155,47 +156,7 @@ export function ChatbotPage() {
         </Link>
       </nav>
 
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col bg-[#f1f4f1] lg:flex">
-        <div className="p-8">
-          <span className="font-headline text-lg font-black uppercase tracking-tight text-[#115638]">Annadata Connect</span>
-          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-stone-500">Smart Agriculture</p>
-        </div>
-        <nav className="flex-1 space-y-2 py-4">
-          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-all hover:bg-[#e8ece8]" to="/farmer/dashboard">
-            <span className="material-symbols-outlined">home</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Home</span>
-          </Link>
-          <button className="mx-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-all hover:bg-[#e8ece8]" type="button">
-            <span className="material-symbols-outlined">eco</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">My Crops</span>
-          </button>
-          <div className="ml-4 flex items-center gap-3 rounded-l-full border-r-4 border-primary bg-white py-3 pl-4 text-[#115638] shadow-sm">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>psychology</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">AI Advisor</span>
-          </div>
-          <Link className="mx-4 flex items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-all hover:bg-[#e8ece8]" to="/farmer/my-claims">
-            <span className="material-symbols-outlined">assignment_turned_in</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Claims</span>
-          </Link>
-          <button className="mx-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-lg px-4 py-3 text-stone-600 transition-all hover:bg-[#e8ece8]" type="button">
-            <span className="material-symbols-outlined">storefront</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">Market</span>
-          </button>
-        </nav>
-        <div className="mt-auto space-y-2 border-t border-stone-200 p-4">
-          <Link className="flex items-center gap-3 rounded-lg px-4 py-2 text-stone-500 transition-all hover:bg-[#e8ece8]" to="/farmer/profile">
-            <span className="material-symbols-outlined text-sm">settings</span>
-            <span className="text-xs font-bold uppercase tracking-wider">Settings</span>
-          </Link>
-          <Link className="flex items-center gap-3 rounded-lg px-4 py-2 text-stone-500 transition-all hover:bg-[#e8ece8]" to="/farmer/grievances">
-            <span className="material-symbols-outlined text-sm">help_outline</span>
-            <span className="text-xs font-bold uppercase tracking-wider">Support</span>
-          </Link>
-          <button className="mt-4 w-full cursor-pointer rounded-2xl bg-primary p-4 text-center text-white shadow-lg transition-colors hover:bg-primary-container" type="button">
-            <span className="text-xs font-bold uppercase tracking-widest">New Analysis</span>
-          </button>
-        </div>
-      </aside>
+      <FarmerSidebar />
     </div>
   )
 }

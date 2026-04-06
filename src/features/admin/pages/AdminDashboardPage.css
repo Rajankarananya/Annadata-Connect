@@ -1,0 +1,121 @@
+.admin-dashboard {
+  --ad-on-surface: #181c1b;
+  --ad-on-surface-variant: #404942;
+  --ad-on-primary-container: #acefc7;
+  --ad-on-secondary-fixed-variant: #005234;
+  --ad-on-tertiary-container: #ffd7d8;
+  --ad-outline-variant: #bfc9c0;
+  --ad-error: #ba1a1a;
+  --ad-primary: #115638;
+  --ad-secondary: #166b48;
+  --ad-tertiary: #77383d;
+  --ad-surface: #f7faf7;
+  --ad-surface-container: #ebefec;
+  --ad-surface-container-highest: #e0e3e0;
+  --ad-surface-container-high: #e6e9e6;
+  --ad-surface-container-low: #f1f4f1;
+  --ad-surface-container-lowest: #ffffff;
+  --ad-secondary-container: #a0f1c4;
+  --ad-tertiary-container: #944f54;
+}
+
+.admin-dashboard .glass-nav {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.admin-dashboard .no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-dashboard .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.admin-dashboard .text-on-surface {
+  color: var(--ad-on-surface);
+}
+
+.admin-dashboard .text-on-surface-variant {
+  color: var(--ad-on-surface-variant);
+}
+
+.admin-dashboard .text-on-primary-container {
+  color: var(--ad-on-primary-container);
+}
+
+.admin-dashboard .text-on-secondary-fixed-variant {
+  color: var(--ad-on-secondary-fixed-variant);
+}
+
+.admin-dashboard .text-on-tertiary-container {
+  color: var(--ad-on-tertiary-container);
+}
+
+.admin-dashboard .text-primary {
+  color: var(--ad-primary);
+}
+
+.admin-dashboard .text-secondary {
+  color: var(--ad-secondary);
+}
+
+.admin-dashboard .text-tertiary {
+  color: var(--ad-tertiary);
+}
+
+.admin-dashboard .text-error {
+  color: var(--ad-error);
+}
+
+.admin-dashboard .bg-surface {
+  background-color: var(--ad-surface);
+}
+
+.admin-dashboard .bg-surface-container {
+  background-color: var(--ad-surface-container);
+}
+
+.admin-dashboard .bg-surface-container-highest {
+  background-color: var(--ad-surface-container-highest);
+}
+
+.admin-dashboard .bg-surface-container-high {
+  background-color: var(--ad-surface-container-high);
+}
+
+.admin-dashboard .bg-surface-container-low {
+  background-color: var(--ad-surface-container-low);
+}
+
+.admin-dashboard .bg-surface-container-lowest {
+  background-color: var(--ad-surface-container-lowest);
+}
+
+.admin-dashboard .bg-primary {
+  background-color: var(--ad-primary);
+}
+
+.admin-dashboard .bg-secondary {
+  background-color: var(--ad-secondary);
+}
+
+.admin-dashboard .bg-tertiary {
+  background-color: var(--ad-tertiary);
+}
+
+.admin-dashboard .bg-error {
+  background-color: var(--ad-error);
+}
+
+.admin-dashboard .bg-secondary-container {
+  background-color: var(--ad-secondary-container);
+}
+
+.admin-dashboard .bg-tertiary-container {
+  background-color: var(--ad-tertiary-container);
+}
+
+.admin-dashboard .border-outline-variant {
+  border-color: var(--ad-outline-variant);
+}

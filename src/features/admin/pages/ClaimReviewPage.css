@@ -1,0 +1,125 @@
+.claim-review-page {
+  --cr-primary: #115638;
+  --cr-primary-container: #2f6f4f;
+  --cr-secondary: #166b48;
+  --cr-secondary-container: #a0f1c4;
+  --cr-tertiary: #77383d;
+  --cr-outline-variant: #bfc9c0;
+  --cr-surface: #f7faf7;
+  --cr-surface-container: #ebefec;
+  --cr-surface-container-high: #e6e9e6;
+  --cr-surface-container-low: #f1f4f1;
+  --cr-surface-container-lowest: #ffffff;
+  --cr-on-surface: #181c1b;
+  --cr-on-surface-variant: #404942;
+  --cr-on-secondary-container: #1d704c;
+  --cr-on-primary: #ffffff;
+}
+
+.claim-review-page {
+  font-family: 'Inter', sans-serif;
+}
+
+.claim-review-page .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.claim-review-page .fill-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.claim-review-page .editorial-shadow {
+  box-shadow: 0 12px 32px -4px rgba(9, 81, 52, 0.08);
+}
+
+.claim-review-page .glass-panel {
+  backdrop-filter: blur(16px);
+}
+
+.claim-review-page .no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.claim-review-page .bg-surface {
+  background-color: var(--cr-surface);
+}
+
+.claim-review-page .bg-surface-container {
+  background-color: var(--cr-surface-container);
+}
+
+.claim-review-page .bg-surface-container-high {
+  background-color: var(--cr-surface-container-high);
+}
+
+.claim-review-page .bg-surface-container-low {
+  background-color: var(--cr-surface-container-low);
+}
+
+.claim-review-page .bg-surface-container-lowest {
+  background-color: var(--cr-surface-container-lowest);
+}
+
+.claim-review-page .bg-primary {
+  background-color: var(--cr-primary);
+}
+
+.claim-review-page .bg-primary-container {
+  background-color: var(--cr-primary-container);
+}
+
+.claim-review-page .bg-secondary {
+  background-color: var(--cr-secondary);
+}
+
+.claim-review-page .bg-secondary-container {
+  background-color: var(--cr-secondary-container);
+}
+
+.claim-review-page .bg-tertiary {
+  background-color: var(--cr-tertiary);
+}
+
+.claim-review-page .text-primary {
+  color: var(--cr-primary);
+}
+
+.claim-review-page .text-secondary {
+  color: var(--cr-secondary);
+}
+
+.claim-review-page .text-tertiary {
+  color: var(--cr-tertiary);
+}
+
+.claim-review-page .text-on-surface {
+  color: var(--cr-on-surface);
+}
+
+.claim-review-page .text-on-surface-variant {
+  color: var(--cr-on-surface-variant);
+}
+
+.claim-review-page .text-on-secondary-container {
+  color: var(--cr-on-secondary-container);
+}
+
+.claim-review-page .text-on-primary {
+  color: var(--cr-on-primary);
+}
+
+.claim-review-page .border-primary {
+  border-color: var(--cr-primary);
+}
+
+.claim-review-page .border-outline-variant\/10 {
+  border-color: color-mix(in srgb, var(--cr-outline-variant) 10%, transparent);
+}
+
+.claim-review-page .border-outline-variant\/20 {
+  border-color: color-mix(in srgb, var(--cr-outline-variant) 20%, transparent);
+}
+
+.claim-review-page .border-outline-variant\/30 {
+  border-color: color-mix(in srgb, var(--cr-outline-variant) 30%, transparent);
+}
