@@ -1,9 +1,62 @@
+import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { z } from 'zod'
 
+import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { AsyncButton } from '../../../components/shared/AsyncButton'
 import './GrievancesPage.css'
 
+const grievanceSchema = z.object({
+  category: z.enum(['crop', 'insurance', 'irrigation', 'supply'], { message: 'Select an issue category.' }),
+  priority: z.enum(['low', 'medium', 'urgent'], { message: 'Select a priority level.' }),
+  description: z.string().trim().min(20, 'Please describe the issue in at least 20 characters.'),
+})
+
 export function GrievancesPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitFeedback, setSubmitFeedback] = useState({ error: '', success: '' })
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(grievanceSchema),
+    defaultValues: {
+      category: 'insurance',
+      priority: 'medium',
+      description: '',
+    },
+  })
+
+  const selectedCategory = watch('category')
+  const priority = watch('priority')
+
+  const onSubmit = async () => {
+    if (isSubmitting) {
+      return
+    }
+
+    setSubmitFeedback({ error: '', success: '' })
+    setIsSubmitting(true)
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 900))
+      setSubmitFeedback({ error: '', success: 'Grievance submitted successfully. Our team will contact you soon.' })
+      reset({ category: 'insurance', priority: 'medium', description: '' })
+    } catch {
+      setSubmitFeedback({ error: 'Unable to submit grievance right now. Please try again.', success: '' })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <div className="grievances-root bg-background text-on-background selection:bg-secondary-container">
       <nav className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#f7faf7]/80 px-6 py-3 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md dark:bg-stone-900/80">
@@ -12,7 +65,7 @@ export function GrievancesPage() {
         </div>
         <div className="hidden items-center gap-8 md:flex">
           <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/dashboard">Dashboard</Link>
-          <button className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" type="button">Reports</button>
+          <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/my-claims">Reports</Link>
           <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/chatbot">AI Insights</Link>
         </div>
         <div className="flex items-center gap-4">
@@ -43,50 +96,96 @@ export function GrievancesPage() {
                   <span className="material-symbols-outlined text-3xl text-primary">add_circle</span>
                   <h2 className="text-2xl font-bold">New Grievance</h2>
                 </div>
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
                   <div>
                     <label className="mb-2 block text-sm font-bold text-on-surface-variant">Issue Category</label>
                     <div className="grid grid-cols-2 gap-3">
-                      <button className="group flex flex-col items-center justify-center rounded-xl border-2 border-transparent bg-surface-container-low p-4 transition-all hover:border-primary/20 hover:bg-surface-container-highest" type="button">
+                      <button
+                        className={`group flex min-h-[44px] flex-col items-center justify-center rounded-xl border-2 p-4 transition-all ${selectedCategory === 'crop' ? 'border-primary bg-primary-container/10' : 'border-transparent bg-surface-container-low hover:border-primary/20 hover:bg-surface-container-highest'}`}
+                        type="button"
+                        onClick={() => setValue('category', 'crop', { shouldDirty: true, shouldValidate: true })}
+                      >
                         <span className="material-symbols-outlined mb-1 text-primary">potted_plant</span>
                         <span className="text-xs font-bold text-on-surface">Crop Health</span>
                       </button>
-                      <button className="flex flex-col items-center justify-center rounded-xl border-2 border-primary bg-primary-container/10 p-4 transition-all" type="button">
+                      <button
+                        className={`flex min-h-[44px] flex-col items-center justify-center rounded-xl border-2 p-4 transition-all ${selectedCategory === 'insurance' ? 'border-primary bg-primary-container/10' : 'border-transparent bg-surface-container-low hover:border-primary/20 hover:bg-surface-container-highest'}`}
+                        type="button"
+                        onClick={() => setValue('category', 'insurance', { shouldDirty: true, shouldValidate: true })}
+                      >
                         <span className="material-symbols-outlined mb-1 text-primary">payments</span>
                         <span className="text-xs font-bold text-on-surface">Insurance</span>
                       </button>
-                      <button className="flex flex-col items-center justify-center rounded-xl border-2 border-transparent bg-surface-container-low p-4 transition-all hover:border-primary/20 hover:bg-surface-container-highest" type="button">
+                      <button
+                        className={`flex min-h-[44px] flex-col items-center justify-center rounded-xl border-2 p-4 transition-all ${selectedCategory === 'irrigation' ? 'border-primary bg-primary-container/10' : 'border-transparent bg-surface-container-low hover:border-primary/20 hover:bg-surface-container-highest'}`}
+                        type="button"
+                        onClick={() => setValue('category', 'irrigation', { shouldDirty: true, shouldValidate: true })}
+                      >
                         <span className="material-symbols-outlined mb-1 text-primary">water_drop</span>
                         <span className="text-xs font-bold text-on-surface">Irrigation</span>
                       </button>
-                      <button className="flex flex-col items-center justify-center rounded-xl border-2 border-transparent bg-surface-container-low p-4 transition-all hover:border-primary/20 hover:bg-surface-container-highest" type="button">
+                      <button
+                        className={`flex min-h-[44px] flex-col items-center justify-center rounded-xl border-2 p-4 transition-all ${selectedCategory === 'supply' ? 'border-primary bg-primary-container/10' : 'border-transparent bg-surface-container-low hover:border-primary/20 hover:bg-surface-container-highest'}`}
+                        type="button"
+                        onClick={() => setValue('category', 'supply', { shouldDirty: true, shouldValidate: true })}
+                      >
                         <span className="material-symbols-outlined mb-1 text-primary">inventory_2</span>
                         <span className="text-xs font-bold text-on-surface">Supply Chain</span>
                       </button>
                     </div>
+                    {errors.category ? <p className="mt-2 text-xs text-red-600">{errors.category.message}</p> : null}
                   </div>
 
                   <div>
                     <label className="mb-2 block text-sm font-bold text-on-surface-variant">Priority Level</label>
                     <div className="flex gap-4">
                       <label className="flex-1 cursor-pointer">
-                        <input className="peer hidden" name="priority" type="radio" />
+                        <input
+                          className="peer hidden"
+                          type="radio"
+                          value="low"
+                          checked={priority === 'low'}
+                          {...register('priority')}
+                          onChange={() => setValue('priority', 'low', { shouldDirty: true, shouldValidate: true })}
+                        />
                         <div className="rounded-lg bg-surface-container-low py-3 text-center text-xs font-bold transition-colors peer-checked:bg-secondary-container peer-checked:text-on-secondary-container">Low</div>
                       </label>
                       <label className="flex-1 cursor-pointer">
-                        <input className="peer hidden" defaultChecked name="priority" type="radio" />
+                        <input
+                          className="peer hidden"
+                          type="radio"
+                          value="medium"
+                          checked={priority === 'medium'}
+                          {...register('priority')}
+                          onChange={() => setValue('priority', 'medium', { shouldDirty: true, shouldValidate: true })}
+                        />
                         <div className="rounded-lg bg-surface-container-low py-3 text-center text-xs font-bold transition-colors peer-checked:bg-primary-container peer-checked:text-on-primary-container">Medium</div>
                       </label>
                       <label className="flex-1 cursor-pointer">
-                        <input className="peer hidden" name="priority" type="radio" />
+                        <input
+                          className="peer hidden"
+                          type="radio"
+                          value="urgent"
+                          checked={priority === 'urgent'}
+                          {...register('priority')}
+                          onChange={() => setValue('priority', 'urgent', { shouldDirty: true, shouldValidate: true })}
+                        />
                         <div className="rounded-lg bg-surface-container-low py-3 text-center text-xs font-bold transition-colors peer-checked:bg-error-container peer-checked:text-on-error-container">Urgent</div>
                       </label>
                     </div>
+                    {errors.priority ? <p className="mt-2 text-xs text-red-600">{errors.priority.message}</p> : null}
                   </div>
 
                   <div>
                     <label className="mb-2 block text-sm font-bold text-on-surface-variant">Describe the Situation</label>
-                    <textarea className="w-full rounded-xl border-none bg-surface-container-low p-4 font-medium text-on-surface placeholder-stone-400 focus:ring-2 focus:ring-surface-tint" placeholder="Describe the issue in detail..." rows="4" />
+                    <textarea
+                      className="w-full rounded-xl border-none bg-surface-container-low p-4 font-medium text-on-surface placeholder-stone-400 focus:ring-2 focus:ring-surface-tint"
+                      placeholder="Describe the issue in detail..."
+                      rows="4"
+                      {...register('description')}
+                      disabled={isSubmitting}
+                    />
+                    {errors.description ? <p className="mt-2 text-xs text-red-600">{errors.description.message}</p> : null}
                   </div>
 
                   <div className="group cursor-pointer rounded-xl border-2 border-dashed border-outline-variant/30 p-6 text-center transition-colors hover:bg-surface-container-low">
@@ -94,10 +193,18 @@ export function GrievancesPage() {
                     <p className="text-xs font-bold text-stone-500">Upload field photos or documents</p>
                   </div>
 
-                  <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:opacity-90" type="button">
+                  <AsyncButton
+                    type="submit"
+                    isLoading={isSubmitting}
+                    loadingText="Submitting..."
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:opacity-90"
+                  >
                     <span>Submit Report</span>
                     <span className="material-symbols-outlined text-[20px]">send</span>
-                  </button>
+                  </AsyncButton>
+
+                  {submitFeedback.error ? <p className="text-xs text-red-600">{submitFeedback.error}</p> : null}
+                  {submitFeedback.success ? <p className="text-xs text-emerald-700">{submitFeedback.success}</p> : null}
                 </form>
               </div>
 
@@ -200,24 +307,7 @@ export function GrievancesPage() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl dark:border-stone-800 dark:bg-stone-900/90 lg:hidden">
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400 dark:text-stone-500" to="/farmer/dashboard">
-          <span className="material-symbols-outlined">grid_view</span>
-          <span className="mt-1 font-inter text-[11px] font-bold">Home</span>
-        </Link>
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400 dark:text-stone-500" to="/farmer/chatbot">
-          <span className="material-symbols-outlined">chat_bubble</span>
-          <span className="mt-1 font-inter text-[11px] font-bold">AI Consult</span>
-        </Link>
-        <div className="flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638] dark:bg-stone-800 dark:text-[#4ade80]">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>history_edu</span>
-          <span className="mt-1 font-inter text-[11px] font-bold">Claims</span>
-        </div>
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400 dark:text-stone-500" to="/farmer/profile">
-          <span className="material-symbols-outlined">account_circle</span>
-          <span className="mt-1 font-inter text-[11px] font-bold">Profile</span>
-        </Link>
-      </nav>
+      <FarmerBottomNav />
     </div>
   )
 }

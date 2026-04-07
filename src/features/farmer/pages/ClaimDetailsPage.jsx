@@ -1,9 +1,22 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './ClaimDetailsPage.css'
 
 export function ClaimDetailsPage() {
+  const navigate = useNavigate()
+  const modelConfidence = 92
+  const confidenceBand = modelConfidence >= 85 ? 'High Confidence' : modelConfidence >= 70 ? 'Moderate Confidence' : 'Low Confidence'
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1)
+      return
+    }
+    navigate('/farmer/my-claims')
+  }
+
   return (
     <div className="claim-details-root bg-background text-on-surface">
       <header className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md dark:bg-stone-900/80">
@@ -12,8 +25,8 @@ export function ClaimDetailsPage() {
             <span className="text-xl font-bold tracking-tight text-[#115638] dark:text-[#4ade80]">Annadata Connect</span>
             <nav className="hidden gap-6 md:flex">
               <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/dashboard">Dashboard</Link>
-              <button type="button" className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400">Reports</button>
-              <button type="button" className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400">AI Insights</button>
+              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/my-claims">Reports</Link>
+              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/chatbot">AI Insights</Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
@@ -39,10 +52,10 @@ export function ClaimDetailsPage() {
       <main className="px-6 pb-32 pt-24 lg:ml-64 lg:px-12">
         <header className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <Link to="/farmer/my-claims" className="mb-2 flex items-center gap-2 text-primary">
+            <button type="button" onClick={handleBack} className="mb-2 flex items-center gap-2 text-primary">
               <span className="material-symbols-outlined text-sm">arrow_back</span>
               <span className="text-sm font-semibold uppercase tracking-widest">Back to Claims</span>
-            </Link>
+            </button>
             <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-on-surface md:text-5xl">Claim ID: #C-882910</h1>
             <p className="max-w-xl font-medium text-stone-500">Submitted on October 24, 2023 • Wheat Field Alpha-7</p>
           </div>
@@ -120,16 +133,62 @@ export function ClaimDetailsPage() {
             <section className="relative overflow-hidden rounded-[2.5rem] bg-[#115638] p-8 text-on-primary-container shadow-2xl">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white to-transparent opacity-10" />
               <div className="relative z-10">
-                <div className="mb-8 flex items-center gap-3"><span className="material-symbols-outlined rounded-xl bg-primary-container p-2">auto_awesome</span><h3 className="text-xl font-bold text-white">AI Analysis Engine</h3></div>
-                <div className="mb-10"><p className="mb-2 text-sm font-medium uppercase tracking-widest text-white/70">Damage Severity</p><div className="flex items-end gap-3"><span className="text-5xl font-black text-white">High</span><div className="mb-2 flex gap-1"><div className="h-4 w-4 rounded-full bg-white" /><div className="h-4 w-4 rounded-full bg-white" /><div className="h-4 w-4 rounded-full bg-white" /><div className="h-4 w-4 rounded-full bg-white/30" /></div></div></div>
-                <div className="mb-10 grid grid-cols-2 gap-6"><div className="rounded-2xl bg-primary-container/40 p-4"><p className="mb-1 text-xs text-white/60">Confidence</p><p className="text-2xl font-bold text-white">92%</p></div><div className="rounded-2xl bg-primary-container/40 p-4"><p className="mb-1 text-xs text-white/60">Area Calc.</p><p className="text-2xl font-bold text-white">38.4a</p></div></div>
-                <div className="space-y-4"><h4 className="font-bold text-white">Recommendation</h4><div className="rounded-2xl border border-white/10 bg-surface-container-lowest/10 p-5 backdrop-blur-md"><p className="text-sm leading-relaxed text-white/90">"Visual evidence confirms mechanical flattening consistent with weather-related impact. Spectral analysis of recent satellite data shows significant biomass reduction in the target area."</p></div></div>
+                <div className="mb-8 flex items-center gap-3">
+                  <span className="material-symbols-outlined rounded-xl bg-primary-container p-2">auto_awesome</span>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">AI Claim Analysis</h3>
+                    <p className="text-xs uppercase tracking-widest text-white/70">Decision support only</p>
+                  </div>
+                </div>
+
+                <div className="mb-8 rounded-2xl border border-white/20 bg-white/5 p-5">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">AI Prediction</p>
+                  <div className="flex items-end gap-3">
+                    <span className="text-5xl font-black text-white">High</span>
+                    <div className="mb-2 flex gap-1" aria-hidden>
+                      <div className="h-4 w-4 rounded-full bg-white" />
+                      <div className="h-4 w-4 rounded-full bg-white" />
+                      <div className="h-4 w-4 rounded-full bg-white" />
+                      <div className="h-4 w-4 rounded-full bg-white/30" />
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm text-white/85">Predicted damage severity based on uploaded photos and regional weather signals.</p>
+                </div>
+
+                <div className="mb-8 grid grid-cols-2 gap-6">
+                  <div className="rounded-2xl bg-primary-container/40 p-4">
+                    <p className="mb-1 text-xs text-white/60">Confidence Score</p>
+                    <p className="text-2xl font-bold text-white">{modelConfidence}%</p>
+                    <p className="text-xs font-semibold text-white/80">{confidenceBand}</p>
+                  </div>
+                  <div className="rounded-2xl bg-primary-container/40 p-4">
+                    <p className="mb-1 text-xs text-white/60">Estimated Impact Area</p>
+                    <p className="text-2xl font-bold text-white">38.4 acres</p>
+                    <p className="text-xs text-white/80">Derived from image segmentation</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-bold text-white">Why the model predicted this</h4>
+                  <div className="rounded-2xl border border-white/10 bg-surface-container-lowest/10 p-5 backdrop-blur-md">
+                    <p className="mb-3 text-sm leading-relaxed text-white/90">
+                      Visual evidence confirms mechanical flattening consistent with weather-related impact. Spectral analysis of recent satellite data
+                      shows significant biomass reduction in the target area.
+                    </p>
+                    <p className="text-xs uppercase tracking-widest text-white/70">Recommendation: Prioritize for officer review</p>
+                  </div>
+                </div>
               </div>
             </section>
 
-            <section className="flex gap-4 rounded-3xl border border-error/10 bg-error-container p-6">
-              <span className="material-symbols-outlined text-on-error-container">warning</span>
-              <div><p className="mb-1 text-sm font-bold text-on-error-container">Official Oversight</p><p className="text-xs leading-relaxed text-on-error-container opacity-80">AI metrics are provided for supportive evaluation. The final decision is taken by a human officer after field verification.</p></div>
+            <section className="flex gap-4 rounded-3xl border-2 border-error/30 bg-error-container p-6">
+              <span className="material-symbols-outlined text-on-error-container">gavel</span>
+              <div>
+                <p className="mb-1 text-sm font-extrabold uppercase tracking-wide text-on-error-container">Final Decision by Officer</p>
+                <p className="text-xs leading-relaxed text-on-error-container opacity-90">
+                  AI outputs are advisory only. Claim approval or rejection is decided by the assigned officer after verification and policy review.
+                </p>
+              </div>
             </section>
 
             <section className="rounded-[2rem] bg-surface-container-high p-8">
@@ -143,12 +202,7 @@ export function ClaimDetailsPage() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[2rem] border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl dark:bg-stone-900/90 lg:hidden">
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/dashboard"><span className="material-symbols-outlined">grid_view</span><span className="mt-1 text-[11px] font-bold font-inter">Home</span></Link>
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/chatbot"><span className="material-symbols-outlined">chat_bubble</span><span className="mt-1 text-[11px] font-bold font-inter">AI Consult</span></Link>
-        <div className="flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638] dark:bg-stone-800 dark:text-[#4ade80]"><span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>history_edu</span><span className="mt-1 text-[11px] font-bold font-inter">Claims</span></div>
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/profile"><span className="material-symbols-outlined">account_circle</span><span className="mt-1 text-[11px] font-bold font-inter">Profile</span></Link>
-      </nav>
+      <FarmerBottomNav />
     </div>
   )
 }

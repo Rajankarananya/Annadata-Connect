@@ -99,7 +99,7 @@ export function AdminDashboardPage() {
     <div className="admin-dashboard bg-surface text-on-surface" style={{ fontFamily: 'Inter, sans-serif' }}>
       <AdminSidebar />
 
-      <main className="ml-64 min-h-screen">
+      <main className="min-h-screen md:ml-64">
         <header className="glass-nav sticky top-0 z-40 flex h-16 w-full items-center justify-between bg-[rgba(236,253,245,0.8)] px-8 shadow-[0_12px_32px_-4px_rgba(9,81,52,0.08)]">
           <div className="flex flex-1 items-center gap-6">
             <div className="relative w-full max-w-md">

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './MyClaimsPage.css'
 
@@ -12,8 +13,8 @@ export function MyClaimsPage() {
 						<span className="font-headline text-xl font-bold tracking-tight text-[#115638]">Annadata Connect</span>
 						<div className="hidden items-center gap-6 md:flex">
 							<Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/dashboard">Dashboard</Link>
-							<button type="button" className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]">Reports</button>
-							<button type="button" className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]">AI Insights</button>
+							<Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
+							<Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/chatbot">AI Insights</Link>
 						</div>
 					</div>
 					<div className="flex items-center gap-4">
@@ -188,24 +189,7 @@ export function MyClaimsPage() {
 				</footer>
 			</main>
 
-			<nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[2rem] border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl dark:bg-stone-900/90 lg:hidden">
-				<Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/dashboard">
-					<span className="material-symbols-outlined">grid_view</span>
-					<span className="mt-1 text-[11px] font-bold">Home</span>
-				</Link>
-				<Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/chatbot">
-					<span className="material-symbols-outlined">chat_bubble</span>
-					<span className="mt-1 text-[11px] font-bold">AI Consult</span>
-				</Link>
-				<div className="flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638]">
-					<span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>history_edu</span>
-					<span className="mt-1 text-[11px] font-bold">Claims</span>
-				</div>
-				<Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/profile">
-					<span className="material-symbols-outlined">account_circle</span>
-					<span className="mt-1 text-[11px] font-bold">Profile</span>
-				</Link>
-			</nav>
+			<FarmerBottomNav />
 		</div>
 	)
 }

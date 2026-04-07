@@ -56,7 +56,7 @@ export function GrievanceQueuePage() {
     <div className="grievance-queue-page flex min-h-screen bg-surface text-on-surface" style={{ fontFamily: 'Inter, sans-serif' }}>
       <AdminSidebar />
 
-      <main className="ml-64 flex min-h-screen flex-1 flex-col">
+      <main className="flex min-h-screen flex-1 flex-col md:ml-64">
         <header className="glass-nav sticky top-0 z-40 flex h-16 w-full items-center justify-between bg-[rgba(236,253,245,0.8)] px-8 shadow-[0_12px_32px_-4px_rgba(9,81,52,0.08)]">
           <div className="flex items-center gap-6">
             <h2 className="authoritative-text text-lg font-bold tracking-tighter text-emerald-900">Grievance Queue</h2>

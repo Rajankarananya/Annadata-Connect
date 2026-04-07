@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 
+import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './FarmerDashboardPage.css'
 
@@ -17,8 +18,8 @@ export function FarmerDashboardPage() {
             <span className="hidden h-6 w-px bg-stone-200 md:block" />
             <nav className="hidden gap-6 md:flex">
               <Link className="border-b-2 border-[#115638] pb-1 text-sm font-medium text-[#115638]" to="/farmer/dashboard">Dashboard</Link>
-              <a className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">Reports</a>
-              <a className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">AI Insights</a>
+              <Link className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
+              <Link className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/chatbot">AI Insights</Link>
             </nav>
           </div>
 
@@ -325,24 +326,7 @@ export function FarmerDashboardPage() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[2rem] border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl lg:hidden">
-        <Link className="group flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638] transition-transform active:scale-90" to="/farmer/dashboard">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>grid_view</span>
-          <span className="mt-1 text-[11px] font-bold">Home</span>
-        </Link>
-        <a className="group flex flex-col items-center justify-center px-5 py-2 text-stone-400 transition-transform active:scale-90" href="#">
-          <span className="material-symbols-outlined">chat_bubble</span>
-          <span className="mt-1 text-[11px] font-bold">AI Consult</span>
-        </a>
-        <Link className="group flex flex-col items-center justify-center px-5 py-2 text-stone-400 transition-transform active:scale-90" to="/farmer/new-claim">
-          <span className="material-symbols-outlined">history_edu</span>
-          <span className="mt-1 text-[11px] font-bold">Claims</span>
-        </Link>
-        <a className="group flex flex-col items-center justify-center px-5 py-2 text-stone-400 transition-transform active:scale-90" href="#">
-          <span className="material-symbols-outlined">account_circle</span>
-          <span className="mt-1 text-[11px] font-bold">Profile</span>
-        </a>
-      </nav>
+      <FarmerBottomNav />
 
       <button
         type="button"

@@ -16,7 +16,7 @@ export function ReportsPage() {
     <div className="reports-page bg-surface text-on-surface">
       <AdminSidebar />
 
-      <main className="ml-64 min-h-screen">
+      <main className="min-h-screen md:ml-64">
         <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-[rgba(236,253,245,0.8)] px-8 shadow-[0_12px_32px_-4px_rgba(9,81,52,0.08)] backdrop-blur-xl">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -332,12 +332,12 @@ export function ReportsPage() {
           <footer className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-outline-variant/10 pt-8 md:flex-row">
             <p className="text-[0.75rem] text-on-surface-variant">© 2024 Annadata Connect. Data privacy standards ISO 27001 compliant.</p>
             <div className="flex items-center gap-6">
-              <a className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary" href="#">
+              <button type="button" className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary">
                 Internal Use Only
-              </a>
-              <a className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary" href="#">
+              </button>
+              <button type="button" className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary">
                 Security Audit Log
-              </a>
+              </button>
             </div>
           </footer>
         </div>

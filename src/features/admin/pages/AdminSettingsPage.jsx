@@ -1,9 +1,92 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { NavLink } from 'react-router-dom'
+import { z } from 'zod'
+
+import { ROUTES } from '../../../constants/navigation'
 import { AdminSidebar } from '../../../components/layout/AdminSidebar'
 
 import './AdminSettingsPage.css'
 
+const adminSecuritySchema = z
+  .object({
+    currentPassword: z.string(),
+    newPassword: z.string(),
+  })
+  .superRefine((values, context) => {
+    const currentPassword = values.currentPassword.trim()
+    const newPassword = values.newPassword.trim()
+
+    if (!currentPassword && !newPassword) {
+      return
+    }
+
+    if (!currentPassword) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['currentPassword'],
+        message: 'Current password is required to change password.',
+      })
+    } else if (currentPassword.length < 6) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['currentPassword'],
+        message: 'Current password must be at least 6 characters.',
+      })
+    }
+
+    if (!newPassword) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['newPassword'],
+        message: 'New password is required.',
+      })
+    } else if (newPassword.length < 8) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['newPassword'],
+        message: 'New password must be at least 8 characters.',
+      })
+    }
+  })
+
 export function AdminSettingsPage() {
+  const [isSaving, setIsSaving] = useState(false)
+  const [submitFeedback, setSubmitFeedback] = useState({ error: '', success: '' })
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(adminSecuritySchema),
+    defaultValues: {
+      currentPassword: '',
+      newPassword: '',
+    },
+  })
+
+  const onSaveSecurity = async () => {
+    if (isSaving) {
+      return
+    }
+
+    setSubmitFeedback({ error: '', success: '' })
+    setIsSaving(true)
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 800))
+      setSubmitFeedback({ error: '', success: 'Security settings saved successfully.' })
+      reset({ currentPassword: '', newPassword: '' })
+    } catch {
+      setSubmitFeedback({ error: 'Unable to save settings right now. Please try again.', success: '' })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   return (
     <div className="admin-settings-page bg-surface text-on-surface antialiased">
       <header className="sticky top-0 z-50 bg-[rgba(236,253,245,0.8)] text-emerald-900 shadow-[0_12px_32px_-4px_rgba(9,81,52,0.08)] backdrop-blur-xl">
@@ -11,15 +94,15 @@ export function AdminSettingsPage() {
           <div className="flex items-center gap-8">
             <span className="text-lg font-bold tracking-tighter text-emerald-900">Annadata Connect</span>
             <nav className="hidden gap-6 md:flex">
-              <Link className="rounded-lg px-3 py-2 text-zinc-600 transition-colors hover:bg-emerald-100/50" to="/admin/dashboard">
+              <NavLink className="rounded-lg px-3 py-2 text-zinc-600 transition-colors hover:bg-emerald-100/50" to={ROUTES.ADMIN.DASHBOARD}>
                 Dashboard
-              </Link>
-              <Link className="rounded-lg px-3 py-2 text-zinc-600 transition-colors hover:bg-emerald-100/50" to="/admin/claims-queue">
+              </NavLink>
+              <NavLink className="rounded-lg px-3 py-2 text-zinc-600 transition-colors hover:bg-emerald-100/50" to={ROUTES.ADMIN.CLAIMS_QUEUE}>
                 Claims
-              </Link>
-              <Link className="border-b-2 border-emerald-700 px-3 py-2 font-semibold text-emerald-700" to="/admin/settings">
+              </NavLink>
+              <NavLink className="border-b-2 border-emerald-700 px-3 py-2 font-semibold text-emerald-700" to={ROUTES.ADMIN.SETTINGS}>
                 Settings
-              </Link>
+              </NavLink>
             </nav>
           </div>
 
@@ -198,7 +281,7 @@ export function AdminSettingsPage() {
               <section className="rounded-xl bg-surface-container-lowest p-8 shadow-[0_12px_32px_-4px_rgba(9,81,52,0.08)]">
                 <h3 className="mb-8 text-xl font-bold text-on-surface">Profile &amp; Security</h3>
 
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit(onSaveSecurity)} noValidate>
                   <div className="relative">
                     <label className="mb-2 block text-[0.6875rem] font-bold uppercase tracking-wider text-on-surface-variant">Email Address</label>
                     <input
@@ -212,8 +295,24 @@ export function AdminSettingsPage() {
                   <div className="relative">
                     <label className="mb-2 block text-[0.6875rem] font-bold uppercase tracking-wider text-on-surface-variant">Change Password</label>
                     <div className="space-y-3">
-                      <input type="password" placeholder="Current Password" className="w-full rounded-lg border-none bg-surface-container-highest px-4 py-3 text-sm transition-all focus:ring-1 focus:ring-primary" />
-                      <input type="password" placeholder="New Password" className="w-full rounded-lg border-none bg-surface-container-highest px-4 py-3 text-sm transition-all focus:ring-1 focus:ring-primary" />
+                      <div>
+                        <input
+                          type="password"
+                          placeholder="Current Password"
+                          className="w-full rounded-lg border-none bg-surface-container-highest px-4 py-3 text-sm transition-all focus:ring-1 focus:ring-primary"
+                          {...register('currentPassword')}
+                        />
+                        {errors.currentPassword ? <p className="mt-1 text-xs text-red-600">{errors.currentPassword.message}</p> : null}
+                      </div>
+                      <div>
+                        <input
+                          type="password"
+                          placeholder="New Password"
+                          className="w-full rounded-lg border-none bg-surface-container-highest px-4 py-3 text-sm transition-all focus:ring-1 focus:ring-primary"
+                          {...register('newPassword')}
+                        />
+                        {errors.newPassword ? <p className="mt-1 text-xs text-red-600">{errors.newPassword.message}</p> : null}
+                      </div>
                     </div>
                   </div>
 
@@ -230,13 +329,27 @@ export function AdminSettingsPage() {
                   </div>
 
                   <div className="flex gap-4 pt-4">
-                    <button type="button" className="primary-gradient flex-1 rounded-lg py-3 font-bold text-white transition-opacity hover:opacity-90">
+                    <button
+                      type="submit"
+                      disabled={isSaving}
+                      className="primary-gradient flex-1 rounded-lg py-3 font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
                       Save Changes
                     </button>
-                    <button type="button" className="rounded-lg px-6 py-3 font-semibold text-on-surface-variant transition-colors hover:bg-surface-container">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        reset({ currentPassword: '', newPassword: '' })
+                        setSubmitFeedback({ error: '', success: '' })
+                      }}
+                      className="rounded-lg px-6 py-3 font-semibold text-on-surface-variant transition-colors hover:bg-surface-container"
+                    >
                       Reset
                     </button>
                   </div>
+
+                  {submitFeedback.error ? <p className="text-xs text-red-600">{submitFeedback.error}</p> : null}
+                  {submitFeedback.success ? <p className="text-xs text-emerald-700">{submitFeedback.success}</p> : null}
                 </form>
               </section>
             </div>
@@ -244,24 +357,6 @@ export function AdminSettingsPage() {
         </main>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-outline-variant/20 bg-white py-3 md:hidden">
-        <button type="button" className="flex flex-col items-center gap-1 text-zinc-500">
-          <span className="material-symbols-outlined">dashboard</span>
-          <span className="text-[10px]">Home</span>
-        </button>
-        <button type="button" className="flex flex-col items-center gap-1 text-zinc-500">
-          <span className="material-symbols-outlined">assignment_late</span>
-          <span className="text-[10px]">Claims</span>
-        </button>
-        <button type="button" className="flex flex-col items-center gap-1 text-emerald-700">
-          <span className="material-symbols-outlined fill-icon">settings</span>
-          <span className="text-[10px] font-bold">Settings</span>
-        </button>
-        <button type="button" className="flex flex-col items-center gap-1 text-zinc-500">
-          <span className="material-symbols-outlined">person</span>
-          <span className="text-[10px]">Profile</span>
-        </button>
-      </nav>
     </div>
   )
 }

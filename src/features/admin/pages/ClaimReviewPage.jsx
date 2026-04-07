@@ -1,13 +1,32 @@
+import { useState } from 'react'
+
 import { AdminSidebar } from '../../../components/layout/AdminSidebar'
+import { AsyncButton } from '../../../components/shared/AsyncButton'
 
 import './ClaimReviewPage.css'
 
 export function ClaimReviewPage() {
+  const [reviewNotes, setReviewNotes] = useState('')
+  const [decisionLoading, setDecisionLoading] = useState(false)
+  const modelDamageSeverity = 72.4
+  const modelConfidence = 94
+  const confidenceBand = modelConfidence >= 85 ? 'High confidence' : modelConfidence >= 70 ? 'Moderate confidence' : 'Low confidence'
+
+  const handleDecision = async () => {
+    if (decisionLoading) {
+      return
+    }
+
+    setDecisionLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 900))
+    setDecisionLoading(false)
+  }
+
   return (
     <div className="claim-review-page overflow-hidden bg-surface text-on-surface">
       <AdminSidebar />
 
-      <main className="ml-64 min-h-screen">
+      <main className="min-h-screen md:ml-64">
         <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-[rgba(236,253,245,0.8)] px-6 text-emerald-900 shadow-[0_12px_32px_-4px_rgba(9,81,52,0.08)] backdrop-blur-xl">
           <div className="flex items-center gap-8">
             <span className="text-lg font-bold tracking-tighter text-emerald-900">Claim Review</span>
@@ -31,8 +50,8 @@ export function ClaimReviewPage() {
           </div>
         </header>
 
-        <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
-          <section className="no-scrollbar w-1/2 overflow-y-auto bg-surface p-8">
+        <div className="flex h-[calc(100vh-4rem)] flex-col overflow-auto lg:flex-row lg:overflow-hidden">
+          <section className="no-scrollbar w-full overflow-y-auto bg-surface p-8 lg:w-1/2">
             <div className="mx-auto max-w-2xl space-y-10">
               <header>
                 <div className="mb-2 flex items-center gap-2">
@@ -121,7 +140,7 @@ export function ClaimReviewPage() {
             </div>
           </section>
 
-          <section className="no-scrollbar w-1/2 overflow-y-auto border-l border-emerald-100 bg-surface-container-low p-8">
+          <section className="no-scrollbar w-full overflow-y-auto border-t border-emerald-100 bg-surface-container-low p-8 lg:w-1/2 lg:border-l lg:border-t-0">
             <div className="mx-auto max-w-xl space-y-6">
               <div className="editorial-shadow relative overflow-hidden rounded-xl bg-surface-container-lowest p-8">
                 <div className="absolute right-0 top-0 p-4">
@@ -131,23 +150,25 @@ export function ClaimReviewPage() {
                 <header>
                   <p className="mb-1 flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-widest text-emerald-700">
                     <span className="material-symbols-outlined text-sm">bolt</span>
-                    AI INSIGHTS
+                    AI CLAIM ANALYSIS
                   </p>
-                  <h2 className="text-2xl font-bold text-on-surface">Automated Assessment</h2>
+                  <h2 className="text-2xl font-bold text-on-surface">Model Prediction Summary</h2>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-widest text-on-surface-variant">For officer support, not auto-approval</p>
                 </header>
 
                 <div className="mt-8 grid grid-cols-2 gap-8">
                   <div className="space-y-1">
-                    <p className="text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Damage Severity</p>
-                    <p className="text-4xl font-black tracking-tighter text-on-surface">72.4%</p>
+                    <p className="text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">AI Prediction: Damage Severity</p>
+                    <p className="text-4xl font-black tracking-tighter text-on-surface">{modelDamageSeverity}%</p>
                     <div className="h-2 w-full overflow-hidden rounded-full bg-surface-container">
-                      <div className="h-full bg-primary" style={{ width: '72.4%' }}></div>
+                      <div className="h-full bg-primary" style={{ width: `${modelDamageSeverity}%` }}></div>
                     </div>
+                    <p className="text-xs text-on-surface-variant">Likely severe impact to payout-relevant acreage.</p>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Confidence Score</p>
-                    <p className="text-4xl font-black tracking-tighter text-secondary">94%</p>
+                    <p className="text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Model Confidence Score</p>
+                    <p className="text-4xl font-black tracking-tighter text-secondary">{modelConfidence}%</p>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span key={star} className="material-symbols-outlined fill-icon text-sm text-secondary">
@@ -155,14 +176,23 @@ export function ClaimReviewPage() {
                         </span>
                       ))}
                     </div>
+                    <p className="text-xs font-semibold text-on-surface-variant">{confidenceBand}</p>
                   </div>
                 </div>
 
                 <div className="mt-8 rounded-lg border border-emerald-100 bg-emerald-50 p-4">
-                  <p className="mb-2 text-sm font-semibold text-emerald-900">AI Recommendation:</p>
+                  <p className="mb-2 text-sm font-semibold text-emerald-900">Prediction Explanation</p>
                   <p className="text-sm leading-relaxed text-emerald-800">
                     Satellite imagery corroborates regional flooding. Historical data suggests root saturation leads to terminal crop failure for
-                    wheat in this growth stage. <span className="font-bold">Recommendation: Expedited Approval.</span>
+                    wheat in this growth stage.
+                  </p>
+                  <p className="mt-3 text-xs font-bold uppercase tracking-widest text-emerald-900">AI Recommendation: Expedited approval review</p>
+                </div>
+
+                <div className="mt-4 rounded-lg border-2 border-amber-300/80 bg-amber-50 p-4">
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-amber-900">Final decision by officer</p>
+                  <p className="mt-1 text-xs leading-relaxed text-amber-900/90">
+                    The assigned officer must validate evidence, policy criteria, and field context before approving or rejecting this claim.
                   </p>
                 </div>
               </div>
@@ -179,34 +209,43 @@ export function ClaimReviewPage() {
                     <textarea
                       rows="4"
                       placeholder="Add mandatory decision rationale here..."
+                      value={reviewNotes}
+                      onChange={(event) => setReviewNotes(event.target.value)}
+                      disabled={decisionLoading}
                       className="w-full resize-none rounded-xl border-none bg-[rgba(224,227,224,0.3)] p-4 text-sm focus:ring-2 focus:ring-primary"
                     ></textarea>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
+                    <AsyncButton
+                      onClick={handleDecision}
+                      isLoading={decisionLoading}
+                      loadingText="Submitting..."
                       className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container px-6 py-4 text-sm font-bold text-white transition-transform duration-200 hover:scale-[1.02]"
                     >
                       <span className="material-symbols-outlined text-lg">check_circle</span>
                       Approve Claim
-                    </button>
+                    </AsyncButton>
 
-                    <button
-                      type="button"
+                    <AsyncButton
+                      onClick={handleDecision}
+                      isLoading={decisionLoading}
+                      loadingText="Submitting..."
                       className="flex items-center justify-center gap-2 rounded-xl bg-surface-container-high px-6 py-4 text-sm font-bold text-on-surface transition-colors hover:bg-emerald-100/50"
                     >
                       <span className="material-symbols-outlined text-lg">cancel</span>
                       Reject Claim
-                    </button>
+                    </AsyncButton>
 
-                    <button
-                      type="button"
+                    <AsyncButton
+                      onClick={handleDecision}
+                      isLoading={decisionLoading}
+                      loadingText="Submitting..."
                       className="col-span-2 flex items-center justify-center gap-2 rounded-xl border-2 border-outline-variant/30 px-6 py-3 text-sm font-bold text-on-surface-variant transition-colors hover:bg-surface"
                     >
                       <span className="material-symbols-outlined text-lg">flag</span>
                       Mark for Senior Review
-                    </button>
+                    </AsyncButton>
                   </div>
                 </div>
 

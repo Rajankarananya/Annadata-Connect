@@ -1,5 +1,6 @@
 import { Navigate, createBrowserRouter } from 'react-router-dom'
 
+import { ROUTES } from '../constants/navigation'
 import { ROLES } from '../constants/roles'
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
 import { AdminDashboardPage } from '../features/admin/pages/AdminDashboardPage'
@@ -20,33 +21,33 @@ import { LoginPage } from '../features/public/pages/LoginPage'
 import { RegisterPage } from '../features/public/pages/RegisterPage'
 
 export const router = createBrowserRouter([
-	{ path: '/', element: <LandingPage /> },
-	{ path: '/login', element: <LoginPage /> },
-	{ path: '/register', element: <RegisterPage /> },
+	{ path: ROUTES.PUBLIC.HOME, element: <LandingPage /> },
+	{ path: ROUTES.PUBLIC.LOGIN, element: <LoginPage /> },
+	{ path: ROUTES.PUBLIC.REGISTER, element: <RegisterPage /> },
 	{
 		element: <ProtectedRoute allowedRoles={[ROLES.FARMER]} />,
 		children: [
-			{ path: '/farmer/dashboard', element: <FarmerDashboardPage /> },
-			{ path: '/farmer/new-claim', element: <NewClaimPage /> },
-			{ path: '/farmer/my-claims', element: <MyClaimsPage /> },
-			{ path: '/farmer/claim-details', element: <ClaimDetailsPage /> },
-			{ path: '/farmer/chatbot', element: <ChatbotPage /> },
-			{ path: '/farmer/grievances', element: <GrievancesPage /> },
-			{ path: '/farmer/profile', element: <ProfilePage /> },
-			{ path: '/farmer', element: <Navigate to="/farmer/dashboard" replace /> },
+			{ path: ROUTES.FARMER.DASHBOARD, element: <FarmerDashboardPage /> },
+			{ path: ROUTES.FARMER.NEW_CLAIM, element: <NewClaimPage /> },
+			{ path: ROUTES.FARMER.MY_CLAIMS, element: <MyClaimsPage /> },
+			{ path: ROUTES.FARMER.CLAIM_DETAILS, element: <ClaimDetailsPage /> },
+			{ path: ROUTES.FARMER.CHATBOT, element: <ChatbotPage /> },
+			{ path: ROUTES.FARMER.GRIEVANCES, element: <GrievancesPage /> },
+			{ path: ROUTES.FARMER.PROFILE, element: <ProfilePage /> },
+			{ path: ROUTES.FARMER.ROOT, element: <Navigate to={ROUTES.FARMER.DASHBOARD} replace /> },
 		],
 	},
 	{
 		element: <ProtectedRoute allowedRoles={[ROLES.ADMIN]} />,
 		children: [
-			{ path: '/admin', element: <Navigate to="/admin/dashboard" replace /> },
-			{ path: '/admin/dashboard', element: <AdminDashboardPage /> },
-			{ path: '/admin/claims-queue', element: <ClaimsQueuePage /> },
-			{ path: '/admin/claim-review', element: <ClaimReviewPage /> },
-			{ path: '/admin/grievance-queue', element: <GrievanceQueuePage /> },
-			{ path: '/admin/reports', element: <ReportsPage /> },
-			{ path: '/admin/settings', element: <AdminSettingsPage /> },
+			{ path: ROUTES.ADMIN.ROOT, element: <Navigate to={ROUTES.ADMIN.DASHBOARD} replace /> },
+			{ path: ROUTES.ADMIN.DASHBOARD, element: <AdminDashboardPage /> },
+			{ path: ROUTES.ADMIN.CLAIMS_QUEUE, element: <ClaimsQueuePage /> },
+			{ path: ROUTES.ADMIN.CLAIM_REVIEW, element: <ClaimReviewPage /> },
+			{ path: ROUTES.ADMIN.GRIEVANCE_QUEUE, element: <GrievanceQueuePage /> },
+			{ path: ROUTES.ADMIN.REPORTS, element: <ReportsPage /> },
+			{ path: ROUTES.ADMIN.SETTINGS, element: <AdminSettingsPage /> },
 		],
 	},
-	{ path: '*', element: <Navigate to="/" replace /> },
+	{ path: '*', element: <Navigate to={ROUTES.PUBLIC.HOME} replace /> },
 ])

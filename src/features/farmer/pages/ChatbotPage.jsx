@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import './ChatbotPage.css'
 
@@ -13,8 +14,8 @@ export function ChatbotPage() {
           </div>
           <nav className="hidden items-center gap-8 md:flex">
             <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/dashboard">Dashboard</Link>
-            <button className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" type="button">Reports</button>
-            <button className="border-b-2 border-[#115638] pb-1 font-bold text-[#115638]" type="button">AI Insights</button>
+            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
+            <Link className="border-b-2 border-[#115638] pb-1 font-bold text-[#115638]" to="/farmer/chatbot">AI Insights</Link>
           </nav>
           <div className="flex items-center gap-4">
             <button className="flex items-center gap-2 font-medium text-stone-700 transition-colors hover:text-[#2f6f4f]" type="button">
@@ -137,24 +138,7 @@ export function ChatbotPage() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl lg:hidden">
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/dashboard">
-          <span className="material-symbols-outlined mb-1">grid_view</span>
-          <span className="font-inter text-[11px] font-bold uppercase">Home</span>
-        </Link>
-        <div className="flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638]">
-          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 1" }}>chat_bubble</span>
-          <span className="font-inter text-[11px] font-bold uppercase">AI Consult</span>
-        </div>
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/my-claims">
-          <span className="material-symbols-outlined mb-1">history_edu</span>
-          <span className="font-inter text-[11px] font-bold uppercase">Claims</span>
-        </Link>
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/profile">
-          <span className="material-symbols-outlined mb-1">account_circle</span>
-          <span className="font-inter text-[11px] font-bold uppercase">Profile</span>
-        </Link>
-      </nav>
+      <FarmerBottomNav />
 
       <FarmerSidebar />
     </div>

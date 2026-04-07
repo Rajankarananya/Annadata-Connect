@@ -1,9 +1,94 @@
+import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { z } from 'zod'
 
+import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { AsyncButton } from '../../../components/shared/AsyncButton'
 import './NewClaimPage.css'
 
+const claimSchema = z.object({
+  cropType: z.string().trim().min(1, 'Please select a crop type.'),
+  sowingDate: z.string().min(1, 'Sowing date is required.'),
+  incidentDate: z.string().min(1, 'Incident date is required.'),
+  farmLocation: z.string().trim().min(3, 'Enter a valid farm location.'),
+  damageType: z.string().trim().min(1, 'Select a nature of damage.'),
+  narrative: z.string().trim().min(20, 'Please provide at least 20 characters in the narrative.'),
+})
+
 export function NewClaimPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSavingDraft, setIsSavingDraft] = useState(false)
+  const [submitFeedback, setSubmitFeedback] = useState({ error: '', success: '' })
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    trigger,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(claimSchema),
+    defaultValues: {
+      cropType: 'Premium Basmati Rice',
+      sowingDate: '2023-10-15',
+      incidentDate: '',
+      farmLocation: '',
+      damageType: 'Excessive Rain',
+      narrative: '',
+    },
+  })
+
+  const selectedDamageType = watch('damageType')
+
+  const onSubmit = async () => {
+    if (isSubmitting || isSavingDraft) {
+      return
+    }
+
+    setSubmitFeedback({ error: '', success: '' })
+    setIsSubmitting(true)
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1100))
+      setSubmitFeedback({ error: '', success: 'Claim submitted successfully for review.' })
+    } catch {
+      setSubmitFeedback({ error: 'Could not submit claim. Please retry.', success: '' })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleSaveDraft = async () => {
+    if (isSubmitting || isSavingDraft) {
+      return
+    }
+
+    const hasDraftData = Object.values(getValues()).some((value) => typeof value === 'string' && value.trim().length > 0)
+    if (!hasDraftData) {
+      setSubmitFeedback({ error: 'Add at least one field before saving a draft.', success: '' })
+      return
+    }
+
+    await trigger(['cropType', 'sowingDate'])
+
+    setSubmitFeedback({ error: '', success: '' })
+    setIsSavingDraft(true)
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 700))
+      setSubmitFeedback({ error: '', success: 'Draft saved successfully.' })
+    } catch {
+      setSubmitFeedback({ error: 'Could not save draft. Please retry.', success: '' })
+    } finally {
+      setIsSavingDraft(false)
+    }
+  }
+
   return (
     <div className="new-claim-root bg-background text-on-surface min-h-screen antialiased">
       <FarmerSidebar />
@@ -14,8 +99,8 @@ export function NewClaimPage() {
             <span className="material-symbols-outlined text-primary lg:hidden">menu</span>
             <nav className="hidden items-center gap-8 md:flex">
               <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/dashboard">Dashboard</Link>
-              <a className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">Reports</a>
-              <a className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" href="#">AI Insights</a>
+              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
+              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/chatbot">AI Insights</Link>
             </nav>
           </div>
 
@@ -43,7 +128,7 @@ export function NewClaimPage() {
         <div className="mx-auto max-w-4xl">
           <div className="mb-10">
             <div className="mb-3 flex items-center gap-2 text-sm text-stone-500">
-              <a className="transition-colors hover:text-primary" href="#">Claims</a>
+              <Link className="transition-colors hover:text-primary" to="/farmer/my-claims">Claims</Link>
               <span className="material-symbols-outlined text-xs">chevron_right</span>
               <span className="font-semibold text-primary">New Claim Submission</span>
             </div>
@@ -51,7 +136,7 @@ export function NewClaimPage() {
             <p className="font-medium text-stone-600">Please provide accurate details of the incident to expedite your insurance processing.</p>
           </div>
 
-          <form className="space-y-8">
+          <form className="space-y-8" onSubmit={handleSubmit(onSubmit)} noValidate>
             <section className="asymmetric-card bg-surface-container-lowest p-8 shadow-sm">
               <div className="mb-8 flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary-container text-on-secondary-container">
@@ -67,22 +152,31 @@ export function NewClaimPage() {
                 <div className="space-y-2">
                   <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Crop Type</label>
                   <div className="relative">
-                    <select className="w-full appearance-none rounded-xl border-0 bg-surface-container-low py-4 pl-4 pr-10 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint">
-                      <option>Select Crop Type</option>
-                      <option defaultValue>Premium Basmati Rice</option>
+                    <select
+                      className="w-full appearance-none rounded-xl border-0 bg-surface-container-low py-4 pl-4 pr-10 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
+                      {...register('cropType')}
+                    >
+                      <option value="">Select Crop Type</option>
+                      <option>Premium Basmati Rice</option>
                       <option>Organic Wheat</option>
                       <option>Hybrid Maize</option>
                       <option>Sugarcane (Co 0238)</option>
                     </select>
                     <span className="material-symbols-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-stone-400">expand_more</span>
                   </div>
+                  {errors.cropType ? <p className="px-1 text-xs text-red-600">{errors.cropType.message}</p> : null}
                 </div>
                 <div className="space-y-2">
                   <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Sowing Date</label>
                   <div className="relative">
-                    <input className="w-full rounded-xl border-0 bg-surface-container-low px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint" defaultValue="2023-10-15" type="date" />
+                    <input
+                      className="w-full rounded-xl border-0 bg-surface-container-low px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
+                      type="date"
+                      {...register('sowingDate')}
+                    />
                     <span className="material-symbols-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 lg:hidden">calendar_today</span>
                   </div>
+                  {errors.sowingDate ? <p className="px-1 text-xs text-red-600">{errors.sowingDate.message}</p> : null}
                 </div>
               </div>
             </section>
@@ -101,14 +195,25 @@ export function NewClaimPage() {
               <div className="mb-8 grid gap-8 md:grid-cols-2">
                 <div className="space-y-2">
                   <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Date of Incident</label>
-                  <input className="w-full rounded-xl border-0 bg-surface-container-lowest px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint" type="date" />
+                  <input
+                    className="w-full rounded-xl border-0 bg-surface-container-lowest px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
+                    type="date"
+                    {...register('incidentDate')}
+                  />
+                  {errors.incidentDate ? <p className="px-1 text-xs text-red-600">{errors.incidentDate.message}</p> : null}
                 </div>
                 <div className="space-y-2">
                   <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Specific Farm Location</label>
                   <div className="relative">
-                    <input className="w-full rounded-xl border-0 bg-surface-container-lowest py-4 pl-12 pr-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint" placeholder="Plot A-23, North Boundary" type="text" />
+                    <input
+                      className="w-full rounded-xl border-0 bg-surface-container-lowest py-4 pl-12 pr-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
+                      placeholder="Plot A-23, North Boundary"
+                      type="text"
+                      {...register('farmLocation')}
+                    />
                     <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">location_on</span>
                   </div>
+                  {errors.farmLocation ? <p className="px-1 text-xs text-red-600">{errors.farmLocation.message}</p> : null}
                 </div>
               </div>
 
@@ -142,11 +247,22 @@ export function NewClaimPage() {
                 <div className="space-y-2">
                   <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Nature of Damage</label>
                   <div className="flex flex-wrap gap-3">
-                    <button className="rounded-full border-2 border-primary-fixed bg-primary-fixed/20 px-5 py-2.5 text-sm font-bold text-primary" type="button">Excessive Rain</button>
-                    <button className="rounded-full border-2 border-transparent bg-surface-container px-5 py-2.5 text-sm font-bold text-stone-500 transition-all hover:border-outline-variant" type="button">Pest Infestation</button>
-                    <button className="rounded-full border-2 border-transparent bg-surface-container px-5 py-2.5 text-sm font-bold text-stone-500 transition-all hover:border-outline-variant" type="button">Hailstorm</button>
-                    <button className="rounded-full border-2 border-transparent bg-surface-container px-5 py-2.5 text-sm font-bold text-stone-500 transition-all hover:border-outline-variant" type="button">Wildfire</button>
+                    {['Excessive Rain', 'Pest Infestation', 'Hailstorm', 'Wildfire'].map((damageType) => (
+                      <button
+                        key={damageType}
+                        className={
+                          selectedDamageType === damageType
+                            ? 'rounded-full border-2 border-primary-fixed bg-primary-fixed/20 px-5 py-2.5 text-sm font-bold text-primary'
+                            : 'rounded-full border-2 border-transparent bg-surface-container px-5 py-2.5 text-sm font-bold text-stone-500 transition-all hover:border-outline-variant'
+                        }
+                        type="button"
+                        onClick={() => setValue('damageType', damageType, { shouldDirty: true, shouldValidate: true })}
+                      >
+                        {damageType}
+                      </button>
+                    ))}
                   </div>
+                  {errors.damageType ? <p className="px-1 text-xs text-red-600">{errors.damageType.message}</p> : null}
                 </div>
 
                 <div className="space-y-2">
@@ -155,7 +271,9 @@ export function NewClaimPage() {
                     className="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
                     placeholder="Describe the progression of damage and current state of the crop..."
                     rows={4}
+                    {...register('narrative')}
                   />
+                  {errors.narrative ? <p className="px-1 text-xs text-red-600">{errors.narrative.message}</p> : null}
                 </div>
               </div>
             </section>
@@ -230,39 +348,36 @@ export function NewClaimPage() {
                   Your data is protected by Grade-A encryption and will only be shared with certified adjusters.
                 </p>
               </div>
+              <div className="w-full sm:w-auto">
+                {submitFeedback.error ? <p className="text-xs text-red-600 sm:text-right">{submitFeedback.error}</p> : null}
+                {submitFeedback.success ? <p className="text-xs text-emerald-700 sm:text-right">{submitFeedback.success}</p> : null}
+              </div>
               <div className="flex w-full items-center gap-4 sm:w-auto">
-                <button className="flex-1 rounded-xl px-8 py-4 font-bold text-stone-600 transition-colors hover:bg-surface-container-high sm:flex-none" type="button">
+                <AsyncButton
+                  onClick={handleSaveDraft}
+                  isLoading={isSavingDraft}
+                  loadingText="Saving..."
+                  disabled={isSubmitting}
+                  className="flex-1 rounded-xl px-8 py-4 font-bold text-stone-600 transition-colors hover:bg-surface-container-high sm:flex-none"
+                >
                   Save Draft
-                </button>
-                <button className="font-headline flex-1 rounded-xl bg-gradient-to-br from-primary to-primary-container px-10 py-4 text-lg font-bold text-white shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl sm:flex-none" type="submit">
+                </AsyncButton>
+                <AsyncButton
+                  type="submit"
+                  isLoading={isSubmitting}
+                  loadingText="Submitting..."
+                  disabled={isSavingDraft}
+                  className="font-headline flex-1 rounded-xl bg-gradient-to-br from-primary to-primary-container px-10 py-4 text-lg font-bold text-white shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl sm:flex-none"
+                >
                   Submit Claim
-                </button>
+                </AsyncButton>
               </div>
             </div>
           </form>
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[2rem] border-t border-stone-100 bg-white/90 px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(18,28,27,0.04)] backdrop-blur-xl lg:hidden dark:bg-stone-900/90">
-        <Link className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" to="/farmer/dashboard">
-          <span className="material-symbols-outlined">grid_view</span>
-          <span className="mt-1 text-[11px] font-bold">Home</span>
-        </Link>
-        <a className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" href="#">
-          <span className="material-symbols-outlined">chat_bubble</span>
-          <span className="mt-1 text-[11px] font-bold">AI Consult</span>
-        </a>
-        <a className="flex flex-col items-center justify-center rounded-2xl bg-[#f1f4f1] px-5 py-2 text-[#115638]" href="#">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-            history_edu
-          </span>
-          <span className="mt-1 text-[11px] font-bold">Claims</span>
-        </a>
-        <a className="flex flex-col items-center justify-center px-5 py-2 text-stone-400" href="#">
-          <span className="material-symbols-outlined">account_circle</span>
-          <span className="mt-1 text-[11px] font-bold">Profile</span>
-        </a>
-      </nav>
+      <FarmerBottomNav />
     </div>
   )
 }
