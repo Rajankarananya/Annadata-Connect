@@ -315,6 +315,7 @@
           "name": "Chat With LLM",
           "request": {
             "method": "POST",
+            "description": "Primary chat endpoint. Send message + history array in body. Set stream=true to receive SSE token stream.",
             "header": [
               {
                 "key": "Authorization",
@@ -327,7 +328,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"message\": \"My soybean leaves are turning yellow. What should I do?\",\n  \"language\": \"en\"\n}",
+              "raw": "{\n  \"message\": \"My soybean leaves are turning yellow. What should I do?\",\n  \"history\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"I am a farmer from Nashik.\"\n    },\n    {\n      \"role\": \"assistant\",\n      \"content\": \"Sure, tell me your crop issue.\"\n    }\n  ],\n  \"language\": \"en\",\n  \"stream\": false\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -361,15 +362,75 @@
           "name": "Analytics Risk Map (GeoJSON)",
           "request": {
             "method": "GET",
+            "description": "Returns district-level weather risk as GeoJSON FeatureCollection. Optional `districts` query accepts comma-separated district names (e.g. Nashik,Pune,Nagpur).",
             "header": [
               {
                 "key": "Authorization",
                 "value": "Bearer {{token}}"
               }
             ],
-            "url": "{{baseUrl}}/api/v1/analytics/risk-map"
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/risk-map?districts={{districts}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "risk-map"
+              ],
+              "query": [
+                {
+                  "key": "districts",
+                  "value": "{{districts}}",
+                  "description": "Optional comma-separated district names"
+                }
+              ]
+            }
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sample GeoJSON Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/analytics/risk-map?districts=Nashik,Pune",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "analytics",
+                    "risk-map"
+                  ],
+                  "query": [
+                    {
+                      "key": "districts",
+                      "value": "Nashik,Pune"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"FeatureCollection\",\n  \"name\": \"district_weather_risk\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"id\": \"Nashik\",\n      \"properties\": {\n        \"district\": \"Nashik\",\n        \"state\": \"Maharashtra\",\n        \"risk_score\": 67,\n        \"precip_anomaly_mm\": 12.4,\n        \"avg_precip_30d_mm\": 8.1,\n        \"temp_anomaly_c\": 1.9,\n        \"risk_level\": \"moderate\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [73.7909, 20.0112]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"id\": \"Pune\",\n      \"properties\": {\n        \"district\": \"Pune\",\n        \"state\": \"Maharashtra\",\n        \"risk_score\": 42,\n        \"precip_anomaly_mm\": 6.8,\n        \"avg_precip_30d_mm\": 9.7,\n        \"temp_anomaly_c\": 1.1,\n        \"risk_level\": \"moderate\"\n      },\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [73.8567, 18.5204]\n      }\n    }\n  ],\n  \"metadata\": {\n    \"source\": \"open-meteo\",\n    \"generated_at\": \"realtime\",\n    \"count\": 2\n  }\n}"
+            }
+          ]
         }
       ]
     }
@@ -390,6 +451,10 @@
     {
       "key": "claimId",
       "value": "1"
+    },
+    {
+      "key": "districts",
+      "value": ""
     }
   ]
 }
