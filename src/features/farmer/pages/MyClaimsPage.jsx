@@ -2,38 +2,13 @@ import { Link } from 'react-router-dom'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import './MyClaimsPage.css'
 
 export function MyClaimsPage() {
 	return (
 		<div className="my-claims-root bg-background font-body text-on-background antialiased">
-			<nav className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md dark:bg-stone-900/80">
-				<div className="flex w-full max-w-full items-center justify-between px-6 py-3">
-					<div className="flex items-center gap-8">
-						<span className="font-headline text-xl font-bold tracking-tight text-[#115638]">Annadata Connect</span>
-						<div className="hidden items-center gap-6 md:flex">
-							<Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/dashboard">Dashboard</Link>
-							<Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
-							<Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/chatbot">AI Insights</Link>
-						</div>
-					</div>
-					<div className="flex items-center gap-4">
-						<button type="button" className="flex items-center gap-2 font-medium text-stone-700 transition-colors hover:text-primary">
-							<span className="material-symbols-outlined text-[20px]">translate</span>
-							<span className="hidden sm:inline">Language</span>
-						</button>
-						<div className="relative">
-							<span className="material-symbols-outlined cursor-pointer text-stone-700 transition-colors hover:text-primary">notifications</span>
-							<span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-error" />
-						</div>
-						<img
-							alt="User Profile Avatar"
-							className="h-8 w-8 rounded-full border border-outline-variant"
-							src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoA00SyoAVkIo4TvF9ivRDzv7hcRp3OKxwsO41V2_BoyfALeQQP2ashfshuhJNtaQ4Ap7NofPrlgEnX5Z2MW5sFTwIx3Ln5F07K_3Qn1AN5DIBX-Vix11UIGM2t7qbrzsPAP5J5mhJgpl_sXZKqCP_-BTDAWbMJWortxjKeJ1kYG3-rCEjOkP-SYwTPJK8vOFOuEuxehca1809lcsoAWO-2rmcocGncA10P80TsjU5nofIiHZv0GRyuBGHcUokCIpRwpTu9vCuDjDV"
-						/>
-					</div>
-				</div>
-			</nav>
+			<FarmerTopNav />
 
 			<FarmerSidebar />
 

@@ -1,39 +1,12 @@
-import { Link } from 'react-router-dom'
-
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import './ChatbotPage.css'
 
 export function ChatbotPage() {
   return (
     <div className="chatbot-root bg-background font-body text-on-surface selection:bg-secondary-container">
-      <header className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md">
-        <div className="flex w-full max-w-full items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-3">
-            <span className="font-headline text-xl font-bold tracking-tight text-[#115638]">Annadata Connect</span>
-          </div>
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/dashboard">Dashboard</Link>
-            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
-            <Link className="border-b-2 border-[#115638] pb-1 font-bold text-[#115638]" to="/farmer/chatbot">AI Insights</Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 font-medium text-stone-700 transition-colors hover:text-[#2f6f4f]" type="button">
-              <span className="material-symbols-outlined">translate</span>
-              <span className="hidden sm:inline">Language</span>
-            </button>
-            <div className="relative">
-              <span className="material-symbols-outlined text-stone-700">notifications</span>
-              <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-error" />
-            </div>
-            <img
-              alt="User Profile Avatar"
-              className="h-8 w-8 rounded-full border-2 border-primary-fixed"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHRjMrUYzoc0MXvCm2f1kseL9qoDhk85hdo7lcshQjrXAE9iW_ly2jQ2ULNPvlhIHsLqM5_xFc5nPsG-FyJoL3HiBs-u2jgFWhbfjA1l21TbuMh2MAIkRdGNm-tUY0-1C3-EFCQUs1G7ZmDFy6fmEX3Gv-p_yt39rXcjziZ8cUmGR8z_5jXEAM4V3XRzzdpdA-V5LByRnsy-NhnZujmxvKAMoehElAlkxihQ9S2N_P4TdewA07INtY8LwCH7ZKo8MDRVxUReCc4Vu_"
-            />
-          </div>
-        </div>
-      </header>
+      <FarmerTopNav />
 
       <main className="mx-auto min-h-screen max-w-4xl px-4 pb-28 pt-20 lg:px-0">
         <section className="mb-8 mt-4 text-center">

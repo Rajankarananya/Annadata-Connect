@@ -1,8 +1,15 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ADMIN_NAV_ITEMS, isRouteActive } from '../../constants/navigation'
 
 export function AdminSidebar({ className = '' }) {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('authRole')
+    navigate('/login', { replace: true })
+  }
 
   const isActive = (to) => isRouteActive(pathname, [to])
 
@@ -32,7 +39,11 @@ export function AdminSidebar({ className = '' }) {
         </nav>
 
         <div className="mt-auto space-y-1">
-          <button type="button" className="flex w-full items-center gap-3 px-3 py-2.5 text-[0.875rem] font-medium text-zinc-500 hover:bg-emerald-100/30 hover:text-emerald-600">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 px-3 py-2.5 text-[0.875rem] font-medium text-zinc-500 hover:bg-emerald-100/30 hover:text-emerald-600"
+          >
             <span className="material-symbols-outlined">logout</span>
             <span>Sign Out</span>
           </button>

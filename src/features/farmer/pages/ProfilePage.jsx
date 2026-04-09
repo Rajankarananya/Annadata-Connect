@@ -1,35 +1,12 @@
-import { Link } from 'react-router-dom'
-
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import './ProfilePage.css'
 
 export function ProfilePage() {
   return (
     <div className="profile-root min-h-screen bg-background pb-24 text-on-surface lg:pb-0">
-      <nav className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md dark:bg-stone-900/80">
-        <div className="flex w-full max-w-full items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-4">
-            <span className="font-headline text-xl font-bold tracking-tight text-[#115638] dark:text-[#4ade80]">Annadata Connect</span>
-          </div>
-          <div className="hidden items-center gap-8 md:flex">
-            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/dashboard">Dashboard</Link>
-            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/my-claims">Reports</Link>
-            <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/chatbot">AI Insights</Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-low" type="button">
-              <span className="material-symbols-outlined">translate</span>
-            </button>
-            <button className="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-low" type="button">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary-fixed shadow-sm">
-              <img alt="User Profile Avatar" className="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeMWnmfCzhUMZEGKBD6rXFigwA0pYchbHXf1XMBBRXRObvKGP66sTpMxQcZZWN2imDtYShsspVfI4qRmEExW9ctqq348BB_2b9knWTV2KYifNkav1BZZ8nnb-I33nubpttMqTYDWNoc_2yHaJ2M2oFx9atji87iegHmiCeh-L-ZI2_36DPZkfNbkDSoqHHkM6VXnyuG73CZiQpfz39njy5gFF08Whkl5k8hJ3muaa-dki2M--gormzCL4r9ra22ixrInh817zdR0m_" />
-            </div>
-          </div>
-        </div>
-      </nav>
+      <FarmerTopNav />
 
       <main className="mx-auto max-w-3xl space-y-6 px-4 pt-24 lg:ml-64">
         <header className="mb-8">
@@ -140,8 +117,6 @@ export function ProfilePage() {
       </main>
 
       <FarmerBottomNav />
-
-      <FarmerSidebar />
     </div>
   )
 }

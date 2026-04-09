@@ -1,8 +1,15 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FARMER_SIDEBAR_ITEMS, isRouteActive } from '../../constants/navigation'
 
 export function FarmerSidebar() {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('authRole')
+    navigate('/login', { replace: true })
+  }
 
   const isActive = (item) => isRouteActive(pathname, item.match)
 
@@ -47,6 +54,15 @@ export function FarmerSidebar() {
             <span className="font-manrope text-sm font-bold tracking-wide">{item.label}</span>
           </Link>
         ))}
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mx-4 mt-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-lg bg-primary px-4 py-3 text-sm font-bold tracking-wide text-white transition-colors hover:bg-[#0e4c31]"
+        >
+          <span className="material-symbols-outlined">logout</span>
+          <span className="font-manrope">Logout</span>
+        </button>
       </div>
     </aside>
   )

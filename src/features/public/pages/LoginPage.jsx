@@ -34,6 +34,8 @@ export function LoginPage() {
 
   const selectedRole = watch('role')
   const username = watch('username')
+  const isFarmerSelected = selectedRole === ROLES.FARMER
+  const redirectPath = isFarmerSelected ? '/farmer/dashboard' : '/admin/dashboard'
 
   const onSubmit = async (values) => {
     if (submitState.loading || isSubmitting) return
@@ -46,9 +48,9 @@ export function LoginPage() {
       localStorage.setItem('authToken', 'dev-token')
       localStorage.setItem('authRole', values.role)
 
-      setSubmitState({ loading: false, error: '', success: 'Login successful. Redirecting...' })
+      setSubmitState({ loading: false, error: '', success: `Login successful. Redirecting to ${values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard'}...` })
 
-      navigate(values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard')
+      navigate(values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard', { replace: true })
     } catch {
       setSubmitState({ loading: false, error: 'Unable to login right now. Please try again.', success: '' })
     }
@@ -100,10 +102,35 @@ export function LoginPage() {
               </button>
             </div>
 
+            <div className="mx-6 mt-4 rounded-xl border border-[#d8e5d8] bg-[#f7fbf7] px-4 py-3">
+              <p className="text-sm font-semibold text-[#115638]">
+                {isFarmerSelected ? 'Farmer Login' : 'Admin Login'}
+              </p>
+              <p className="mt-1 text-xs text-stone-600">
+                {isFarmerSelected
+                  ? 'Are you an Admin Officer? Switch to Admin login below.'
+                  : 'Are you a Farmer? Switch to Farmer login below.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setValue('role', isFarmerSelected ? ROLES.ADMIN : ROLES.FARMER, { shouldValidate: true })
+                  setSubmitState((previous) => ({ ...previous, error: '' }))
+                }}
+                className="mt-2 text-xs font-bold text-primary underline-offset-2 hover:underline"
+              >
+                {isFarmerSelected ? 'Login as Admin instead' : 'Login as Farmer instead'}
+              </button>
+            </div>
+
             <div className="px-8 pb-10 pt-8">
               <div className="mb-8">
                 <h2 className="mb-2 font-headline text-3xl font-bold text-on-surface">Welcome Back</h2>
-                <p className="text-on-surface-variant">Sign in to manage your harvest and digital assets.</p>
+                <p className="text-on-surface-variant">
+                  {isFarmerSelected
+                    ? 'Sign in as Farmer to manage claims, chatbot, and grievance updates.'
+                    : 'Sign in as Admin to review claims, resolve grievances, and manage reports.'}
+                </p>
               </div>
 
               <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -160,13 +187,16 @@ export function LoginPage() {
                 {errors.role ? <p className="text-xs text-red-600">{errors.role.message}</p> : null}
                 {submitState.error ? <p className="text-xs text-red-600">{submitState.error}</p> : null}
                 {submitState.success ? <p className="text-xs text-emerald-700">{submitState.success}</p> : null}
+                <p className="text-xs font-medium text-on-surface-variant">
+                  Connected route: after login you will be redirected to <span className="font-bold text-primary">{redirectPath}</span>
+                </p>
 
                 <button
                   type="submit"
                   disabled={submitState.loading || isSubmitting}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-[#115638] to-[#2f6f4f] py-4 text-lg font-bold text-on-primary shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  <span>{submitState.loading || isSubmitting ? 'Signing In...' : 'Sign In'}</span>
+                  <span>{submitState.loading || isSubmitting ? 'Signing In...' : `Sign In as ${isFarmerSelected ? 'Farmer' : 'Admin'}`}</span>
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
               </form>
