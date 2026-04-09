@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
@@ -13,6 +14,7 @@ const loginSchema = z.object({
 })
 
 export function LoginPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [submitState, setSubmitState] = useState({ loading: false, error: '', success: '' })
   const [showPassword, setShowPassword] = useState(false)
@@ -128,8 +130,8 @@ export function LoginPage() {
                 <h2 className="mb-2 font-headline text-3xl font-bold text-on-surface">Welcome Back</h2>
                 <p className="text-on-surface-variant">
                   {isFarmerSelected
-                    ? 'Sign in as Farmer to manage claims, chatbot, and grievance updates.'
-                    : 'Sign in as Admin to review claims, resolve grievances, and manage reports.'}
+                    ? t('auth.farmerDescription')
+                    : t('auth.adminDescription')}
                 </p>
               </div>
 
@@ -146,9 +148,9 @@ export function LoginPage() {
                   />
                   <label
                     htmlFor="username"
-                    className="pointer-events-none absolute left-4 top-4 origin-left text-on-surface-variant transition-all peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-5 peer-focus:scale-90 peer-focus:text-primary peer-not-placeholder-shown:-translate-y-5 peer-not-placeholder-shown:scale-90"
+                    className="pointer-events-none absolute left-4 top-4 text-on-surface-variant transition-opacity duration-150 peer-focus:opacity-0 peer-not-placeholder-shown:opacity-0"
                   >
-                    Mobile Number / Username
+                    {t('auth.mobileOrUsername')}
                   </label>
                   {username?.trim() ? (
                     <div className="absolute right-4 top-5 text-secondary">
@@ -168,9 +170,9 @@ export function LoginPage() {
                   />
                   <label
                     htmlFor="password"
-                    className="pointer-events-none absolute left-4 top-4 origin-left text-on-surface-variant transition-all peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-5 peer-focus:scale-90 peer-focus:text-primary peer-not-placeholder-shown:-translate-y-5 peer-not-placeholder-shown:scale-90"
+                    className="pointer-events-none absolute left-4 top-4 text-on-surface-variant transition-opacity duration-150 peer-focus:opacity-0 peer-not-placeholder-shown:opacity-0"
                   >
-                    Password
+                    {t('auth.password')}
                   </label>
                   <button type="button" onClick={() => setShowPassword((previous) => !previous)} className="absolute right-4 top-5 text-on-surface-variant">
                     <span className="material-symbols-outlined text-xl">{showPassword ? 'visibility_off' : 'visibility'}</span>
@@ -180,7 +182,7 @@ export function LoginPage() {
 
                 <div className="flex justify-end">
                   <a className="text-sm font-semibold text-primary transition-colors hover:text-primary-container" href="#">
-                    Forgot Password?
+                    {t('auth.forgotPassword')}
                   </a>
                 </div>
 
@@ -188,7 +190,7 @@ export function LoginPage() {
                 {submitState.error ? <p className="text-xs text-red-600">{submitState.error}</p> : null}
                 {submitState.success ? <p className="text-xs text-emerald-700">{submitState.success}</p> : null}
                 <p className="text-xs font-medium text-on-surface-variant">
-                  Connected route: after login you will be redirected to <span className="font-bold text-primary">{redirectPath}</span>
+                  {t('auth.connectedRoute', { path: redirectPath })}
                 </p>
 
                 <button
@@ -196,16 +198,22 @@ export function LoginPage() {
                   disabled={submitState.loading || isSubmitting}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-[#115638] to-[#2f6f4f] py-4 text-lg font-bold text-on-primary shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  <span>{submitState.loading || isSubmitting ? 'Signing In...' : `Sign In as ${isFarmerSelected ? 'Farmer' : 'Admin'}`}</span>
+                  <span>
+                    {submitState.loading || isSubmitting
+                      ? t('auth.signingIn')
+                      : isFarmerSelected
+                        ? t('auth.signInAsFarmer')
+                        : t('auth.signInAsAdmin')}
+                  </span>
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
               </form>
 
               <div className="mt-8 text-center">
                 <p className="text-sm text-on-surface-variant">
-                  Don&apos;t have an account?
+                  {t('auth.dontHaveAccount')}
                   <Link className="ml-1 font-bold text-primary hover:underline" to="/register">
-                    Register
+                    {t('common.register')}
                   </Link>
                 </p>
               </div>
@@ -217,7 +225,7 @@ export function LoginPage() {
                   verified_user
                 </span>
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/80">Secure Government Gateway</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/80">{t('auth.secureGateway')}</span>
             </div>
           </div>
 

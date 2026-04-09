@@ -1,7 +1,9 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ADMIN_NAV_ITEMS, isRouteActive } from '../../constants/navigation'
 
 export function AdminSidebar({ className = '' }) {
+  const { t } = useTranslation()
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
@@ -17,8 +19,8 @@ export function AdminSidebar({ className = '' }) {
     <>
       <aside className={`fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col gap-2 bg-emerald-50 px-4 py-6 md:flex ${className}`.trim()}>
         <div className="mb-8 px-2">
-          <h2 className="text-xl font-black tracking-tighter text-emerald-900">Annadata Connect</h2>
-          <p className="text-[0.75rem] font-medium text-emerald-800/60">Executive Portal</p>
+          <h2 className="text-xl font-black tracking-tighter text-emerald-900">{t('common.appName')}</h2>
+          <p className="text-[0.75rem] font-medium text-emerald-800/60">{t('common.subtitle')}</p>
         </div>
 
         <nav className="flex-1 space-y-1">
@@ -33,7 +35,7 @@ export function AdminSidebar({ className = '' }) {
               }
             >
               <span className="material-symbols-outlined">{item.icon}</span>
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </Link>
           ))}
         </nav>
@@ -45,7 +47,7 @@ export function AdminSidebar({ className = '' }) {
             className="flex w-full items-center gap-3 px-3 py-2.5 text-[0.875rem] font-medium text-zinc-500 hover:bg-emerald-100/30 hover:text-emerald-600"
           >
             <span className="material-symbols-outlined">logout</span>
-            <span>Sign Out</span>
+            <span>{t('common.logout')}</span>
           </button>
         </div>
       </aside>
@@ -65,7 +67,7 @@ export function AdminSidebar({ className = '' }) {
               }
             >
               <span className="material-symbols-outlined text-base">{item.icon}</span>
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </Link>
           )
         })}

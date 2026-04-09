@@ -1,22 +1,23 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import { ROUTES, isRouteActive } from '../../constants/navigation'
-import i18n from '../../i18n/config'
+import { getAppLanguage, setAppLanguage, togglePrimaryLanguage } from '../../i18n/language'
 
 export function FarmerTopNav() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || localStorage.getItem('language') || 'en')
+  const [currentLanguage, setCurrentLanguage] = useState(getAppLanguage())
 
-  const isDashboardActive = isRouteActive(pathname, [ROUTES.FARMER.DASHBOARD])
-  const isReportsActive = isRouteActive(pathname, [ROUTES.FARMER.MY_CLAIMS, ROUTES.FARMER.CLAIM_DETAILS, ROUTES.FARMER.NEW_CLAIM])
-  const isInsightsActive = isRouteActive(pathname, [ROUTES.FARMER.CHATBOT])
+  const isHomeActive = isRouteActive(pathname, [ROUTES.FARMER.DASHBOARD])
+  const isClaimsActive = isRouteActive(pathname, [ROUTES.FARMER.MY_CLAIMS, ROUTES.FARMER.CLAIM_DETAILS, ROUTES.FARMER.NEW_CLAIM])
+  const isAiActive = isRouteActive(pathname, [ROUTES.FARMER.CHATBOT])
 
   const handleLanguageToggle = () => {
-    const nextLanguage = currentLanguage === 'en' ? 'hi' : 'en'
-    i18n.changeLanguage(nextLanguage)
-    localStorage.setItem('language', nextLanguage)
+    const nextLanguage = togglePrimaryLanguage(currentLanguage)
+    setAppLanguage(nextLanguage)
     setCurrentLanguage(nextLanguage)
   }
 
@@ -29,16 +30,16 @@ export function FarmerTopNav() {
     <header className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md lg:left-64 lg:w-[calc(100%-16rem)]">
       <div className="flex w-full items-center justify-between px-6 py-3">
         <div className="flex items-center gap-8">
-          <span className="font-headline text-xl font-bold tracking-tight text-[#115638]">Annadata Connect</span>
+          <span className="font-headline text-xl font-bold tracking-tight text-[#115638]">{t('common.appName')}</span>
           <nav className="hidden items-center gap-6 md:flex">
-            <Link className={linkClass(isDashboardActive)} to={ROUTES.FARMER.DASHBOARD}>
-              Dashboard
+            <Link className={linkClass(isHomeActive)} to={ROUTES.FARMER.DASHBOARD}>
+              {t('common.home')}
             </Link>
-            <Link className={linkClass(isReportsActive)} to={ROUTES.FARMER.MY_CLAIMS}>
-              Reports
+            <Link className={linkClass(isClaimsActive)} to={ROUTES.FARMER.MY_CLAIMS}>
+              {t('common.claims')}
             </Link>
-            <Link className={linkClass(isInsightsActive)} to={ROUTES.FARMER.CHATBOT}>
-              AI Insights
+            <Link className={linkClass(isAiActive)} to={ROUTES.FARMER.CHATBOT}>
+              {t('common.aiAdvisor')}
             </Link>
           </nav>
         </div>

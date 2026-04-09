@@ -1,17 +1,29 @@
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
+import { getAppLanguage, setAppLanguage } from '../../../i18n/language'
 import './ProfilePage.css'
 
 export function ProfilePage() {
+  const { t } = useTranslation()
+  const [activeLanguage, setActiveLanguage] = useState(getAppLanguage())
+
+  const handleLanguageChange = (languageCode) => {
+    const next = setAppLanguage(languageCode)
+    setActiveLanguage(next)
+  }
+
   return (
     <div className="profile-root min-h-screen bg-background pb-24 text-on-surface lg:pb-0">
       <FarmerTopNav />
 
       <main className="mx-auto max-w-3xl space-y-6 px-4 pt-24 lg:ml-64">
         <header className="mb-8">
-          <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-on-surface">Profile &amp; Settings</h1>
-          <p className="font-medium text-on-surface-variant">Manage your personal details and app preferences</p>
+          <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-on-surface">{t('settings.profileSettings')}</h1>
+          <p className="font-medium text-on-surface-variant">{t('settings.manageDetails')}</p>
         </header>
 
         <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -49,7 +61,7 @@ export function ProfilePage() {
         </section>
 
         <section className="space-y-4">
-          <h3 className="px-1 text-sm font-bold uppercase tracking-[0.2em] text-outline">App Preferences</h3>
+          <h3 className="px-1 text-sm font-bold uppercase tracking-[0.2em] text-outline">{t('settings.profileSettings')}</h3>
           <div className="overflow-hidden rounded-xl bg-surface-container-lowest shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
             <div className="flex items-center justify-between p-5">
               <div className="flex items-center gap-4">
@@ -57,13 +69,29 @@ export function ProfilePage() {
                   <span className="material-symbols-outlined">language</span>
                 </div>
                 <div>
-                  <p className="font-bold text-on-surface">Language Selection</p>
-                  <p className="text-xs text-on-surface-variant">Choose your preferred reading language</p>
+                  <p className="font-bold text-on-surface">{t('settings.websiteLanguage')}</p>
+                  <p className="text-xs text-on-surface-variant">{t('settings.websiteLanguageDescription')}</p>
                 </div>
               </div>
               <div className="flex rounded-xl bg-surface-container-low p-1">
-                <button className="rounded-lg bg-surface-container-lowest px-4 py-1.5 text-sm font-bold text-primary shadow-sm transition-all" type="button">EN</button>
-                <button className="rounded-lg px-4 py-1.5 text-sm font-medium text-on-surface-variant transition-all hover:bg-surface-container-high" type="button">हिंदी</button>
+                {[
+                  { code: 'en', label: 'EN' },
+                  { code: 'hi', label: 'हिंदी' },
+                  { code: 'mr', label: 'मराठी' },
+                ].map((language) => (
+                  <button
+                    key={language.code}
+                    className={
+                      activeLanguage === language.code
+                        ? 'rounded-lg bg-surface-container-lowest px-4 py-1.5 text-sm font-bold text-primary shadow-sm transition-all'
+                        : 'rounded-lg px-4 py-1.5 text-sm font-medium text-on-surface-variant transition-all hover:bg-surface-container-high'
+                    }
+                    type="button"
+                    onClick={() => handleLanguageChange(language.code)}
+                  >
+                    {language.label}
+                  </button>
+                ))}
               </div>
             </div>
             <div className="mx-5 h-[1px] bg-surface-container-low" />
