@@ -43,6 +43,7 @@ rag_enabled = False
 
 SUPPORTED_LANGUAGES = {"en", "hi", "mr"}
 
+# Bhashini API credentials (scaffolded for future integration)
 BHASHINI_API_KEY = os.getenv("BHASHINI_API_KEY")
 BHASHINI_USER_ID = os.getenv("BHASHINI_USER_ID")
 BHASHINI_API_BASE_URL = os.getenv("BHASHINI_API_BASE_URL")
@@ -50,7 +51,10 @@ LLM_TIMEOUT_SECONDS = int(os.getenv("LLM_TIMEOUT_SECONDS", "120"))
 
 
 def translate_with_bhashini(text: str, source: str, target: str) -> str:
-    """Translate using Bhashini API (primary)."""
+    """
+    Translate using Bhashini API.
+    [FUTURE] Currently disabled - use when credentials are ready.
+    """
     url = f"{BHASHINI_API_BASE_URL}/translate"
     headers = {
         "userID": BHASHINI_USER_ID,
@@ -73,7 +77,7 @@ def translate_with_bhashini(text: str, source: str, target: str) -> str:
 
 
 def translate_with_google(text: str, source: str, target: str) -> str:
-    """Translate using Google Translate (fallback)."""
+    """Translate using Google Translate via deep-translator (active translation provider)."""
     if source == target:
         return text
     return GoogleTranslator(source=source, target=target).translate(text)
@@ -81,36 +85,19 @@ def translate_with_google(text: str, source: str, target: str) -> str:
 
 def translate(text: str, source: str, target: str) -> str:
     """
-    Smart translation with automatic fallback.
-    Tries Bhashini first if API key is configured.
-    Falls back to Google Translate if Bhashini is unavailable/fails.
-    Returns original text if both fail so chat flow never crashes.
+    Translate text using deep-translator (Google Translate).
+    Uses deep-translator as primary solution.
+    Returns original text if translation fails so chat flow never crashes.
     """
     if source == target:
         return text
 
-    bhashini_configured = (
-        BHASHINI_API_KEY
-        and BHASHINI_API_KEY != "your_bhashini_api_key_here"
-        and BHASHINI_USER_ID
-        and BHASHINI_USER_ID != "your_user_id_here"
-        and BHASHINI_API_BASE_URL
-    )
-
-    if bhashini_configured:
-        try:
-            result = translate_with_bhashini(text, source, target)
-            print(f"[Translation] Used Bhashini: {source} -> {target}")
-            return result
-        except Exception as e:
-            print(f"[Translation] Bhashini failed: {e}. Falling back to Google Translate.")
-
     try:
         result = translate_with_google(text, source, target)
-        print(f"[Translation] Used Google Translate: {source} -> {target}")
+        print(f"[Translation] Used Google Translate (deep-translator): {source} -> {target}")
         return result
     except Exception as e:
-        print(f"[Translation] Google Translate also failed: {e}. Returning original text.")
+        print(f"[Translation] Translation failed: {e}. Returning original text.")
         return text
 
 
