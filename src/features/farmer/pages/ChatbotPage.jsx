@@ -1,9 +1,119 @@
+import { useMemo, useRef, useState } from 'react'
+
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
+import { apiClient } from '../../../services/api/client'
 import './ChatbotPage.css'
 
+const INITIAL_MESSAGES = [
+  {
+    id: 'welcome',
+    role: 'assistant',
+    content: 'Namaste! Ask me about crop claims, scheme deadlines, or weather risks in your district.',
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  },
+]
+
+const QUICK_PROMPTS = [
+  'What is the PM Fasal Bima claim deadline?',
+  'How to file a crop damage claim?',
+  'What documents are required for claim approval?',
+  'How does district weather risk affect claims?',
+]
+
 export function ChatbotPage() {
+  const [messages, setMessages] = useState(INITIAL_MESSAGES)
+  const [draft, setDraft] = useState('')
+  const [language, setLanguage] = useState('en')
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorText, setErrorText] = useState('')
+  const [copied, setCopied] = useState(false)
+  const chatContainerRef = useRef(null)
+
+  const historyPayload = useMemo(
+    () => messages.filter((m) => m.id !== 'welcome').map((m) => ({ role: m.role, content: m.content })),
+    [messages],
+  )
+
+  const scrollToBottom = () => {
+    if (!chatContainerRef.current) {
+      return
+    }
+
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+  }
+
+  const addMessage = (role, content) => {
+    const message = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      role,
+      content,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    }
+
+    setMessages((prev) => [...prev, message])
+    window.requestAnimationFrame(scrollToBottom)
+  }
+
+  const handleSend = async (forcedText) => {
+    const nextText = (forcedText ?? draft).trim()
+    if (!nextText || isLoading) {
+      return
+    }
+
+    setErrorText('')
+    setDraft('')
+    addMessage('user', nextText)
+    setIsLoading(true)
+
+    try {
+      const response = await apiClient.post('/chat', {
+        message: nextText,
+        history: historyPayload,
+        language,
+        stream: false,
+      })
+
+      const reply = response?.data?.response || 'I could not generate a response right now.'
+      addMessage('assistant', reply)
+    } catch (error) {
+      const detail = error?.response?.data?.detail || 'Unable to reach AI service. Please try again.'
+      setErrorText(detail)
+      addMessage('assistant', 'I am temporarily unavailable. Please try again in a moment.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleKeyDown = async (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      await handleSend()
+    }
+  }
+
+  const handleClear = () => {
+    setMessages(INITIAL_MESSAGES)
+    setErrorText('')
+    setCopied(false)
+  }
+
+  const handleCopyLast = async () => {
+    const lastAssistantMessage = [...messages].reverse().find((m) => m.role === 'assistant')
+    if (!lastAssistantMessage) {
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(lastAssistantMessage.content)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1500)
+    } catch {
+      setCopied(false)
+    }
+  }
+
   return (
     <div className="chatbot-root bg-background font-body text-on-surface selection:bg-secondary-container">
       <FarmerTopNav />
@@ -19,59 +129,81 @@ export function ChatbotPage() {
             <div className="flex gap-2">
               <span className="flex items-center gap-1 rounded-full bg-secondary-container px-3 py-1 text-xs font-bold text-on-secondary-container">
                 <span className="h-2 w-2 rounded-full bg-secondary" />
-                LIVE ADVICE
+                {isLoading ? 'THINKING' : 'LIVE ADVICE'}
               </span>
             </div>
             <div className="flex gap-3">
-              <button className="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary" title="Clear Chat" type="button">
+              <button className="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary" title="Clear Chat" type="button" onClick={handleClear}>
                 <span className="material-symbols-outlined">delete_sweep</span>
-              </button>
-              <button className="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary" title="Export Log" type="button">
-                <span className="material-symbols-outlined">ios_share</span>
               </button>
             </div>
           </div>
 
-          <div className="chat-container flex-1 space-y-6 overflow-y-auto px-2 pb-6">
-            <div className="flex max-w-[85%] gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary shadow-lg">
-                <span className="material-symbols-outlined text-xl text-white" style={{ fontVariationSettings: "'FILL' 1" }}>psychology</span>
-              </div>
-              <div className="asymmetric-card border border-outline-variant/10 bg-surface-container-lowest p-5 shadow-sm">
-                <p className="mb-3 leading-relaxed text-on-surface">Welcome back! I&apos;ve reviewed your latest soil sensors from the North Plot. The moisture level is currently at 22%. Would you like a personalized irrigation plan for tonight?</p>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">AI ADVISOR • 09:41 AM</span>
-              </div>
-            </div>
+          <div ref={chatContainerRef} className="chat-container flex-1 space-y-6 overflow-y-auto px-2 pb-6">
+            {messages.map((message) => {
+              const isAssistant = message.role === 'assistant'
 
-            <div className="ml-auto flex max-w-[85%] flex-row-reverse gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-container">
-                <span className="material-symbols-outlined text-xl text-primary">person</span>
-              </div>
-              <div className="rounded-2xl rounded-tr-none bg-primary-container p-5 text-on-primary-container shadow-md">
-                <p className="mb-1 leading-relaxed">Yes, but also check if there&apos;s any risk of pest infestation given the humidity levels.</p>
-                <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">YOU • 09:42 AM</span>
-              </div>
-            </div>
+              if (isAssistant) {
+                return (
+                  <div key={message.id} className="flex max-w-[85%] gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary shadow-lg">
+                      <span className="material-symbols-outlined text-xl text-white" style={{ fontVariationSettings: "'FILL' 1" }}>psychology</span>
+                    </div>
+                    <div className="asymmetric-card border border-outline-variant/10 bg-surface-container-lowest p-5 shadow-sm">
+                      <p className="mb-3 whitespace-pre-wrap leading-relaxed text-on-surface">{message.content}</p>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">AI ADVISOR • {message.timestamp}</span>
+                    </div>
+                  </div>
+                )
+              }
 
-            <div className="flex max-w-[85%] items-end gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary">
-                <span className="material-symbols-outlined text-xl text-white">psychology</span>
+              return (
+                <div key={message.id} className="ml-auto flex max-w-[85%] flex-row-reverse gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-container">
+                    <span className="material-symbols-outlined text-xl text-primary">person</span>
+                  </div>
+                  <div className="rounded-2xl rounded-tr-none bg-primary-container p-5 text-on-primary-container shadow-md">
+                    <p className="mb-1 whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">YOU • {message.timestamp}</span>
+                  </div>
+                </div>
+              )
+            })}
+
+            {isLoading && (
+              <div className="flex max-w-[85%] items-end gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary">
+                  <span className="material-symbols-outlined text-xl text-white">psychology</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-2xl rounded-bl-none bg-surface-container-lowest px-6 py-4 shadow-sm">
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-primary/40" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-primary/40" style={{ animationDelay: '0.2s' }} />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-primary/40" style={{ animationDelay: '0.4s' }} />
+                  <span className="ml-2 text-xs font-semibold italic text-primary/60">Analyzing your question...</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 rounded-2xl rounded-bl-none bg-surface-container-lowest px-6 py-4 shadow-sm">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-primary/40" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-primary/40" style={{ animationDelay: '0.2s' }} />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-primary/40" style={{ animationDelay: '0.4s' }} />
-                <span className="ml-2 text-xs font-semibold italic text-primary/60">Analyzing climate data...</span>
+            )}
+
+            {errorText && (
+              <div className="rounded-xl border border-[#ba1a1a33] bg-[#fff2f2] px-4 py-3 text-sm text-[#7a1010]">
+                {errorText}
               </div>
-            </div>
+            )}
           </div>
 
           <div className="mt-4 px-2 pb-2">
             <div className="no-scrollbar flex gap-3 overflow-x-auto pb-4">
-              <button className="shrink-0 rounded-full border border-transparent bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all hover:border-primary hover:bg-primary hover:text-white" type="button">Check Pest Risk</button>
-              <button className="shrink-0 rounded-full border border-transparent bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all hover:border-primary hover:bg-primary hover:text-white" type="button">Best Fertilizer for Wheat?</button>
-              <button className="shrink-0 rounded-full border border-transparent bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all hover:border-primary hover:bg-primary hover:text-white" type="button">Next Rain Forecast</button>
-              <button className="shrink-0 rounded-full border border-transparent bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all hover:border-primary hover:bg-primary hover:text-white" type="button">Market Prices Today</button>
+              {QUICK_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  className="shrink-0 rounded-full border border-transparent bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all hover:border-primary hover:bg-primary hover:text-white"
+                  type="button"
+                  onClick={() => handleSend(prompt)}
+                  disabled={isLoading}
+                >
+                  {prompt}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -80,8 +212,20 @@ export function ChatbotPage() {
               <button className="p-3 text-on-surface-variant transition-colors hover:text-primary" type="button">
                 <span className="material-symbols-outlined">attach_file</span>
               </button>
-              <textarea className="flex-1 border-none bg-transparent py-3 font-medium text-on-surface placeholder:text-stone-400 focus:ring-0" placeholder="Ask about your crops, soil, or market..." rows="1" />
-              <button className="flex items-center justify-center rounded-2xl bg-primary p-3 text-white shadow-lg transition-all hover:bg-primary-container active:scale-95" type="button">
+              <textarea
+                className="flex-1 border-none bg-transparent py-3 font-medium text-on-surface placeholder:text-stone-400 focus:ring-0"
+                placeholder="Ask about claims, schemes, crop support, or weather..."
+                rows="1"
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <button
+                className="flex items-center justify-center rounded-2xl bg-primary p-3 text-white shadow-lg transition-all hover:bg-primary-container active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                type="button"
+                onClick={() => handleSend()}
+                disabled={isLoading || !draft.trim()}
+              >
                 <span className="material-symbols-outlined">send</span>
               </button>
             </div>
@@ -91,9 +235,9 @@ export function ChatbotPage() {
                 Escalate to Expert
               </button>
               <div className="flex items-center gap-3">
-                <button className="flex items-center gap-1 text-xs font-bold text-on-surface-variant transition-colors hover:text-primary" type="button">
+                <button className="flex items-center gap-1 text-xs font-bold text-on-surface-variant transition-colors hover:text-primary" type="button" onClick={handleCopyLast}>
                   <span className="material-symbols-outlined text-sm">content_copy</span>
-                  Copy Last
+                  {copied ? 'Copied' : 'Copy Last'}
                 </button>
               </div>
             </div>

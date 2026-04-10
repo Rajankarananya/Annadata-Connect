@@ -5,11 +5,15 @@ If no PDFs are available, falls back to direct LLM responses.
 """
 
 import json
+import os
+import asyncio
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import requests
 from fastapi import APIRouter, Body, HTTPException, Query
 from fastapi.responses import StreamingResponse
+from deep_translator import GoogleTranslator
 from pydantic import BaseModel, Field
 
 # LangChain imports for RAG pipeline
@@ -38,6 +42,86 @@ retriever = None
 rag_enabled = False
 
 SUPPORTED_LANGUAGES = {"en", "hi", "mr"}
+
+BHASHINI_API_KEY = os.getenv("BHASHINI_API_KEY")
+BHASHINI_USER_ID = os.getenv("BHASHINI_USER_ID")
+BHASHINI_API_BASE_URL = os.getenv("BHASHINI_API_BASE_URL")
+LLM_TIMEOUT_SECONDS = int(os.getenv("LLM_TIMEOUT_SECONDS", "120"))
+
+
+def translate_with_bhashini(text: str, source: str, target: str) -> str:
+    """Translate using Bhashini API (primary)."""
+    url = f"{BHASHINI_API_BASE_URL}/translate"
+    headers = {
+        "userID": BHASHINI_USER_ID,
+        "ulcaApiKey": BHASHINI_API_KEY,
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "input": [{"source": text}],
+        "config": {
+            "language": {
+                "sourceLanguage": source,
+                "targetLanguage": target,
+            }
+        },
+    }
+
+    response = requests.post(url, json=payload, headers=headers, timeout=10)
+    response.raise_for_status()
+    return response.json()["output"][0]["target"]
+
+
+def translate_with_google(text: str, source: str, target: str) -> str:
+    """Translate using Google Translate (fallback)."""
+    if source == target:
+        return text
+    return GoogleTranslator(source=source, target=target).translate(text)
+
+
+def translate(text: str, source: str, target: str) -> str:
+    """
+    Smart translation with automatic fallback.
+    Tries Bhashini first if API key is configured.
+    Falls back to Google Translate if Bhashini is unavailable/fails.
+    Returns original text if both fail so chat flow never crashes.
+    """
+    if source == target:
+        return text
+
+    bhashini_configured = (
+        BHASHINI_API_KEY
+        and BHASHINI_API_KEY != "your_bhashini_api_key_here"
+        and BHASHINI_USER_ID
+        and BHASHINI_USER_ID != "your_user_id_here"
+        and BHASHINI_API_BASE_URL
+    )
+
+    if bhashini_configured:
+        try:
+            result = translate_with_bhashini(text, source, target)
+            print(f"[Translation] Used Bhashini: {source} -> {target}")
+            return result
+        except Exception as e:
+            print(f"[Translation] Bhashini failed: {e}. Falling back to Google Translate.")
+
+    try:
+        result = translate_with_google(text, source, target)
+        print(f"[Translation] Used Google Translate: {source} -> {target}")
+        return result
+    except Exception as e:
+        print(f"[Translation] Google Translate also failed: {e}. Returning original text.")
+        return text
+
+
+def to_english(text: str, lang: str) -> str:
+    """Translate user input to English before sending to LLM."""
+    return translate(text, source=lang, target="en")
+
+
+def from_english(text: str, lang: str) -> str:
+    """Translate LLM response back to user's language."""
+    return translate(text, source="en", target=lang)
 
 
 class ChatMessage(BaseModel):
@@ -113,19 +197,27 @@ def initialize_rag():
     # Step 3: Create embeddings using SentenceTransformers
     # all-MiniLM-L6-v2 is a lightweight, fast embedding model
     # ---------------------------------------------------------------------------
-    embeddings = SentenceTransformerEmbeddings(
-        model_name="all-MiniLM-L6-v2"
-    )
+    try:
+        embeddings = SentenceTransformerEmbeddings(
+            model_name="all-MiniLM-L6-v2"
+        )
+    except Exception as e:
+        print(f"[WARN] Embedding model init failed ({e}). Running in direct LLM mode.")
+        return
 
     # ---------------------------------------------------------------------------
     # Step 4: Store embeddings in ChromaDB vector database
     # persist_directory ensures the database is saved to disk
     # ---------------------------------------------------------------------------
-    vectorstore = Chroma.from_documents(
-        documents=splits,
-        embedding=embeddings,
-        persist_directory="./chroma_db"
-    )
+    try:
+        vectorstore = Chroma.from_documents(
+            documents=splits,
+            embedding=embeddings,
+            persist_directory="./chroma_db"
+        )
+    except Exception as e:
+        print(f"[WARN] Failed to create vector store ({e}). Running in direct LLM mode.")
+        return
     print("[INFO] Vector store created and persisted to ./chroma_db")
 
     # ---------------------------------------------------------------------------
@@ -191,6 +283,28 @@ def _sse_stream(prompt: str, language: str):
         yield f"data: {json.dumps({'delta': text})}\n\n"
 
     yield f"data: {json.dumps({'done': True, 'response': accumulated, 'lang': language})}\n\n"
+
+
+async def _invoke_llm(prompt: str) -> str:
+    """Run blocking LLM call in a thread with timeout protection."""
+    try:
+        return await asyncio.wait_for(
+            asyncio.to_thread(llm.invoke, prompt),
+            timeout=LLM_TIMEOUT_SECONDS,
+        )
+    except asyncio.TimeoutError as e:
+        raise HTTPException(
+            status_code=504,
+            detail=(
+                f"LLM request timed out after {LLM_TIMEOUT_SECONDS}s. "
+                "Ensure Ollama is running at http://localhost:11434"
+            ),
+        ) from e
+    except Exception as e:
+        raise HTTPException(
+            status_code=503,
+            detail=f"LLM backend unavailable: {str(e)}",
+        ) from e
 
 
 def _resolve_request_payload(
@@ -263,13 +377,15 @@ async def chat(
                 headers={"Cache-Control": "no-cache"},
             )
 
-        response_text = llm.invoke(prompt)
+        response_text = await _invoke_llm(prompt)
         return {
             "response": response_text,
             "lang": request_data.language,
             "source": "rag" if context else "llm",
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -304,14 +420,16 @@ async def chat_multilingual(
         )
 
     try:
-        context = _get_context(query)
+        english_query = to_english(query, lang)
+        context = _get_context(english_query)
         prompt = _build_prompt(
-            message=query,
+            message=english_query,
             history=[],
-            language=lang,
+            language="en",
             context=context,
         )
-        response_text = llm.invoke(prompt)
+        llm_response_text = await _invoke_llm(prompt)
+        response_text = from_english(llm_response_text, lang)
 
         return {
             "response": response_text,
@@ -319,6 +437,8 @@ async def chat_multilingual(
             "source": "rag" if context else "llm",
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,

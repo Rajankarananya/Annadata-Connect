@@ -23,3 +23,6 @@ chromadb>=0.4.22
 
 # Environment variable management
 python-dotenv>=1.0.0
+
+# Translation fallback utility
+deep-translator>=1.11.4
