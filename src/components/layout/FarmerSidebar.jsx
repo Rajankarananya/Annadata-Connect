@@ -1,8 +1,17 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { FARMER_SIDEBAR_ITEMS, isRouteActive } from '../../constants/navigation'
 
 export function FarmerSidebar() {
+  const { t } = useTranslation()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('authRole')
+    navigate('/login', { replace: true })
+  }
 
   const isActive = (item) => isRouteActive(pathname, item.match)
 
@@ -22,9 +31,9 @@ export function FarmerSidebar() {
           </div>
           <div>
             <h2 className="font-headline text-lg font-black leading-tight text-[#115638] dark:text-[#4ade80]">
-              Annadata
+              {t('common.appName')}
             </h2>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Smart Agriculture</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">{t('common.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -35,7 +44,7 @@ export function FarmerSidebar() {
             <span className="material-symbols-outlined" style={isActive(item) ? { fontVariationSettings: "'FILL' 1" } : undefined}>
               {item.icon}
             </span>
-            <span className="font-manrope text-sm font-bold tracking-wide">{item.label}</span>
+            <span className="font-manrope text-sm font-bold tracking-wide">{t(item.labelKey)}</span>
           </Link>
         ))}
       </nav>
@@ -44,9 +53,18 @@ export function FarmerSidebar() {
         {FARMER_SIDEBAR_ITEMS.slice(3).map((item) => (
           <Link key={item.key} className={navClass(item)} to={item.to}>
             <span className="material-symbols-outlined">{item.icon}</span>
-            <span className="font-manrope text-sm font-bold tracking-wide">{item.label}</span>
+            <span className="font-manrope text-sm font-bold tracking-wide">{t(item.labelKey)}</span>
           </Link>
         ))}
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mx-4 mt-4 flex w-[calc(100%-2rem)] items-center gap-3 rounded-lg bg-primary px-4 py-3 text-sm font-bold tracking-wide text-white transition-colors hover:bg-[#0e4c31]"
+        >
+          <span className="material-symbols-outlined">logout</span>
+          <span className="font-manrope">{t('common.logout')}</span>
+        </button>
       </div>
     </aside>
   )

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
@@ -14,6 +15,7 @@ const registerSchema = z.object({
 })
 
 export function RegisterPage() {
+  const { t } = useTranslation()
   const [submitState, setSubmitState] = useState({ loading: false, error: '', success: '' })
   const [isOtpVerified, setIsOtpVerified] = useState(false)
 
@@ -76,8 +78,8 @@ export function RegisterPage() {
       <main className="flex flex-grow flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-2xl">
           <div className="mb-10 text-center md:text-left">
-            <h1 className="mb-3 font-headline text-4xl font-extrabold tracking-tight text-on-surface">Join our community.</h1>
-            <p className="text-lg text-on-surface-variant">Empowering farmers with digital legacy tools.</p>
+            <h1 className="mb-3 font-headline text-4xl font-extrabold tracking-tight text-on-surface">{t('auth.registerTitle')}</h1>
+            <p className="text-lg text-on-surface-variant">{t('auth.registerSubtitle')}</p>
           </div>
 
           <div className="mb-8 flex w-full items-center gap-3">
@@ -92,7 +94,7 @@ export function RegisterPage() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="px-1 text-sm font-semibold text-on-surface-variant">Full Name</label>
+                    <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.fullName')}</label>
                     <input
                       className="w-full rounded-xl border-none bg-surface-container-low p-4 text-on-surface placeholder:text-outline/50 transition-all focus:ring-2 focus:ring-surface-tint"
                       placeholder="Enter your full name"
@@ -103,7 +105,7 @@ export function RegisterPage() {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label className="px-1 text-sm font-semibold text-on-surface-variant">Mobile Number</label>
+                    <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.mobileNumber')}</label>
                     <div className="flex gap-3">
                       <div className="relative flex-grow">
                         <input
@@ -125,21 +127,21 @@ export function RegisterPage() {
                         type="button"
                         onClick={handleVerifyOtp}
                       >
-                        Verify OTP
+                        {t('auth.verifyOtp')}
                       </button>
                     </div>
                     {errors.mobile ? <p className="px-1 text-xs text-red-600">{errors.mobile.message}</p> : null}
-                    <p className="mt-1 px-1 text-[10px] italic text-on-surface-variant/70">OTP will be sent via SMS</p>
+                    <p className="mt-1 px-1 text-[10px] italic text-on-surface-variant/70">{t('auth.otpHint')}</p>
                   </div>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="flex flex-col gap-2">
-                      <label className="px-1 text-sm font-semibold text-on-surface-variant">State</label>
+                      <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.state')}</label>
                       <select
                         className="w-full appearance-none rounded-xl border-none bg-surface-container-low p-4 text-on-surface focus:ring-2 focus:ring-surface-tint"
                         {...register('state')}
                       >
-                        <option value="">Select State</option>
+                        <option value="">{t('auth.state')}</option>
                         <option>Maharashtra</option>
                         <option>Uttar Pradesh</option>
                         <option>Punjab</option>
@@ -148,12 +150,12 @@ export function RegisterPage() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <label className="px-1 text-sm font-semibold text-on-surface-variant">District</label>
+                      <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.district')}</label>
                       <select
                         className="w-full appearance-none rounded-xl border-none bg-surface-container-low p-4 text-on-surface focus:ring-2 focus:ring-surface-tint"
                         {...register('district')}
                       >
-                        <option value="">Select District</option>
+                        <option value="">{t('auth.district')}</option>
                         <option>Pune</option>
                         <option>Lucknow</option>
                         <option>Ludhiana</option>
@@ -163,22 +165,26 @@ export function RegisterPage() {
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    <label className="px-1 text-sm font-semibold text-on-surface-variant">Preferred Language</label>
+                    <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.preferredLanguage')}</label>
                     <div className="flex flex-wrap gap-3">
-                      {['English', 'Hindi', 'Marathi'].map((language) => {
-                        const isSelected = selectedLanguage === language
+                      {[
+                        { value: 'English', label: t('public.english') },
+                        { value: 'Hindi', label: t('public.hindi') },
+                        { value: 'Marathi', label: t('public.marathi') },
+                      ].map((language) => {
+                        const isSelected = selectedLanguage === language.value
                         return (
                           <button
-                            key={language}
+                            key={language.value}
                             className={
                               isSelected
                                 ? 'rounded-full border-2 border-primary bg-primary-fixed/20 px-5 py-3 text-sm font-bold text-primary'
                                 : 'rounded-full bg-surface-container-high px-5 py-3 text-sm font-medium text-on-surface-variant transition-colors hover:bg-surface-variant'
                             }
                             type="button"
-                            onClick={() => setValue('preferredLanguage', language, { shouldValidate: true })}
+                            onClick={() => setValue('preferredLanguage', language.value, { shouldValidate: true })}
                           >
-                            {language}
+                            {language.label}
                           </button>
                         )
                       })}
@@ -189,7 +195,7 @@ export function RegisterPage() {
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between px-1">
                       <label className="text-sm font-semibold text-on-surface-variant">Aadhaar Number</label>
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-outline">Optional</span>
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-outline">{t('auth.optional')}</span>
                     </div>
                     <input
                       className="w-full rounded-xl border-none bg-surface-container-low p-4 text-on-surface placeholder:text-outline/50 transition-all focus:ring-2 focus:ring-surface-tint"
@@ -219,15 +225,15 @@ export function RegisterPage() {
                   type="submit"
                   disabled={submitState.loading || isSubmitting}
                 >
-                  <span>{submitState.loading || isSubmitting ? 'Creating Account...' : 'Create Account'}</span>
+                  <span>{submitState.loading || isSubmitting ? t('auth.creatingAccount') : t('auth.createAccount')}</span>
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
 
                 <div className="text-center">
                   <p className="text-sm text-on-surface-variant">
-                    Already have an account?
+                    {t('auth.haveAccount')}
                     <Link className="ml-1 font-bold text-primary underline decoration-2 underline-offset-4" to="/login">
-                      Login
+                      {t('common.login')}
                     </Link>
                   </p>
                 </div>

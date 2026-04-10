@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { z } from 'zod'
 
 import { ROUTES } from '../../../constants/navigation'
 import { AdminSidebar } from '../../../components/layout/AdminSidebar'
+import { getAppLanguage, setAppLanguage } from '../../../i18n/language'
 
 import './AdminSettingsPage.css'
 
@@ -52,8 +54,15 @@ const adminSecuritySchema = z
   })
 
 export function AdminSettingsPage() {
+  const { t } = useTranslation()
   const [isSaving, setIsSaving] = useState(false)
+  const [activeLanguage, setActiveLanguage] = useState(getAppLanguage())
   const [submitFeedback, setSubmitFeedback] = useState({ error: '', success: '' })
+
+  const handleLanguageChange = (languageCode) => {
+    const next = setAppLanguage(languageCode)
+    setActiveLanguage(next)
+  }
 
   const {
     register,
@@ -110,7 +119,11 @@ export function AdminSettingsPage() {
             <button type="button" className="rounded-full p-2 transition-colors hover:bg-emerald-100/50">
               <span className="material-symbols-outlined">notifications</span>
             </button>
-            <button type="button" className="rounded-full p-2 transition-colors hover:bg-emerald-100/50">
+            <button
+              type="button"
+              onClick={() => handleLanguageChange(activeLanguage === 'en' ? 'hi' : 'en')}
+              className="rounded-full p-2 transition-colors hover:bg-emerald-100/50"
+            >
               <span className="material-symbols-outlined">language</span>
             </button>
             <div className="mx-2 h-8 w-px bg-outline-variant/30"></div>
@@ -275,6 +288,34 @@ export function AdminSettingsPage() {
                       These settings are managed by the System Architecture team. Contact Support to request threshold adjustments.
                     </p>
                   </div>
+                </div>
+              </section>
+
+              <section className="rounded-xl border border-outline-variant/10 bg-surface-container-low p-8">
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="material-symbols-outlined text-primary">language</span>
+                  <h3 className="text-xl font-bold text-on-surface">{t('settings.websiteLanguage')}</h3>
+                </div>
+                <p className="mb-4 text-sm text-on-surface-variant">{t('settings.websiteLanguageDescription')}</p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { code: 'en', label: 'English' },
+                    { code: 'hi', label: 'हिंदी' },
+                    { code: 'mr', label: 'मराठी' },
+                  ].map((language) => (
+                    <button
+                      key={language.code}
+                      type="button"
+                      onClick={() => handleLanguageChange(language.code)}
+                      className={
+                        activeLanguage === language.code
+                          ? 'rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white'
+                          : 'rounded-lg bg-surface-container-high px-4 py-2 text-sm font-medium text-on-surface'
+                      }
+                    >
+                      {language.label}
+                    </button>
+                  ))}
                 </div>
               </section>
 

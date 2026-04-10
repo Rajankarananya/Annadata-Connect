@@ -26,38 +26,38 @@ export const ROUTES = {
 }
 
 export const ADMIN_NAV_ITEMS = [
-  { to: ROUTES.ADMIN.DASHBOARD, label: 'Dashboard', icon: 'dashboard' },
-  { to: ROUTES.ADMIN.CLAIMS_QUEUE, label: 'Claims Queue', icon: 'assignment_late' },
-  { to: ROUTES.ADMIN.CLAIM_REVIEW, label: 'Claim Review', icon: 'fact_check' },
-  { to: ROUTES.ADMIN.GRIEVANCE_QUEUE, label: 'Grievances', icon: 'error_outline' },
-  { to: ROUTES.ADMIN.REPORTS, label: 'Reports', icon: 'analytics' },
-  { to: ROUTES.ADMIN.SETTINGS, label: 'Settings', icon: 'settings' },
+  { to: ROUTES.ADMIN.DASHBOARD, labelKey: 'common.dashboard', icon: 'dashboard' },
+  { to: ROUTES.ADMIN.CLAIMS_QUEUE, labelKey: 'common.claimsQueue', icon: 'assignment_late' },
+  { to: ROUTES.ADMIN.CLAIM_REVIEW, labelKey: 'common.claimReview', icon: 'fact_check' },
+  { to: ROUTES.ADMIN.GRIEVANCE_QUEUE, labelKey: 'common.grievances', icon: 'error_outline' },
+  { to: ROUTES.ADMIN.REPORTS, labelKey: 'common.reports', icon: 'analytics' },
+  { to: ROUTES.ADMIN.SETTINGS, labelKey: 'common.settings', icon: 'settings' },
 ]
 
 export const FARMER_SIDEBAR_ITEMS = [
-  { key: 'home', to: ROUTES.FARMER.DASHBOARD, label: 'Home', icon: 'home', match: [ROUTES.FARMER.DASHBOARD] },
-  { key: 'advisor', to: ROUTES.FARMER.CHATBOT, label: 'AI Advisor', icon: 'psychology', match: [ROUTES.FARMER.CHATBOT] },
+  { key: 'home', to: ROUTES.FARMER.DASHBOARD, labelKey: 'common.home', icon: 'home', match: [ROUTES.FARMER.DASHBOARD] },
+  { key: 'advisor', to: ROUTES.FARMER.CHATBOT, labelKey: 'common.aiAdvisor', icon: 'psychology', match: [ROUTES.FARMER.CHATBOT] },
   {
     key: 'claims',
     to: ROUTES.FARMER.MY_CLAIMS,
-    label: 'My Claims',
+    labelKey: 'common.myClaims',
     icon: 'assignment_turned_in',
     match: [ROUTES.FARMER.MY_CLAIMS, ROUTES.FARMER.CLAIM_DETAILS, ROUTES.FARMER.NEW_CLAIM],
   },
-  { key: 'profile', to: ROUTES.FARMER.PROFILE, label: 'Profile & Settings', icon: 'account_circle', match: [ROUTES.FARMER.PROFILE] },
-  { key: 'support', to: ROUTES.FARMER.GRIEVANCES, label: 'Support', icon: 'help_outline', match: [ROUTES.FARMER.GRIEVANCES] },
+  { key: 'profile', to: ROUTES.FARMER.PROFILE, labelKey: 'common.profileSettings', icon: 'account_circle', match: [ROUTES.FARMER.PROFILE] },
+  { key: 'support', to: ROUTES.FARMER.GRIEVANCES, labelKey: 'common.support', icon: 'help_outline', match: [ROUTES.FARMER.GRIEVANCES] },
 ]
 
 export const FARMER_MOBILE_NAV_ITEMS = [
-  { to: ROUTES.FARMER.DASHBOARD, label: 'Home', icon: 'grid_view', match: [ROUTES.FARMER.DASHBOARD] },
-  { to: ROUTES.FARMER.CHATBOT, label: 'AI Consult', icon: 'chat_bubble', match: [ROUTES.FARMER.CHATBOT] },
+  { to: ROUTES.FARMER.DASHBOARD, labelKey: 'common.home', icon: 'grid_view', match: [ROUTES.FARMER.DASHBOARD] },
+  { to: ROUTES.FARMER.CHATBOT, labelKey: 'common.aiAdvisor', icon: 'chat_bubble', match: [ROUTES.FARMER.CHATBOT] },
   {
     to: ROUTES.FARMER.MY_CLAIMS,
-    label: 'Claims',
+    labelKey: 'common.claims',
     icon: 'history_edu',
     match: [ROUTES.FARMER.MY_CLAIMS, ROUTES.FARMER.CLAIM_DETAILS, ROUTES.FARMER.NEW_CLAIM],
   },
-  { to: ROUTES.FARMER.PROFILE, label: 'Profile', icon: 'account_circle', match: [ROUTES.FARMER.PROFILE] },
+  { to: ROUTES.FARMER.PROFILE, labelKey: 'common.profile', icon: 'account_circle', match: [ROUTES.FARMER.PROFILE] },
 ]
 
 export function isRouteActive(pathname, prefixes) {

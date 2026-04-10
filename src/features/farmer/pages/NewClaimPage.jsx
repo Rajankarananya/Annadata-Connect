@@ -6,6 +6,7 @@ import { z } from 'zod'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import { AsyncButton } from '../../../components/shared/AsyncButton'
 import './NewClaimPage.css'
 
@@ -92,37 +93,7 @@ export function NewClaimPage() {
   return (
     <div className="new-claim-root bg-background text-on-surface min-h-screen antialiased">
       <FarmerSidebar />
-
-      <header className="fixed top-0 z-30 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md lg:left-64 lg:w-[calc(100%-16rem)]">
-        <div className="flex w-full items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-6">
-            <span className="material-symbols-outlined text-primary lg:hidden">menu</span>
-            <nav className="hidden items-center gap-8 md:flex">
-              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/dashboard">Dashboard</Link>
-              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
-              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/chatbot">AI Insights</Link>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="hidden items-center gap-2 rounded-full bg-surface-container px-3 py-1.5 text-sm font-medium text-stone-600 sm:flex">
-              <span className="material-symbols-outlined text-lg">translate</span>
-              Language
-            </div>
-            <div className="relative">
-              <span className="material-symbols-outlined cursor-pointer rounded-full p-2 text-stone-600 hover:bg-surface-container">notifications</span>
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full border-2 border-background bg-error" />
-            </div>
-            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary-fixed">
-              <img
-                alt="User Profile Avatar"
-                className="h-full w-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsJkenbmEAd0Uy7l9q-S0F7XtWBK1iSMYmUG1CcFEI6Um1Ky-VFv3dcBpAasC-9qB57lMoer9-yAGYq2mkLN6BEW0qEGYpz0Mn5I1s4Tue5fNvf3liwIC4_db-kts3NezckNwnWjPwYL_iDB3UBtzn-uRfz8BUyX5_3_mlc5ZVbS8wJGng46n7uD12K9eaxCxShFJU7Z5MBFqaxMHh3JJYfnJ57tUQbuSER85DjMRHnla5i-rzryTwGhtYO3ERLU_Eto2U9GMZM7ZI"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
+      <FarmerTopNav />
 
       <main className="px-6 pb-32 pt-24 lg:pl-72">
         <div className="mx-auto max-w-4xl">

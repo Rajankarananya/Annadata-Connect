@@ -6,6 +6,7 @@ import { z } from 'zod'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import { AsyncButton } from '../../../components/shared/AsyncButton'
 import './GrievancesPage.css'
 
@@ -59,26 +60,7 @@ export function GrievancesPage() {
 
   return (
     <div className="grievances-root bg-background text-on-background selection:bg-secondary-container">
-      <nav className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#f7faf7]/80 px-6 py-3 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md dark:bg-stone-900/80">
-        <div className="flex items-center gap-4">
-          <span className="text-xl font-bold tracking-tight text-[#115638] dark:text-[#4ade80]">Annadata Connect</span>
-        </div>
-        <div className="hidden items-center gap-8 md:flex">
-          <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/dashboard">Dashboard</Link>
-          <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/my-claims">Reports</Link>
-          <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/chatbot">AI Insights</Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="flex cursor-pointer items-center gap-1 text-stone-700 transition-colors hover:text-[#2f6f4f] dark:text-stone-300" type="button">
-            <span className="material-symbols-outlined text-[20px]">translate</span>
-            <span className="text-sm font-medium">Language</span>
-          </button>
-          <span className="material-symbols-outlined cursor-pointer text-stone-700 dark:text-stone-300">notifications</span>
-          <div className="h-8 w-8 overflow-hidden rounded-full bg-secondary-container">
-            <img className="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDach-pjF-ItHjj42bBBRyeS69tceZkRy_clYuUN9U0gH6V_QEzv0XG4RPwA0qe0GN8LIDkdqIO0fjZwRUDHPkI502-zdzn3uHS2Cs7_bOGQflXpphqKerZm9xe7J_NvIA320b-OJaZttg5D9I2hRsvpAAAq_PjUoVVH83PKNk8NKr30cDn8_tdaF94pIX-67_MWvjqJ-ze2Y1-Ye3aXrFjuVv6eEevx_fO280HqqeCNuXFpzJ2LO7o-wXBfBwEAPdQhcKfcAz8-bpC" alt="User Profile Avatar" />
-          </div>
-        </div>
-      </nav>
+      <FarmerTopNav />
 
       <FarmerSidebar />
 

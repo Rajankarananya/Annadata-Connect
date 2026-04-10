@@ -1,8 +1,10 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import { FARMER_MOBILE_NAV_ITEMS, isRouteActive } from '../../constants/navigation'
 
 export function FarmerBottomNav() {
+  const { t } = useTranslation()
   const { pathname } = useLocation()
 
   return (
@@ -23,7 +25,7 @@ export function FarmerBottomNav() {
             <span className="material-symbols-outlined" style={active ? { fontVariationSettings: "'FILL' 1" } : undefined}>
               {item.icon}
             </span>
-            <span className="mt-1 font-inter text-[11px] font-bold">{item.label}</span>
+            <span className="mt-1 font-inter text-[11px] font-bold">{t(item.labelKey)}</span>
           </Link>
         )
       })}

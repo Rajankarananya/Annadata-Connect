@@ -1,7 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import './ClaimDetailsPage.css'
 
 export function ClaimDetailsPage() {
@@ -19,33 +20,7 @@ export function ClaimDetailsPage() {
 
   return (
     <div className="claim-details-root bg-background text-on-surface">
-      <header className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md dark:bg-stone-900/80">
-        <div className="flex w-full max-w-full items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-8">
-            <span className="text-xl font-bold tracking-tight text-[#115638] dark:text-[#4ade80]">Annadata Connect</span>
-            <nav className="hidden gap-6 md:flex">
-              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/dashboard">Dashboard</Link>
-              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/my-claims">Reports</Link>
-              <Link className="font-medium text-stone-500 transition-colors hover:text-[#2f6f4f] dark:text-stone-400" to="/farmer/chatbot">AI Insights</Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <button type="button" className="flex items-center gap-2 rounded-lg px-3 py-1 text-stone-700 font-medium transition-colors hover:bg-surface-container-low">
-              <span className="material-symbols-outlined">translate</span>
-              <span className="text-sm">Language</span>
-            </button>
-            <div className="relative">
-              <span className="material-symbols-outlined text-stone-700">notifications</span>
-              <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-error" />
-            </div>
-            <img
-              alt="User Profile Avatar"
-              className="h-8 w-8 rounded-full border-2 border-white bg-surface-container-high shadow-sm"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC5lmwttjm8E1zLwxZ4Gt-jicXhe6uHge65VnNVC9KyosH2zRI57IuWTp-3I9hK39vMudJkE_h94cGdCdkPNefp5X7ih3ir5SIppwrEm6G5-EunI5_PM2AvRKleolmYVeJz4HADgk9coZ4IQnDjH0xFFyGprfGJL4OhEtdTAyvFFPuSwmCxb9W6NdEB_hi9RcfEHQ5da8hJpjnCYv91yzygTmC-hE8CES3NPmcKC4EY9073mm6eUJB-sHLKSv1DvZ5Fp8wADDR1hsx"
-            />
-          </div>
-        </div>
-      </header>
+      <FarmerTopNav />
 
       <FarmerSidebar />
 

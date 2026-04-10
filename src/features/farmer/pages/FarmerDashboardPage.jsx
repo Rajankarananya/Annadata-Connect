@@ -1,7 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
+import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import './FarmerDashboardPage.css'
 
 export function FarmerDashboardPage() {
@@ -10,38 +11,9 @@ export function FarmerDashboardPage() {
   return (
     <div className="bg-background text-on-surface min-h-screen farmer-dashboard-root">
       <FarmerSidebar />
+      <FarmerTopNav />
 
       <main className="min-h-screen lg:ml-64">
-        <header className="editorial-shadow fixed left-0 right-0 top-0 z-30 flex items-center justify-between bg-[#f7faf7]/80 px-6 py-4 backdrop-blur-md lg:left-64">
-          <div className="flex items-center gap-4">
-            <h2 className="font-headline text-xl font-bold tracking-tight text-[#115638]">Dashboard</h2>
-            <span className="hidden h-6 w-px bg-stone-200 md:block" />
-            <nav className="hidden gap-6 md:flex">
-              <Link className="border-b-2 border-[#115638] pb-1 text-sm font-medium text-[#115638]" to="/farmer/dashboard">Dashboard</Link>
-              <Link className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/my-claims">Reports</Link>
-              <Link className="text-sm font-medium text-stone-500 transition-colors hover:text-[#2f6f4f]" to="/farmer/chatbot">AI Insights</Link>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-5">
-            <button className="flex items-center gap-2 rounded-full bg-surface-container-low px-3 py-1.5 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-200">
-              <span className="material-symbols-outlined text-sm">translate</span>
-              Language
-            </button>
-            <div className="flex items-center gap-3">
-              <button className="flex h-10 w-10 items-center justify-center rounded-full text-stone-600 hover:bg-stone-100">
-                <span className="material-symbols-outlined">notifications</span>
-              </button>
-              <div className="h-10 w-10 overflow-hidden rounded-full bg-stone-200">
-                <img
-                  alt="User Profile Avatar"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmXfS16ER2Gkk65x1zDqtXBE1aVSKwN_FbFcDbrnbn1gV-IrSUDkDgLV9_o3jbRRjKleCzucWyhMR-w4HSIcYvkiBviokAJiMC19j9ERIoAlCgk_jAu4kF_Yl8EhuvDMYe_jhhdhYJMH-vu59ZLORO_aTdRPCNipq9l9sY3bfAw-p6pELjyYz2gIdPt9_cMAZrNm2K_7kpVMBNV3rSpoplmMftTu0CrhQyLDX2q4XIMgBD3VDecufb5gIEtX-YP_fECeyJplXbt_7X"
-                />
-              </div>
-            </div>
-          </div>
-        </header>
-
         <div className="mx-auto max-w-7xl space-y-8 px-6 pb-20 pt-24">
           <section className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="space-y-2">
