@@ -85,19 +85,39 @@ def translate_with_google(text: str, source: str, target: str) -> str:
 
 def translate(text: str, source: str, target: str) -> str:
     """
-    Translate text using deep-translator (Google Translate).
-    Uses deep-translator as primary solution.
-    Returns original text if translation fails so chat flow never crashes.
+    Smart translation with automatic fallback chain:
+    1. Bhashini API (if credentials configured) - FUTURE
+    2. Google Translate via deep-translator - ACTIVE
+    3. Original text if both fail (never crashes chat)
     """
     if source == target:
         return text
 
+    # Check if Bhashini is configured
+    bhashini_configured = (
+        BHASHINI_API_KEY
+        and BHASHINI_API_KEY != "your_bhashini_api_key_here"
+        and BHASHINI_USER_ID
+        and BHASHINI_USER_ID != "your_user_id_here"
+        and BHASHINI_API_BASE_URL
+    )
+
+    # Try Bhashini if configured
+    if bhashini_configured:
+        try:
+            result = translate_with_bhashini(text, source, target)
+            print(f"[Translation] Used Bhashini: {source} -> {target}")
+            return result
+        except Exception as e:
+            print(f"[Translation] Bhashini failed ({e}). Falling back to Google Translate.")
+
+    # Try Google Translate (deep-translator) - PRIMARY FALLBACK
     try:
         result = translate_with_google(text, source, target)
         print(f"[Translation] Used Google Translate (deep-translator): {source} -> {target}")
         return result
     except Exception as e:
-        print(f"[Translation] Translation failed: {e}. Returning original text.")
+        print(f"[Translation] Google Translate failed ({e}). Returning original text.")
         return text
 
 
