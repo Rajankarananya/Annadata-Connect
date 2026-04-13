@@ -11,13 +11,19 @@ export const chatApi = {
    * @returns {Promise<{response, lang, source}>}
    */
   sendMessage: async (message, language = 'en') => {
-    const response = await apiClient.post('/chat/multilingual', null, {
-      params: {
-        query: message,
-        lang: language,
-      },
-    })
-    return response.data
+    try {
+      const response = await apiClient.post(`/chat/multilingual`, null, {
+        params: {
+          query: message,
+          lang: language,
+        },
+      })
+      // Handle both response.data and direct response structure
+      return response.data || response
+    } catch (error) {
+      console.error('[chatApi.sendMessage] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
@@ -28,13 +34,18 @@ export const chatApi = {
    * @param {boolean} stream - Enable streaming?
    */
   sendMessageWithHistory: async (message, history = [], language = 'en', stream = false) => {
-    const response = await apiClient.post('/chat', {
-      message,
-      history,
-      language,
-      stream,
-    })
-    return response.data
+    try {
+      const response = await apiClient.post(`/chat`, {
+        message,
+        history: history || [],
+        language,
+        stream,
+      })
+      return response.data || response
+    } catch (error) {
+      console.error('[chatApi.sendMessageWithHistory] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 }
 
@@ -49,184 +60,276 @@ export const weatherApi = {
    * @returns {Promise<{flood_risk, drought_risk, rainfall, timestamp}>}
    */
   getRiskScore: async (latitude, longitude) => {
-    const response = await apiClient.get('/weather/risk', {
-      params: {
-        latitude,
-        longitude,
-      },
-    })
-    return response.data
+    try {
+      const response = await apiClient.get(`/weather/risk`, {
+        params: {
+          latitude,
+          longitude,
+        },
+      })
+      return response.data || response
+    } catch (error) {
+      console.error('[weatherApi.getRiskScore] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 }
 
 /**
- * AUTH SERVICE - Waiting for Dev B contracts
- * [TODO] Integrate once /auth endpoints are available from Dev B
+ * AUTH SERVICE - Will integrate with Dev B's backend
+ * Endpoints: POST /api/v1/auth/register, POST /api/v1/auth/login
  */
 export const authApi = {
   /**
-   * [PENDING] Login with credentials
-   * Expected endpoint: POST /auth/login
+   * Login with credentials
+   * Endpoint: POST /auth/login
    * @param {string} email - Email or phone
    * @param {string} password - Password
-   * @returns {Promise<{token, user, role}>}
-   * [Dev B: Provide endpoint & response format]
+   * @returns {Promise<{access_token, token_type, role}>}
    */
   login: async (email, password) => {
-    const response = await apiClient.post('/auth/login', {
-      email,
-      password,
-    })
-    return response.data
+    try {
+      const response = await apiClient.post(`/auth/login`, {
+        email,
+        password,
+      })
+      const data = response.data || response
+      // Store token if available
+      if (data.access_token) {
+        localStorage.setItem('authToken', data.access_token)
+        if (data.role) localStorage.setItem('authRole', data.role)
+      }
+      return data
+    } catch (error) {
+      console.error('[authApi.login] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] Register new farmer
-   * Expected endpoint: POST /auth/register
+   * Register new farmer
+   * Endpoint: POST /auth/register
    * @param {Object} data - Farmer registration data
-   * @returns {Promise<{token, user, role}>}
-   * [Dev B: Provide endpoint & request schema]
+   * @returns {Promise<{access_token, token_type, role}>}
    */
   register: async (data) => {
-    const response = await apiClient.post('/auth/register', data)
-    return response.data
+    try {
+      const response = await apiClient.post(`/auth/register`, data)
+      const result = response.data || response
+      if (result.access_token) {
+        localStorage.setItem('authToken', result.access_token)
+        if (result.role) localStorage.setItem('authRole', result.role)
+      }
+      return result
+    } catch (error) {
+      console.error('[authApi.register] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] Logout
-   * Expected endpoint: POST /auth/logout
+   * Logout
    */
   logout: async () => {
-    await apiClient.post('/auth/logout')
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('authRole')
+    try {
+      await apiClient.post(`/auth/logout`)
+    } catch (error) {
+      console.warn('[authApi.logout] Error:', error.message)
+    } finally {
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('authRole')
+    }
   },
 }
 
 /**
- * FARMERS SERVICE - Waiting for Dev B contracts
- * [TODO] Integrate once /farmers endpoints are available from Dev B
+ * FARMERS SERVICE - Integrates with Dev B's backend
+ * Endpoints: GET/POST/PUT /api/v1/farmers/{id}
  */
 export const farmersApi = {
   /**
-   * [PENDING] Get farmer profile
-   * Expected endpoint: GET /farmers/{id}
+   * Get farmer profile
+   * Endpoint: GET /farmers/{id}
    * @param {string} farmerId - Farmer ID
    */
   getProfile: async (farmerId) => {
-    const response = await apiClient.get(`/farmers/${farmerId}`)
-    return response.data
+    try {
+      const response = await apiClient.get(`/farmers/${farmerId}`)
+      return response.data || response
+    } catch (error) {
+      console.error('[farmersApi.getProfile] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] Update farmer profile
-   * Expected endpoint: PUT /farmers/{id}
+   * Update farmer profile
+   * Endpoint: PUT /farmers/{id}
    * @param {string} farmerId - Farmer ID
    * @param {Object} data - Updated profile data
    */
   updateProfile: async (farmerId, data) => {
-    const response = await apiClient.put(`/farmers/${farmerId}`, data)
-    return response.data
+    try {
+      const response = await apiClient.put(`/farmers/${farmerId}`, data)
+      return response.data || response
+    } catch (error) {
+      console.error('[farmersApi.updateProfile] Error:', error.response?.data || error.message)
+      throw error
+    }
+  },
+
+  /**
+   * Register new farmer (public endpoint)
+   * Endpoint: POST /farmers
+   * @param {Object} data - Farmer registration data
+   */
+  registerFarmer: async (data) => {
+    try {
+      const response = await apiClient.post(`/farmers`, data)
+      return response.data || response
+    } catch (error) {
+      console.error('[farmersApi.registerFarmer] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 }
 
 /**
- * CLAIMS SERVICE - Waiting for Dev B contracts
- * [TODO] Integrate once /claims endpoints are available from Dev B
+ * CLAIMS SERVICE - Integrates with Dev B's backend
+ * Endpoints: POST /api/v1/claims, GET /api/v1/claims/{id}, PATCH /api/v1/claims/{id}/status
  */
 export const claimsApi = {
   /**
-   * [PENDING] Create new claim
-   * Expected endpoint: POST /claims
-   * @param {Object} data - Claim data (crop_type, sowing_date, damage_description, image?, etc.)
-   * @returns {Promise<{claim_id, status, ...}>}
-   * [Dev B: Provide endpoint, schema, file upload handling]
+   * Create new claim
+   * Endpoint: POST /claims
+   * @param {Object} data - Claim data {farmer_id, damage_type, description, gps_lat, gps_lng, image_path?}
+   * @returns {Promise<{id, status, ...}>}
    */
   createClaim: async (data) => {
-    const response = await apiClient.post('/claims', data)
-    return response.data
+    try {
+      const response = await apiClient.post(`/claims`, data)
+      return response.data || response
+    } catch (error) {
+      console.error('[claimsApi.createClaim] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] Get claim details
-   * Expected endpoint: GET /claims/{id}
-   * @param {string} claimId - Claim ID
+   * Get claim details
+   * Endpoint: GET /claims/{id}
+   * @param {string|number} claimId - Claim ID
    */
   getClaimDetails: async (claimId) => {
-    const response = await apiClient.get(`/claims/${claimId}`)
-    return response.data
+    try {
+      const response = await apiClient.get(`/claims/${claimId}`)
+      return response.data || response
+    } catch (error) {
+      console.error('[claimsApi.getClaimDetails] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] List farmer's claims
-   * Expected endpoint: GET /claims?status={status}&farmer_id={id}
+   * List farmer's claims
+   * Endpoint: GET /claims?status={status}&farmer_id={id}
    * @param {Object} filters - {status, farmer_id, date_range, etc.}
    */
   listClaims: async (filters = {}) => {
-    const response = await apiClient.get('/claims', {
-      params: filters,
-    })
-    return response.data
+    try {
+      const response = await apiClient.get(`/claims`, {
+        params: filters,
+      })
+      return response.data || response
+    } catch (error) {
+      console.error('[claimsApi.listClaims] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] Update claim status (Admin only)
-   * Expected endpoint: PATCH /claims/{id}/status
-   * @param {string} claimId - Claim ID
-   * @param {Object} data - {status, decision_notes, ...}
+   * Update claim status (Admin/Field Officer only)
+   * Endpoint: PATCH /claims/{id}/status
+   * @param {string|number} claimId - Claim ID
+   * @param {Object} data - {status, decision_notes?, ...}
    */
   updateStatus: async (claimId, data) => {
-    const response = await apiClient.patch(`/claims/${claimId}/status`, data)
-    return response.data
+    try {
+      const response = await apiClient.patch(`/claims/${claimId}/status`, data)
+      return response.data || response
+    } catch (error) {
+      console.error('[claimsApi.updateStatus] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 }
 
 /**
- * GRIEVANCES SERVICE - Waiting for Dev B contracts
- * [TODO] Integrate once /grievances endpoints are available from Dev B
+ * GRIEVANCES SERVICE - Integrates with Dev B's backend
+ * Endpoints: POST /api/v1/grievances, GET /api/v1/grievances/{id}, PATCH /api/v1/grievances/{id}/status
  */
 export const grievancesApi = {
   /**
-   * [PENDING] Create new grievance
-   * Expected endpoint: POST /grievances
-   * @param {Object} data - Grievance data
+   * Create new grievance
+   * Endpoint: POST /grievances
+   * @param {Object} data - Grievance data {category, description, farmer_id?, ...}
    */
   createGrievance: async (data) => {
-    const response = await apiClient.post('/grievances', data)
-    return response.data
+    try {
+      const response = await apiClient.post(`/grievances`, data)
+      return response.data || response
+    } catch (error) {
+      console.error('[grievancesApi.createGrievance] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] Get grievance details
-   * Expected endpoint: GET /grievances/{id}
-   * @param {string} grievanceId - Grievance ID
+   * Get grievance details
+   * Endpoint: GET /grievances/{id}
+   * @param {string|number} grievanceId - Grievance ID
    */
   getGrievanceDetails: async (grievanceId) => {
-    const response = await apiClient.get(`/grievances/${grievanceId}`)
-    return response.data
+    try {
+      const response = await apiClient.get(`/grievances/${grievanceId}`)
+      return response.data || response
+    } catch (error) {
+      console.error('[grievancesApi.getGrievanceDetails] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] List grievances
-   * Expected endpoint: GET /grievances?status={status}&category={category}
+   * List grievances
+   * Endpoint: GET /grievances?status={status}&category={category}
    * @param {Object} filters - {status, category, assignee, date_range, etc.}
    */
   listGrievances: async (filters = {}) => {
-    const response = await apiClient.get('/grievances', {
-      params: filters,
-    })
-    return response.data
+    try {
+      const response = await apiClient.get(`/grievances`, {
+        params: filters,
+      })
+      return response.data || response
+    } catch (error) {
+      console.error('[grievancesApi.listGrievances] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   /**
-   * [PENDING] Update grievance status
-   * Expected endpoint: PATCH /grievances/{id}/status
-   * @param {string} grievanceId - Grievance ID
-   * @param {Object} data - {status, assignee, notes, ...}
+   * Update grievance status
+   * Endpoint: PATCH /grievances/{id}/status
+   * @param {string|number} grievanceId - Grievance ID
+   * @param {Object} data - {status, assignee?, notes?, ...}
    */
   updateStatus: async (grievanceId, data) => {
-    const response = await apiClient.patch(`/grievances/${grievanceId}/status`, data)
-    return response.data
+    try {
+      const response = await apiClient.patch(`/grievances/${grievanceId}/status`, data)
+      return response.data || response
+    } catch (error) {
+      console.error('[grievancesApi.updateStatus] Error:', error.response?.data || error.message)
+      throw error
+    }
   },
 }
 

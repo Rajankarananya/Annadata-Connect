@@ -1,12 +1,30 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useEffect, useState } from 'react-router-dom'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
+import { weatherApi } from '../../../services/api'
 import './FarmerDashboardPage.css'
 
 export function FarmerDashboardPage() {
   const navigate = useNavigate()
+  const [weather, setWeather] = useState(null)
+  const [weatherError, setWeatherError] = useState('')
+
+  // Fetch weather on mount (using Hisar, India coordinates)
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // Hisar, Haryana (typical farmer region)
+        const data = await weatherApi.getRiskScore(29.1965, 75.7345)
+        setWeather(data)
+      } catch (error) {
+        console.error('Weather API error:', error)
+        setWeatherError('Could not fetch weather data')
+      }
+    }
+    fetchWeather()
+  }, [])
 
   return (
     <div className="bg-background text-on-surface min-h-screen farmer-dashboard-root">
@@ -263,34 +281,60 @@ export function FarmerDashboardPage() {
               <div className="editorial-shadow relative overflow-hidden rounded-3xl bg-surface-container-low p-8">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-bold text-stone-400">Current Weather</p>
-                    <h4 className="font-headline mt-1 text-3xl font-black">32C</h4>
-                    <p className="text-sm font-semibold text-stone-600">Clear Skies · Hisar</p>
+                    <p className="text-sm font-bold text-stone-400">Current Weather & Risk</p>
+                    {weather ? (
+                      <>
+                        <h4 className="font-headline mt-1 text-3xl font-black">
+                          {Math.round(weather.rainfall || 0)}mm
+                        </h4>
+                        <p className="text-sm font-semibold text-stone-600">Rainfall · Hisar Region</p>
+                        <div className="mt-3 grid grid-cols-2 gap-3">
+                          <div>
+                            <p className="text-xs font-bold text-red-600">Flood Risk</p>
+                            <p className="text-lg font-black text-red-600">{Math.round(weather.flood_risk || 0)}%</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-orange-600">Drought Risk</p>
+                            <p className="text-lg font-black text-orange-600">{Math.round(weather.drought_risk || 0)}%</p>
+                          </div>
+                        </div>
+                      </>
+                    ) : weatherError ? (
+                      <p className="mt-2 text-sm text-red-500">{weatherError}</p>
+                    ) : (
+                      <p className="mt-2 text-sm text-stone-500">Loading weather...</p>
+                    )}
                   </div>
-                  <span className="material-symbols-outlined text-6xl text-amber-400" style={{ fontVariationSettings: "'FILL' 1" }}>sunny</span>
+                  <span className="material-symbols-outlined text-6xl text-blue-400" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    cloud
+                  </span>
                 </div>
 
                 <div className="scrollbar-hide mt-8 flex gap-4 overflow-x-auto pb-2">
                   <div className="flex shrink-0 flex-col items-center">
-                    <span className="text-[10px] font-bold uppercase text-stone-400">1PM</span>
-                    <span className="material-symbols-outlined my-1 text-lg text-amber-500">sunny</span>
-                    <span className="text-xs font-bold">32°</span>
+                    <span className="text-[10px] font-bold uppercase text-stone-400">Flood</span>
+                    <span className="material-symbols-outlined my-1 text-lg text-blue-500">water</span>
+                    <span className="text-xs font-bold">{Math.round(weather?.flood_risk || 0)}%</span>
                   </div>
                   <div className="flex shrink-0 flex-col items-center">
-                    <span className="text-[10px] font-bold uppercase text-stone-400">2PM</span>
-                    <span className="material-symbols-outlined my-1 text-lg text-amber-500">sunny</span>
-                    <span className="text-xs font-bold">34°</span>
+                    <span className="text-[10px] font-bold uppercase text-stone-400">Drought</span>
+                    <span className="material-symbols-outlined my-1 text-lg text-orange-500">dry</span>
+                    <span className="text-xs font-bold">{Math.round(weather?.drought_risk || 0)}%</span>
                   </div>
                   <div className="flex shrink-0 flex-col items-center">
-                    <span className="text-[10px] font-bold uppercase text-stone-400">3PM</span>
-                    <span className="material-symbols-outlined my-1 text-lg text-stone-400">partly_cloudy_day</span>
-                    <span className="text-xs font-bold">33°</span>
+                    <span className="text-[10px] font-bold uppercase text-stone-400">Rainfall</span>
+                    <span className="material-symbols-outlined my-1 text-lg text-blue-400">grain</span>
+                    <span className="text-xs font-bold">{Math.round(weather?.rainfall || 0)}mm</span>
                   </div>
-                  <div className="flex shrink-0 flex-col items-center">
-                    <span className="text-[10px] font-bold uppercase text-stone-400">4PM</span>
-                    <span className="material-symbols-outlined my-1 text-lg text-stone-400">cloud</span>
-                    <span className="text-xs font-bold">31°</span>
-                  </div>
+                  {weather?.timestamp && (
+                    <div className="flex shrink-0 flex-col items-center">
+                      <span className="text-[10px] font-bold uppercase text-stone-400">Updated</span>
+                      <span className="material-symbols-outlined my-1 text-lg text-stone-400">schedule</span>
+                      <span className="text-xs font-bold">
+                        {new Date(weather.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

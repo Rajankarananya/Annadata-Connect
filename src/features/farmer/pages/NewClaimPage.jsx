@@ -8,6 +8,7 @@ import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import { AsyncButton } from '../../../components/shared/AsyncButton'
+import { claimsApi } from '../../../services/api'
 import './NewClaimPage.css'
 
 const claimSchema = z.object({
@@ -46,7 +47,7 @@ export function NewClaimPage() {
 
   const selectedDamageType = watch('damageType')
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     if (isSubmitting || isSavingDraft) {
       return
     }
@@ -55,10 +56,21 @@ export function NewClaimPage() {
     setIsSubmitting(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1100))
+      // Call the claims API
+      const result = await claimsApi.createClaim({
+        damage_type: data.damageType,
+        description: data.narrative,
+        // Additional fields from form (matched to API schema)
+        crop_type: data.cropType,
+        sowing_date: data.sowingDate,
+        incident_date: data.incidentDate,
+        farm_location: data.farmLocation,
+      })
       setSubmitFeedback({ error: '', success: 'Claim submitted successfully for review.' })
-    } catch {
-      setSubmitFeedback({ error: 'Could not submit claim. Please retry.', success: '' })
+    } catch (error) {
+      const errorMessage = error?.response?.data?.detail || 'Could not submit claim. Please retry.'
+      console.error('Claim submission error:', error)
+      setSubmitFeedback({ error: errorMessage, success: '' })
     } finally {
       setIsSubmitting(false)
     }
@@ -81,9 +93,11 @@ export function NewClaimPage() {
     setIsSavingDraft(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 700))
+      // Save draft to localStorage for now (until backend supports it)
+      localStorage.setItem('claimDraft', JSON.stringify(getValues()))
       setSubmitFeedback({ error: '', success: 'Draft saved successfully.' })
-    } catch {
+    } catch (error) {
+      console.error('Draft save error:', error)
       setSubmitFeedback({ error: 'Could not save draft. Please retry.', success: '' })
     } finally {
       setIsSavingDraft(false)

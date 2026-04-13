@@ -68,19 +68,21 @@ export function ChatbotPage() {
     setIsLoading(true)
 
     try {
-      const response = await apiClient.post('/chat', {
-        message: nextText,
-        history: historyPayload,
-        language,
-        stream: false,
+      // Use the multilingual endpoint with query parameters
+      const response = await apiClient.post(`/chat/multilingual`, null, {
+        params: {
+          query: nextText,
+          lang: language,
+        },
       })
 
-      const reply = response?.data?.response || 'I could not generate a response right now.'
+      const reply = response?.data?.response || response?.response || 'I could not generate a response right now.'
       addMessage('assistant', reply)
     } catch (error) {
       const detail = error?.response?.data?.detail || 'Unable to reach AI service. Please try again.'
       setErrorText(detail)
       addMessage('assistant', 'I am temporarily unavailable. Please try again in a moment.')
+      console.error('[ChatbotPage.handleSend] Error:', error)
     } finally {
       setIsLoading(false)
     }

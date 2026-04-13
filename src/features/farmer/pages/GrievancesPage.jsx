@@ -8,6 +8,7 @@ import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import { AsyncButton } from '../../../components/shared/AsyncButton'
+import { grievancesApi } from '../../../services/api'
 import './GrievancesPage.css'
 
 const grievanceSchema = z.object({
@@ -39,7 +40,7 @@ export function GrievancesPage() {
   const selectedCategory = watch('category')
   const priority = watch('priority')
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     if (isSubmitting) {
       return
     }
@@ -48,11 +49,18 @@ export function GrievancesPage() {
     setIsSubmitting(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 900))
+      // Call the grievances API
+      const result = await grievancesApi.createGrievance({
+        category: data.category,
+        priority: data.priority,
+        description: data.description,
+      })
       setSubmitFeedback({ error: '', success: 'Grievance submitted successfully. Our team will contact you soon.' })
       reset({ category: 'insurance', priority: 'medium', description: '' })
-    } catch {
-      setSubmitFeedback({ error: 'Unable to submit grievance right now. Please try again.', success: '' })
+    } catch (error) {
+      const errorMessage = error?.response?.data?.detail || 'Unable to submit grievance right now. Please try again.'
+      console.error('Grievance submission error:', error)
+      setSubmitFeedback({ error: errorMessage, success: '' })
     } finally {
       setIsSubmitting(false)
     }
