@@ -1,20 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import './styles/fonts.css';
+@import './styles/theme.css';
 @import 'tailwindcss';
 
 :root {
-  --color-bg: #f6f8fb;
+  --color-bg: #fafaf7;
   --color-surface: #fef7ed;
   --color-surface-muted: #f1f5f9;
   --color-border: #dbe3ee;
   --color-text: #1b2735;
-  --color-text-soft: #516073;
-  --color-primary: #2d6a4f;
+  --color-text-soft: #6b7a5e;
+  --color-primary: #1a3d1a;
   --color-success: #198754;
   --color-warning: #d97706;
   --color-danger: #b42318;
 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -32,10 +33,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   color: var(--color-text);
-  background:
-    radial-gradient(1200px circle at 10% -20%, #f6e7d2 0%, transparent 55%),
-    radial-gradient(900px circle at 100% 0%, #d7e8f9 0%, transparent 45%),
-    var(--color-bg);
+  background: var(--color-bg);
 }
 
 #google_translate_element {

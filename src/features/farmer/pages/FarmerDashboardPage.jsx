@@ -4,26 +4,93 @@ import { useNavigate } from 'react-router-dom'
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
-import { weatherApi } from '../../../services/api'
 import './FarmerDashboardPage.css'
 
 export function FarmerDashboardPage() {
   const navigate = useNavigate()
   const [weather, setWeather] = useState(null)
   const [weatherError, setWeatherError] = useState('')
+  const [weatherLocationLabel, setWeatherLocationLabel] = useState('Current Location')
 
-  // Fetch weather on mount (using Hisar, India coordinates)
+  const fetchWeatherForCoords = async (latitude, longitude, label) => {
+    const params = new URLSearchParams({
+      latitude: String(latitude),
+      longitude: String(longitude),
+      hourly: 'temperature_2m,soil_temperature_0cm,rain,surface_pressure,cloud_cover,visibility,evapotranspiration,temperature_80m,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_direction_80m,precipitation,precipitation_probability,relative_humidity_2m',
+      timezone: 'auto',
+    })
+
+    const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`)
+    if (!response.ok) {
+      throw new Error(`Open-Meteo request failed: ${response.status}`)
+    }
+
+    const payload = await response.json()
+    const hourly = payload?.hourly || {}
+
+    const rainSeries = (hourly.rain || []).filter((value) => value !== null)
+    const precipitationSeries = (hourly.precipitation || []).filter((value) => value !== null)
+    const humiditySeries = (hourly.relative_humidity_2m || []).filter((value) => value !== null)
+
+    const rainfall = rainSeries.length ? rainSeries[rainSeries.length - 1] : (precipitationSeries.length ? precipitationSeries[precipitationSeries.length - 1] : 0)
+    const humidity = humiditySeries.length ? humiditySeries[humiditySeries.length - 1] : 50
+    const floodRisk = Math.min(100, Math.round((rainfall * 5) + (humidity * 0.2)))
+    const droughtRisk = Math.max(0, Math.round((100 - rainfall) * 0.5))
+
+    setWeather({
+      rainfall,
+      flood_risk: floodRisk,
+      drought_risk: droughtRisk,
+      timestamp: new Date().toISOString(),
+    })
+    setWeatherError('')
+    setWeatherLocationLabel(label)
+  }
+
+  // Fetch weather on mount using browser geolocation; fall back to Hisar if unavailable.
   useEffect(() => {
     const fetchWeather = async () => {
-      try {
-        // Hisar, Haryana (typical farmer region)
-        const data = await weatherApi.getRiskScore(29.1965, 75.7345)
-        setWeather(data)
-      } catch (error) {
-        console.error('Weather API error:', error)
-        setWeatherError('Could not fetch weather data')
+      const fallbackLat = 29.1965
+      const fallbackLon = 75.7345
+      const fallbackLabel = 'Hisar Region (Fallback)'
+
+      const fetchFallback = async () => {
+        try {
+          await fetchWeatherForCoords(fallbackLat, fallbackLon, fallbackLabel)
+        } catch (fallbackError) {
+          console.error('Weather API fallback error:', fallbackError)
+          setWeatherError('Could not fetch weather data')
+        }
       }
+
+      if (!navigator.geolocation) {
+        await fetchFallback()
+        return
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords
+            const roundedLat = Number(latitude.toFixed(4))
+            const roundedLon = Number(longitude.toFixed(4))
+            await fetchWeatherForCoords(roundedLat, roundedLon, `Current Location (${roundedLat}, ${roundedLon})`)
+          } catch (geoFetchError) {
+            console.error('Weather API geolocation fetch error:', geoFetchError)
+            await fetchFallback()
+          }
+        },
+        async () => {
+          await fetchFallback()
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000,
+        }
+      )
     }
+
     fetchWeather()
   }, [])
 
@@ -288,7 +355,7 @@ export function FarmerDashboardPage() {
                         <h4 className="font-headline mt-1 text-3xl font-black">
                           {Math.round(weather.rainfall || 0)}mm
                         </h4>
-                        <p className="text-sm font-semibold text-stone-600">Rainfall · Hisar Region</p>
+                        <p className="text-sm font-semibold text-stone-600">Rainfall · {weatherLocationLabel}</p>
                         <div className="mt-3 grid grid-cols-2 gap-3">
                           <div>
                             <p className="text-xs font-bold text-red-600">Flood Risk</p>

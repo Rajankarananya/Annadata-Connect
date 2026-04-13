@@ -39,3 +39,6 @@ __pycache__/
 # ChromaDB and vector store persistence
 data/
 chroma_db/
+
+# Large local media assets
+public/*.mp4

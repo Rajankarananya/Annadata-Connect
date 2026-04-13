@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import requests
-from fastapi import APIRouter, Body, HTTPException, Query
+from fastapi import APIRouter, Body, HTTPException, Query, Request, Response
 from fastapi.responses import StreamingResponse
 from deep_translator import GoogleTranslator
 from pydantic import BaseModel, Field
@@ -25,6 +25,25 @@ from langchain_chroma import Chroma
 
 # Initialize the router
 router = APIRouter(tags=["Chat"])
+
+
+def _preflight_response(request: Request) -> Response:
+    """Return CORS headers for explicit preflight handling on chat endpoints."""
+    configured = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+    allowed_origins = [origin.strip() for origin in configured.split(",") if origin.strip()]
+
+    origin = request.headers.get("origin", "")
+    requested_headers = request.headers.get("access-control-request-headers", "Authorization,Content-Type")
+
+    response = Response(status_code=204)
+    if origin in allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Vary"] = "Origin"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = requested_headers
+
+    return response
 
 # ---------------------------------------------------------------------------
 # LLM Configuration
@@ -400,6 +419,11 @@ async def chat(
         )
 
 
+@router.options("/chat")
+async def chat_preflight(request: Request):
+    return _preflight_response(request)
+
+
 # ---------------------------------------------------------------------------
 # Endpoint 2: Multilingual Chat
 # POST /chat/multilingual
@@ -451,3 +475,8 @@ async def chat_multilingual(
             status_code=500,
             detail=f"Error processing query: {str(e)}"
         )
+
+
+@router.options("/chat/multilingual")
+async def chat_multilingual_preflight(request: Request):
+    return _preflight_response(request)

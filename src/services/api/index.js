@@ -63,8 +63,8 @@ export const weatherApi = {
     try {
       const response = await apiClient.get(`/weather/risk`, {
         params: {
-          latitude,
-          longitude,
+          lat: latitude,
+          lon: longitude,
         },
       })
       return response.data || response

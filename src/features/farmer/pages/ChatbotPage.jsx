@@ -115,7 +115,8 @@ export function ChatbotPage() {
     <div className="chatbot-root bg-background font-body text-on-surface selection:bg-secondary-container">
       <FarmerTopNav />
 
-      <main className="mx-auto min-h-screen max-w-4xl px-4 pb-28 pt-20 lg:px-0">
+      <main className="min-h-screen px-4 pb-28 pt-20 lg:ml-64 lg:px-8">
+        <div className="mx-auto w-full max-w-5xl">
         <section className="mb-8 mt-4 text-center">
           <h1 className="font-headline mb-2 text-3xl font-extrabold text-primary">AI Advisor</h1>
           <p className="font-medium text-on-surface-variant">Your digital agronomist for smarter farming decisions</p>
@@ -249,6 +250,7 @@ export function ChatbotPage() {
             <h4 className="font-headline text-sm font-bold text-on-secondary-fixed-variant">Trust Architecture</h4>
             <p className="text-xs leading-snug text-on-secondary-fixed-variant opacity-80">Recommendations are based on local regional data and validated agronomical science. Always consult local experts for large-scale operations.</p>
           </div>
+        </div>
         </div>
       </main>
 
