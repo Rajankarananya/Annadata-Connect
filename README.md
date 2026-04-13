@@ -215,41 +215,6 @@ docker-compose up -d
 ```
 
 ---
-
-## 📄 **Environment Variables**
-
-Copy `.env.example` to `.env` and configure:
-
-```env
-# Backend
-BACKEND_PORT=8000
-DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/agri_db
-JWT_SECRET_KEY=your-secret-key
-JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# LLM
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3
-
-# Frontend
-VITE_API_BASE_URL=http://localhost:8000/api/v1
-VITE_DEFAULT_LANGUAGE=en
-```
-
-See [SETUP.md](SETUP.md) for complete configuration.
-
----
-
-## 📝 **Project Status**
-
-✅ **30/30 Tasks Complete**
-- Phase 1: Setup & Planning (6/6)
-- Phase 2: Core Build (12/12)
-- Phase 3: Integration (7/7)
-- Phase 4: Demo Prep (5/5)
-
----
-
 ## 🤝 **Contributing**
 
 This is a group project with contributions from:
@@ -262,9 +227,21 @@ This is a group project with contributions from:
 
 ## 📧 **Contact**
 
-Project Lead: Ananya  
-Email: rajankarananya@gmail.com  
+Project Member 1: Ananya  Rajankar
+Email: ananyasocialuse@gmail.com || ananya.rajanakr23@pccoepune.org
 GitHub: https://github.com/Rajankarananya/Annadata-Connect
+
+Project Member 2: Shruti Jaggi
+Email: shruti.jaggo23@pcoepune.org 
+GitHub:  https://github.com/Shruti1724/Annadata-Connect
+
+Project Member 3: Vaidavi Naik
+Email: vaidavink2005@gmail.com || vaidavi.naik23@pccoepune.org
+GitHub: https://github.com/VaidaviNaik/Annadata-Connect
+
+Project Member 4: Shruti Mahadik
+Email: shruti.mahadik23@pccoepune.org
+GitHub: https://github.com/Shrutim47/Annadata-Connect
 
 ---
 
