@@ -62,7 +62,7 @@ async function networkFirstApi(request) {
     const cache = await caches.open(API_CACHE);
     cache.put(request, networkResponse.clone());
     return networkResponse;
-  } catch (error) {
+  } catch {
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
       return cachedResponse;

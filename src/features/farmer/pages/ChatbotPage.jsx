@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
@@ -25,16 +25,11 @@ const QUICK_PROMPTS = [
 export function ChatbotPage() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES)
   const [draft, setDraft] = useState('')
-  const [language, setLanguage] = useState('en')
+  const [language] = useState('en')
   const [isLoading, setIsLoading] = useState(false)
   const [errorText, setErrorText] = useState('')
   const [copied, setCopied] = useState(false)
   const chatContainerRef = useRef(null)
-
-  const historyPayload = useMemo(
-    () => messages.filter((m) => m.id !== 'welcome').map((m) => ({ role: m.role, content: m.content })),
-    [messages],
-  )
 
   const scrollToBottom = () => {
     if (!chatContainerRef.current) {
