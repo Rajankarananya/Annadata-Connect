@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
+import { authApi } from '../../../services/api'
 import { ROLES } from '../../../constants/roles'
 
 const loginSchema = z.object({
-  username: z.string().trim().min(3, 'Enter a valid email address.'),
+  email: z.string().trim().min(1, 'Enter email or phone number.'),
   password: z.string().trim().min(6, 'Password must be at least 6 characters.'),
   role: z.enum([ROLES.FARMER, ROLES.ADMIN], { message: 'Select a valid role.' }),
 })
@@ -28,14 +29,13 @@ export function LoginPage() {
   } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
       role: ROLES.FARMER,
     },
   })
 
   const selectedRole = watch('role')
-  const username = watch('username')
   const isFarmerSelected = selectedRole === ROLES.FARMER
 
   const onSubmit = async (values) => {
@@ -44,19 +44,22 @@ export function LoginPage() {
     setSubmitState({ loading: true, error: '', success: '' })
 
     try {
+<<<<<<< HEAD
       await new Promise((resolve) => setTimeout(resolve, 500))
       localStorage.setItem('authToken', 'dev-token')
       localStorage.setItem('authRole', values.role)
+      const response = await authApi.login(values.email, values.password)
 
-      const destination = values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard'
-      setSubmitState({ loading: false, error: '', success: `Login successful. Redirecting to ${destination}...` })
-      navigate(destination, { replace: true })
-    } catch {
-      setSubmitState({ loading: false, error: 'Unable to login right now. Please try again.', success: '' })
-    }
-  }
+      // Store token and role
+      localStorage.setItem('authToken', response.access_token)
+      localStorage.setItem('authRole', response.role || values.role)
 
-  return (
+      setSubmitState({ loading: false, error: '', success: `Login successful. Redirecting...` })
+
+      navigate(values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard', { replace: true })
+    } catch (err) {
+      const errorDetail = err.response?.data?.detail || 'Unable to login right now. Please try again.'
+      setSubmitState({ loading: false, error: errorDetail, success: '' }
     <div className="relative flex min-h-screen flex-col bg-surface font-body text-on-surface">
       <div className="fixed inset-0 z-0">
         <img
@@ -119,34 +122,29 @@ export function LoginPage() {
 
                 <div className="relative">
                   <input
-                    id="username"
-                    type="text"
+                    id="email"
+                    type="email"
                     placeholder=" "
                     className="peer w-full rounded-xl border-none bg-surface-container-lowest px-4 pb-2 pt-6 text-on-surface transition-all focus:ring-2 focus:ring-surface-tint/20"
-                    {...register('username')}
+                    {...register('email')}
                   />
                   <label
-                    htmlFor="username"
+                    htmlFor="email"
                     className="pointer-events-none absolute left-4 top-4 text-on-surface-variant transition-opacity duration-150 peer-focus:opacity-0 peer-not-placeholder-shown:opacity-0"
                   >
+<<<<<<< HEAD
                     Email
+=======
+                    {t('auth.email')}
+>>>>>>> f5983842 (Integration: Connect all components - auth flow, data display, config)
                   </label>
-                  {username?.trim() ? (
-                    <div className="absolute right-4 top-5 text-secondary">
-                      <span className="material-symbols-outlined text-xl">check_circle</span>
-                    </div>
-                  ) : null}
-                  {errors.username ? <p className="mt-1 text-xs text-red-600">{errors.username.message}</p> : null}
+                  {errors.email ? <p className="mt-1 text-xs text-red-600">{errors.email.message}</p> : null}
                 </div>
 
                 <div className="relative">
                   <input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder=" "
-                    className="peer w-full rounded-xl border-none bg-surface-container-lowest px-4 pb-2 pt-6 text-on-surface transition-all focus:ring-2 focus:ring-surface-tint/20"
-                    {...register('password')}
-                  />
+                    {t('auth.email')}
                   <label
                     htmlFor="password"
                     className="pointer-events-none absolute left-4 top-4 text-on-surface-variant transition-opacity duration-150 peer-focus:opacity-0 peer-not-placeholder-shown:opacity-0"

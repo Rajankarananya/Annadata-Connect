@@ -8,3 +8,29 @@ pydantic-settings==2.2.1
 python-dotenv==1.0.1
 geoalchemy2==0.15.1
 psycopg2-binary==2.9.9
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+bcrypt==4.1.2
+cryptography==42.0.0
+
+# ML & Image Processing
+tensorflow==2.15.0
+pillow==10.1.0
+numpy==1.24.3
+
+# LLM & RAG
+langchain==0.1.14
+langchain-community==0.0.38
+ollama==0.1.0
+chromadb==0.4.24
+
+# HTTP & External APIs
+requests==2.31.0
+httpx==0.26.0
+
+# Data Processing
+pandas==2.1.4
+
+# File handling
+python-multipart==0.0.6
