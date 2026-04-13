@@ -7,15 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Node
+node_modules/
+dist/
+dist-ssr/
 *.local
+package-lock.json
 
-# Editor directories and files
+# Editor files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -24,21 +26,19 @@ dist-ssr
 *.sw?
 *.vite/
 
-# Local environment secrets
+# Environment files
 .env
-
-# Keep templates tracked
 !.env.example
 
-# Python cache
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.egg-info/
 
-# ChromaDB and vector store persistence
+# Database / vector storage
 data/
 chroma_db/
 
-# Large local media assets
+# Media
 public/*.mp4
