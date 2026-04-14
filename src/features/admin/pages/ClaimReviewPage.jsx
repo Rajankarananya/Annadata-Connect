@@ -8,17 +8,29 @@ import './ClaimReviewPage.css'
 export function ClaimReviewPage() {
   const [reviewNotes, setReviewNotes] = useState('')
   const [decisionLoading, setDecisionLoading] = useState(false)
+  const [decisionFeedback, setDecisionFeedback] = useState({ error: '', success: '' })
   const modelDamageSeverity = 72.4
   const modelConfidence = 94
   const confidenceBand = modelConfidence >= 85 ? 'High confidence' : modelConfidence >= 70 ? 'Moderate confidence' : 'Low confidence'
 
-  const handleDecision = async () => {
+  const handleDecision = async (action) => {
     if (decisionLoading) {
       return
     }
 
+    if ((action === 'reject' || action === 'senior') && reviewNotes.trim().length < 12) {
+      setDecisionFeedback({
+        error: 'Please add at least 12 characters in review notes before this action.',
+        success: '',
+      })
+      return
+    }
+
+    setDecisionFeedback({ error: '', success: '' })
     setDecisionLoading(true)
     await new Promise((resolve) => setTimeout(resolve, 900))
+    const actionLabel = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'sent for senior review'
+    setDecisionFeedback({ error: '', success: `Claim has been ${actionLabel}.` })
     setDecisionLoading(false)
   }
 
@@ -218,7 +230,7 @@ export function ClaimReviewPage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <AsyncButton
-                      onClick={handleDecision}
+                      onClick={() => handleDecision('approve')}
                       isLoading={decisionLoading}
                       loadingText="Submitting..."
                       className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container px-6 py-4 text-sm font-bold text-white transition-transform duration-200 hover:scale-[1.02]"
@@ -228,7 +240,7 @@ export function ClaimReviewPage() {
                     </AsyncButton>
 
                     <AsyncButton
-                      onClick={handleDecision}
+                      onClick={() => handleDecision('reject')}
                       isLoading={decisionLoading}
                       loadingText="Submitting..."
                       className="flex items-center justify-center gap-2 rounded-xl bg-surface-container-high px-6 py-4 text-sm font-bold text-on-surface transition-colors hover:bg-emerald-100/50"
@@ -238,7 +250,7 @@ export function ClaimReviewPage() {
                     </AsyncButton>
 
                     <AsyncButton
-                      onClick={handleDecision}
+                      onClick={() => handleDecision('senior')}
                       isLoading={decisionLoading}
                       loadingText="Submitting..."
                       className="col-span-2 flex items-center justify-center gap-2 rounded-xl border-2 border-outline-variant/30 px-6 py-3 text-sm font-bold text-on-surface-variant transition-colors hover:bg-surface"
@@ -248,6 +260,9 @@ export function ClaimReviewPage() {
                     </AsyncButton>
                   </div>
                 </div>
+
+                {decisionFeedback.error ? <p className="text-xs text-red-600">{decisionFeedback.error}</p> : null}
+                {decisionFeedback.success ? <p className="text-xs text-emerald-700">{decisionFeedback.success}</p> : null}
 
                 <div className="flex items-start gap-3 border-t border-outline-variant/10 pt-4">
                   <span className="material-symbols-outlined text-lg text-tertiary">report_problem</span>

@@ -57,6 +57,8 @@ export function AdminSettingsPage() {
   const { t } = useTranslation()
   const [isSaving, setIsSaving] = useState(false)
   const [activeLanguage, setActiveLanguage] = useState(getAppLanguage())
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true)
+  const [settingsNotice, setSettingsNotice] = useState('')
   const [submitFeedback, setSubmitFeedback] = useState({ error: '', success: '' })
 
   const handleLanguageChange = (languageCode) => {
@@ -156,7 +158,11 @@ export function AdminSettingsPage() {
                     <h3 className="text-xl font-bold text-on-primary-fixed-variant">Manage Claim Categories</h3>
                     <p className="mt-1 text-sm text-on-surface-variant">Define classification for all crop loss insurance claims.</p>
                   </div>
-                  <button type="button" className="flex items-center gap-2 rounded-lg bg-surface-container px-4 py-2 font-semibold text-on-surface transition-colors hover:bg-surface-container-high">
+                  <button
+                    type="button"
+                    onClick={() => setSettingsNotice('Category editor opened. New category workflow is ready for backend wiring.')}
+                    className="flex items-center gap-2 rounded-lg bg-surface-container px-4 py-2 font-semibold text-on-surface transition-colors hover:bg-surface-container-high"
+                  >
                     <span className="material-symbols-outlined text-[20px]">add</span> Add Category
                   </button>
                 </div>
@@ -173,8 +179,8 @@ export function AdminSettingsPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button type="button" className="p-2 text-on-surface-variant hover:text-primary"><span className="material-symbols-outlined">edit</span></button>
-                      <button type="button" className="p-2 text-on-surface-variant hover:text-error"><span className="material-symbols-outlined">delete</span></button>
+                      <button type="button" onClick={() => setSettingsNotice('Edit requested for Pest Infestation category.')} className="p-2 text-on-surface-variant hover:text-primary"><span className="material-symbols-outlined">edit</span></button>
+                      <button type="button" onClick={() => setSettingsNotice('Delete requested for Pest Infestation category.')} className="p-2 text-on-surface-variant hover:text-error"><span className="material-symbols-outlined">delete</span></button>
                     </div>
                   </div>
 
@@ -189,8 +195,8 @@ export function AdminSettingsPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button type="button" className="p-2 text-on-surface-variant hover:text-primary"><span className="material-symbols-outlined">edit</span></button>
-                      <button type="button" className="p-2 text-on-surface-variant hover:text-error"><span className="material-symbols-outlined">delete</span></button>
+                      <button type="button" onClick={() => setSettingsNotice('Edit requested for Flash Flooding category.')} className="p-2 text-on-surface-variant hover:text-primary"><span className="material-symbols-outlined">edit</span></button>
+                      <button type="button" onClick={() => setSettingsNotice('Delete requested for Flash Flooding category.')} className="p-2 text-on-surface-variant hover:text-error"><span className="material-symbols-outlined">delete</span></button>
                     </div>
                   </div>
 
@@ -205,11 +211,13 @@ export function AdminSettingsPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button type="button" className="p-2 text-on-surface-variant hover:text-primary"><span className="material-symbols-outlined">edit</span></button>
-                      <button type="button" className="p-2 text-on-surface-variant hover:text-error"><span className="material-symbols-outlined">delete</span></button>
+                      <button type="button" onClick={() => setSettingsNotice('Edit requested for Drought / Heatwave category.')} className="p-2 text-on-surface-variant hover:text-primary"><span className="material-symbols-outlined">edit</span></button>
+                      <button type="button" onClick={() => setSettingsNotice('Delete requested for Drought / Heatwave category.')} className="p-2 text-on-surface-variant hover:text-error"><span className="material-symbols-outlined">delete</span></button>
                     </div>
                   </div>
                 </div>
+
+                {settingsNotice ? <p className="mt-4 text-xs font-semibold text-primary">{settingsNotice}</p> : null}
               </section>
 
               <section className="rounded-xl bg-surface-container-lowest p-8 shadow-[0_12px_32px_-4px_rgba(9,81,52,0.08)]">
@@ -240,7 +248,11 @@ export function AdminSettingsPage() {
                     <span className="text-xs leading-relaxed text-on-surface-variant">Feedback on physical field verification processes.</span>
                   </div>
 
-                  <button type="button" className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-container transition-colors hover:border-primary">
+                  <button
+                    type="button"
+                    onClick={() => setSettingsNotice('New grievance category flow opened.')}
+                    className="flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-container transition-colors hover:border-primary"
+                  >
                     <div className="text-center">
                       <span className="material-symbols-outlined text-outline">add_circle</span>
                       <span className="mt-1 block text-xs font-bold uppercase tracking-tighter text-on-surface-variant">New Category</span>
@@ -363,8 +375,15 @@ export function AdminSettingsPage() {
                         <span className="block text-sm font-bold text-on-surface">Two-Factor Authentication</span>
                         <span className="text-xs text-on-surface-variant">Enhance account security via mobile app.</span>
                       </div>
-                      <button type="button" className="relative flex h-6 w-12 items-center rounded-full bg-primary px-1">
-                        <div className="h-4 w-4 translate-x-6 rounded-full bg-white"></div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTwoFactorEnabled((previous) => !previous)
+                          setSettingsNotice(`Two-factor authentication ${twoFactorEnabled ? 'disabled' : 'enabled'}.`)
+                        }}
+                        className={`relative flex h-6 w-12 items-center rounded-full px-1 ${twoFactorEnabled ? 'bg-primary' : 'bg-surface-container-highest'}`}
+                      >
+                        <div className={`h-4 w-4 rounded-full bg-white transition-transform ${twoFactorEnabled ? 'translate-x-6' : ''}`}></div>
                       </button>
                     </div>
                   </div>

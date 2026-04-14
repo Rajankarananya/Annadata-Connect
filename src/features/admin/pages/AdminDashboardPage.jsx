@@ -1,4 +1,8 @@
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { AdminSidebar } from '../../../components/layout/AdminSidebar'
+import { ROUTES } from '../../../constants/navigation'
 
 import './AdminDashboardPage.css'
 
@@ -95,6 +99,21 @@ const regions = [
 ]
 
 export function AdminDashboardPage() {
+  const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [activeRange, setActiveRange] = useState('daily')
+
+  const filteredClaims = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase()
+    if (!query) {
+      return claims
+    }
+
+    return claims.filter((claim) => {
+      return [claim.id, claim.farmer, claim.region, claim.status].some((field) => field.toLowerCase().includes(query))
+    })
+  }, [searchTerm])
+
   return (
     <div className="admin-dashboard bg-surface text-on-surface" style={{ fontFamily: 'Inter, sans-serif' }}>
       <AdminSidebar />
@@ -108,6 +127,8 @@ export function AdminDashboardPage() {
                 className="w-full rounded-lg border-none bg-white/50 py-2 pl-10 pr-4 text-sm transition-all focus:bg-white focus:ring-1 focus:ring-primary"
                 placeholder="Search claims, regions, or IDs..."
                 type="text"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
               />
             </div>
           </div>
@@ -147,20 +168,36 @@ export function AdminDashboardPage() {
 
             <div className="flex items-center gap-3">
               <div className="flex rounded-lg bg-surface-container p-1">
-                <button type="button" className="rounded-md bg-white px-3 py-1.5 text-xs font-bold text-primary shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setActiveRange('daily')}
+                  className={`rounded-md px-3 py-1.5 text-xs font-bold shadow-sm ${activeRange === 'daily' ? 'bg-white text-primary' : 'text-on-surface-variant'}`}
+                >
                   Daily
                 </button>
-                <button type="button" className="px-3 py-1.5 text-xs font-bold text-on-surface-variant transition-colors hover:text-on-surface">
+                <button
+                  type="button"
+                  onClick={() => setActiveRange('weekly')}
+                  className={`px-3 py-1.5 text-xs font-bold transition-colors hover:text-on-surface ${activeRange === 'weekly' ? 'text-primary' : 'text-on-surface-variant'}`}
+                >
                   Weekly
                 </button>
-                <button type="button" className="px-3 py-1.5 text-xs font-bold text-on-surface-variant transition-colors hover:text-on-surface">
+                <button
+                  type="button"
+                  onClick={() => setActiveRange('monthly')}
+                  className={`px-3 py-1.5 text-xs font-bold transition-colors hover:text-on-surface ${activeRange === 'monthly' ? 'text-primary' : 'text-on-surface-variant'}`}
+                >
                   Monthly
                 </button>
               </div>
 
-              <button type="button" className="flex items-center gap-2 rounded-lg bg-surface-container-highest px-4 py-2 text-sm font-semibold text-on-surface">
+              <button
+                type="button"
+                onClick={() => setSearchTerm('')}
+                className="flex items-center gap-2 rounded-lg bg-surface-container-highest px-4 py-2 text-sm font-semibold text-on-surface"
+              >
                 <span className="material-symbols-outlined text-sm">filter_list</span>
-                Filters
+                Clear Filters
               </button>
             </div>
           </div>
@@ -222,7 +259,11 @@ export function AdminDashboardPage() {
                 ))}
               </div>
 
-              <button type="button" className="mt-auto w-full rounded-lg border border-[rgba(17,86,56,0.2)] py-2 text-xs font-bold text-primary transition-colors hover:bg-[rgba(17,86,56,0.05)]">
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.ADMIN.CLAIMS_QUEUE)}
+                className="mt-auto w-full rounded-lg border border-[rgba(17,86,56,0.2)] py-2 text-xs font-bold text-primary transition-colors hover:bg-[rgba(17,86,56,0.05)]"
+              >
                 View All Alerts
               </button>
             </div>
@@ -252,7 +293,7 @@ export function AdminDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="text-xs font-medium text-on-surface">
-                    {claims.map((claim) => (
+                    {filteredClaims.map((claim) => (
                       <tr key={claim.id} className="group border-b border-[rgba(191,201,192,0.1)] transition-colors hover:bg-surface-container-low">
                         <td className="py-4 font-mono font-bold text-primary">{claim.id}</td>
                         <td className="py-4">{claim.farmer}</td>
@@ -264,7 +305,11 @@ export function AdminDashboardPage() {
                           </span>
                         </td>
                         <td className="py-4 text-right">
-                          <button type="button" className="material-symbols-outlined text-on-surface-variant transition-colors group-hover:text-primary">
+                          <button
+                            type="button"
+                            onClick={() => navigate(ROUTES.ADMIN.CLAIM_REVIEW)}
+                            className="material-symbols-outlined text-on-surface-variant transition-colors group-hover:text-primary"
+                          >
                             chevron_right
                           </button>
                         </td>
@@ -336,7 +381,7 @@ export function AdminDashboardPage() {
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-on-surface-variant">Total Payouts</h4>
                 <p className="text-2xl font-black tracking-tight text-on-surface">₹2.4B</p>
-                <p className="mt-1 text-[10px] font-medium text-emerald-600">Disbursed Q1 2024</p>
+                <p className="mt-1 text-[10px] font-medium text-emerald-600">Disbursed Q1 2026</p>
               </div>
               <span className="material-symbols-outlined text-3xl text-primary">payments</span>
             </div>

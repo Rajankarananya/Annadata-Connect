@@ -17,6 +17,12 @@ const LANG_OPTIONS = [
   { code: 'hi', label: 'हिंदी', subtitle: 'Hindi', glyph: 'अ' },
 ]
 
+const FOOTER_LINK_TARGETS = {
+  platform: ['/login', '/register', 'https://agmarknet.gov.in/', '/farmer/chatbot', 'https://mausam.imd.gov.in/'],
+  company: ['https://www.india.gov.in/', 'https://blog.mygov.in/', 'https://www.ncs.gov.in/', 'https://pib.gov.in/', 'mailto:support@annadataconnect.in'],
+  support: ['mailto:support@annadataconnect.in', 'https://www.mygov.in/privacy-policy/', 'https://www.mygov.in/terms-and-conditions/', 'mailto:grievance@annadataconnect.in'],
+}
+
 function StepLeafIcon() {
   return (
     <svg className="h-5 w-5 text-[#1A3D1A]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
@@ -143,6 +149,22 @@ export function LandingPage() {
   }
 
   const sectionParagraphs = [t.sectionBody]
+
+  const renderFooterLink = (label, target) => {
+    if (target.startsWith('/')) {
+      return (
+        <Link key={label} to={target} className="mb-2 block text-sm text-[#8FA888] transition-colors hover:text-white">
+          {label}
+        </Link>
+      )
+    }
+
+    return (
+      <a key={label} href={target} target="_blank" rel="noreferrer" className="mb-2 block text-sm text-[#8FA888] transition-colors hover:text-white">
+        {label}
+      </a>
+    )
+  }
 
   return (
     <div className="font-ui relative min-h-screen w-full overflow-hidden bg-[#FAFAF7] text-[#111111]">
@@ -312,42 +334,30 @@ export function LandingPage() {
 
             <div>
               <h4 className="mb-4 text-xs font-medium uppercase tracking-widest text-white">{t.footerPlatformTitle}</h4>
-              {t.footerPlatformLinks.map((item) => (
-                <a key={item} href="#" className="mb-2 block text-sm text-[#8FA888] transition-colors hover:text-white">
-                  {item}
-                </a>
-              ))}
+              {t.footerPlatformLinks.map((item, index) => renderFooterLink(item, FOOTER_LINK_TARGETS.platform[index] || '/'))}
             </div>
 
             <div>
               <h4 className="mb-4 text-xs font-medium uppercase tracking-widest text-white">{t.footerCompanyTitle}</h4>
-              {t.footerCompanyLinks.map((item) => (
-                <a key={item} href="#" className="mb-2 block text-sm text-[#8FA888] transition-colors hover:text-white">
-                  {item}
-                </a>
-              ))}
+              {t.footerCompanyLinks.map((item, index) => renderFooterLink(item, FOOTER_LINK_TARGETS.company[index] || '/'))}
             </div>
 
             <div>
               <h4 className="mb-4 text-xs font-medium uppercase tracking-widest text-white">{t.footerSupportTitle}</h4>
-              {t.footerSupportLinks.map((item) => (
-                <a key={item} href="#" className="mb-2 block text-sm text-[#8FA888] transition-colors hover:text-white">
-                  {item}
-                </a>
-              ))}
+              {t.footerSupportLinks.map((item, index) => renderFooterLink(item, FOOTER_LINK_TARGETS.support[index] || '/'))}
             </div>
           </div>
 
           <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-[#2A3D2A] pt-6">
             <p className="text-xs text-[#5A6E55]">{t.footerRights}</p>
             <div className="flex items-center gap-2">
-              <a href="#" aria-label="Twitter X" className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2A3D2A] bg-[#1E3020] text-white/60">
+              <a href="https://x.com" target="_blank" rel="noreferrer" aria-label="Twitter X" className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2A3D2A] bg-[#1E3020] text-white/60">
                 <XIcon />
               </a>
-              <a href="#" aria-label="Instagram" className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2A3D2A] bg-[#1E3020] text-white/60">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2A3D2A] bg-[#1E3020] text-white/60">
                 <InstagramIcon />
               </a>
-              <a href="#" aria-label="WhatsApp" className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2A3D2A] bg-[#1E3020] text-white/60">
+              <a href="https://wa.me/919000000000" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2A3D2A] bg-[#1E3020] text-white/60">
                 <WhatsAppIcon />
               </a>
             </div>

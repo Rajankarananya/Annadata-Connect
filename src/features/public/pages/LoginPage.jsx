@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { ROLES } from '../../../constants/roles'
 
 const loginSchema = z.object({
-  username: z.string().trim().min(6, 'Enter mobile number or username.'),
+  username: z.string().trim().min(3, 'Enter a valid email address.'),
   password: z.string().trim().min(6, 'Password must be at least 6 characters.'),
   role: z.enum([ROLES.FARMER, ROLES.ADMIN], { message: 'Select a valid role.' }),
 })
@@ -28,7 +28,7 @@ export function LoginPage() {
   } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: '9876543210',
+      username: '',
       password: '',
       role: ROLES.FARMER,
     },
@@ -37,7 +37,6 @@ export function LoginPage() {
   const selectedRole = watch('role')
   const username = watch('username')
   const isFarmerSelected = selectedRole === ROLES.FARMER
-  const redirectPath = isFarmerSelected ? '/farmer/dashboard' : '/admin/dashboard'
 
   const onSubmit = async (values) => {
     if (submitState.loading || isSubmitting) return
@@ -46,13 +45,12 @@ export function LoginPage() {
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 500))
-
       localStorage.setItem('authToken', 'dev-token')
       localStorage.setItem('authRole', values.role)
 
-      setSubmitState({ loading: false, error: '', success: `Login successful. Redirecting to ${values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard'}...` })
-
-      navigate(values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard', { replace: true })
+      const destination = values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard'
+      setSubmitState({ loading: false, error: '', success: `Login successful. Redirecting to ${destination}...` })
+      navigate(destination, { replace: true })
     } catch {
       setSubmitState({ loading: false, error: 'Unable to login right now. Please try again.', success: '' })
     }
@@ -74,7 +72,9 @@ export function LoginPage() {
           <span className="material-symbols-outlined text-3xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
             eco
           </span>
-          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-primary">Annadata Connect</h1>
+          <Link to="/" className="font-headline text-2xl font-extrabold tracking-tight text-primary hover:opacity-90">
+            Annadata Connect
+          </Link>
         </div>
       </header>
 
@@ -104,27 +104,6 @@ export function LoginPage() {
               </button>
             </div>
 
-            <div className="mx-6 mt-4 rounded-xl border border-[#d8e5d8] bg-[#f7fbf7] px-4 py-3">
-              <p className="text-sm font-semibold text-[#115638]">
-                {isFarmerSelected ? 'Farmer Login' : 'Admin Login'}
-              </p>
-              <p className="mt-1 text-xs text-stone-600">
-                {isFarmerSelected
-                  ? 'Are you an Admin Officer? Switch to Admin login below.'
-                  : 'Are you a Farmer? Switch to Farmer login below.'}
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setValue('role', isFarmerSelected ? ROLES.ADMIN : ROLES.FARMER, { shouldValidate: true })
-                  setSubmitState((previous) => ({ ...previous, error: '' }))
-                }}
-                className="mt-2 text-xs font-bold text-primary underline-offset-2 hover:underline"
-              >
-                {isFarmerSelected ? 'Login as Admin instead' : 'Login as Farmer instead'}
-              </button>
-            </div>
-
             <div className="px-8 pb-10 pt-8">
               <div className="mb-8">
                 <h2 className="mb-2 font-headline text-3xl font-bold text-on-surface">Welcome Back</h2>
@@ -150,7 +129,7 @@ export function LoginPage() {
                     htmlFor="username"
                     className="pointer-events-none absolute left-4 top-4 text-on-surface-variant transition-opacity duration-150 peer-focus:opacity-0 peer-not-placeholder-shown:opacity-0"
                   >
-                    {t('auth.mobileOrUsername')}
+                    Email
                   </label>
                   {username?.trim() ? (
                     <div className="absolute right-4 top-5 text-secondary">
@@ -181,7 +160,7 @@ export function LoginPage() {
                 </div>
 
                 <div className="flex justify-end">
-                  <a className="text-sm font-semibold text-primary transition-colors hover:text-primary-container" href="#">
+                  <a className="text-sm font-semibold text-primary transition-colors hover:text-primary-container" href="mailto:support@annadataconnect.in?subject=Password%20Reset%20Request">
                     {t('auth.forgotPassword')}
                   </a>
                 </div>
@@ -189,9 +168,6 @@ export function LoginPage() {
                 {errors.role ? <p className="text-xs text-red-600">{errors.role.message}</p> : null}
                 {submitState.error ? <p className="text-xs text-red-600">{submitState.error}</p> : null}
                 {submitState.success ? <p className="text-xs text-emerald-700">{submitState.success}</p> : null}
-                <p className="text-xs font-medium text-on-surface-variant">
-                  {t('auth.connectedRoute', { path: redirectPath })}
-                </p>
 
                 <button
                   type="submit"
@@ -218,31 +194,16 @@ export function LoginPage() {
                 </p>
               </div>
             </div>
-
-            <div className="flex items-center justify-center gap-3 bg-surface-container-highest/50 px-8 py-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary-container">
-                <span className="material-symbols-outlined text-sm text-on-secondary-container" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  verified_user
-                </span>
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/80">{t('auth.secureGateway')}</span>
-            </div>
-          </div>
-
-          <div className="mt-8 flex justify-center gap-6 text-sm font-medium text-on-surface-variant/60">
-            <a className="transition-colors hover:text-primary" href="#">Support</a>
-            <a className="transition-colors hover:text-primary" href="#">Privacy</a>
-            <a className="transition-colors hover:text-primary" href="#">Terms</a>
           </div>
         </div>
       </main>
 
       <footer className="relative z-10 mx-auto mt-auto flex w-full max-w-7xl flex-col items-center justify-between space-y-4 px-8 py-8 md:flex-row md:space-y-0">
-        <div className="font-body text-sm font-medium text-emerald-900/60">© 2024 Annadata Connect. Cultivating the Digital Legacy.</div>
+        <div className="font-body text-sm font-medium text-emerald-900/60">© 2026 <Link to="/" className="font-semibold text-emerald-900/70 hover:text-primary">Annadata Connect</Link>. Cultivating the Digital Legacy.</div>
         <div className="flex items-center gap-6">
-          <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="#">Privacy Policy</a>
-          <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="#">Terms of Service</a>
-          <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="#">Support</a>
+          <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="https://www.mygov.in/privacy-policy/" target="_blank" rel="noreferrer">Privacy Policy</a>
+          <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="https://www.mygov.in/terms-and-conditions/" target="_blank" rel="noreferrer">Terms of Service</a>
+          <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="mailto:support@annadataconnect.in">Support</a>
         </div>
       </footer>
     </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
@@ -9,12 +10,39 @@ import './ProfilePage.css'
 
 export function ProfilePage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [activeLanguage, setActiveLanguage] = useState(getAppLanguage())
+  const [weatherAlerts, setWeatherAlerts] = useState(() => localStorage.getItem('profileWeatherAlerts') !== 'false')
+  const [aiInsights, setAiInsights] = useState(() => localStorage.getItem('profileAiInsights') !== 'false')
+  const [savedFeedback, setSavedFeedback] = useState('')
 
   const handleLanguageChange = (languageCode) => {
     const next = setAppLanguage(languageCode)
     setActiveLanguage(next)
   }
+
+  const handleSavePreferences = () => {
+    localStorage.setItem('profileWeatherAlerts', String(weatherAlerts))
+    localStorage.setItem('profileAiInsights', String(aiInsights))
+    setSavedFeedback(t('profile.saved'))
+    window.setTimeout(() => setSavedFeedback(''), 1500)
+  }
+
+  const handleCancel = () => {
+    setWeatherAlerts(localStorage.getItem('profileWeatherAlerts') !== 'false')
+    setAiInsights(localStorage.getItem('profileAiInsights') !== 'false')
+    setSavedFeedback('')
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('authRole')
+    navigate('/login', { replace: true })
+  }
+
+  const fullName = 'Rajesh Kumar'
+  const mobile = '+91 98765 43210'
+  const location = t('profile.locationValue')
 
   return (
     <div className="profile-root min-h-screen bg-background pb-24 text-on-surface lg:pb-0">
@@ -36,24 +64,24 @@ export function ProfilePage() {
                 <span className="material-symbols-outlined text-sm">edit</span>
               </div>
             </div>
-            <h2 className="text-lg font-bold leading-tight text-on-surface">Rajesh Kumar</h2>
-            <span className="mt-2 rounded-full bg-primary-fixed/30 px-3 py-1 text-sm font-medium text-primary">Premium Farmer</span>
+            <h2 className="text-lg font-bold leading-tight text-on-surface">{fullName}</h2>
+            <span className="mt-2 rounded-full bg-primary-fixed/30 px-3 py-1 text-sm font-medium text-primary">{t('profile.badge')}</span>
           </div>
           <div className="flex flex-col justify-between rounded-xl bg-surface-container-lowest p-6 shadow-[0px_4px_12px_rgba(0,0,0,0.03)] md:col-span-2">
             <div className="space-y-4">
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-outline">Mobile Number</label>
+                <label className="text-[11px] font-bold uppercase tracking-wider text-outline">{t('profile.mobile')}</label>
                 <div className="flex items-center gap-3 rounded-lg bg-surface-container-low px-4 py-2">
                   <span className="material-symbols-outlined text-primary">call</span>
-                  <span className="font-medium">+91 98765 43210</span>
+                  <span className="font-medium">{mobile}</span>
                   <span className="material-symbols-outlined ml-auto text-sm text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-outline">Primary Location</label>
+                <label className="text-[11px] font-bold uppercase tracking-wider text-outline">{t('profile.primaryLocation')}</label>
                 <div className="flex items-center gap-3 rounded-lg bg-surface-container-low px-4 py-2">
                   <span className="material-symbols-outlined text-primary">location_on</span>
-                  <span className="font-medium">Jalandhar, Punjab</span>
+                  <span className="font-medium">{location}</span>
                 </div>
               </div>
             </div>
@@ -101,12 +129,12 @@ export function ProfilePage() {
                   <span className="material-symbols-outlined">notifications_active</span>
                 </div>
                 <div>
-                  <p className="font-bold text-on-surface">Weather Alerts</p>
-                  <p className="text-xs text-on-surface-variant">Get notified about extreme conditions</p>
+                  <p className="font-bold text-on-surface">{t('profile.weatherAlerts')}</p>
+                  <p className="text-xs text-on-surface-variant">{t('profile.weatherAlertsDesc')}</p>
                 </div>
               </div>
               <label className="relative inline-flex cursor-pointer items-center">
-                <input className="peer sr-only" defaultChecked type="checkbox" />
+                <input className="peer sr-only" checked={weatherAlerts} type="checkbox" onChange={(event) => setWeatherAlerts(event.target.checked)} />
                 <div className="h-6 w-11 rounded-full bg-surface-container-high peer-focus:outline-none peer-checked:bg-primary peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-['']" />
               </label>
             </div>
@@ -117,12 +145,12 @@ export function ProfilePage() {
                   <span className="material-symbols-outlined">psychology</span>
                 </div>
                 <div>
-                  <p className="font-bold text-on-surface">AI Insights</p>
-                  <p className="text-xs text-on-surface-variant">Daily crop growth analysis reports</p>
+                  <p className="font-bold text-on-surface">{t('profile.aiInsights')}</p>
+                  <p className="text-xs text-on-surface-variant">{t('profile.aiInsightsDesc')}</p>
                 </div>
               </div>
               <label className="relative inline-flex cursor-pointer items-center">
-                <input className="peer sr-only" defaultChecked type="checkbox" />
+                <input className="peer sr-only" checked={aiInsights} type="checkbox" onChange={(event) => setAiInsights(event.target.checked)} />
                 <div className="h-6 w-11 rounded-full bg-surface-container-high peer-focus:outline-none peer-checked:bg-primary peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-['']" />
               </label>
             </div>
@@ -130,15 +158,16 @@ export function ProfilePage() {
         </section>
 
         <section className="flex flex-col gap-3 pb-12 pt-6">
-          <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-on-primary shadow-lg shadow-primary/20 transition-all active:scale-95" type="button">
+          <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-on-primary shadow-lg shadow-primary/20 transition-all active:scale-95" type="button" onClick={handleSavePreferences}>
             <span className="material-symbols-outlined">save</span>
-            Save Preferences
+            {t('profile.savePreferences')}
           </button>
+          {savedFeedback ? <p className="text-center text-xs font-semibold text-emerald-700">{savedFeedback}</p> : null}
           <div className="grid grid-cols-2 gap-3">
-            <button className="rounded-xl bg-surface-container-high py-3 text-sm font-bold text-on-surface transition-all active:scale-95" type="button">Cancel</button>
-            <button className="flex items-center justify-center gap-2 rounded-xl bg-error-container py-3 text-sm font-bold text-on-error-container transition-all active:scale-95" type="button">
+            <button className="rounded-xl bg-surface-container-high py-3 text-sm font-bold text-on-surface transition-all active:scale-95" type="button" onClick={handleCancel}>{t('common.cancel')}</button>
+            <button className="flex items-center justify-center gap-2 rounded-xl bg-error-container py-3 text-sm font-bold text-on-error-container transition-all active:scale-95" type="button" onClick={handleLogout}>
               <span className="material-symbols-outlined text-sm">logout</span>
-              Logout
+              {t('common.logout')}
             </button>
           </div>
         </section>

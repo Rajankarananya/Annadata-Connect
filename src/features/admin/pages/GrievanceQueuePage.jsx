@@ -1,3 +1,5 @@
+import { useMemo, useState } from 'react'
+
 import { AdminSidebar } from '../../../components/layout/AdminSidebar'
 
 import './GrievanceQueuePage.css'
@@ -52,6 +54,72 @@ const grievanceRows = [
 ]
 
 export function GrievanceQueuePage() {
+  const [rows, setRows] = useState(grievanceRows)
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [actionFeedback, setActionFeedback] = useState('')
+
+  const selectedRow = useMemo(() => rows[selectedIndex] ?? rows[0], [rows, selectedIndex])
+
+  const handleResolve = () => {
+    if (!selectedRow) {
+      return
+    }
+
+    setRows((previous) =>
+      previous.map((row, index) =>
+        index === selectedIndex
+          ? {
+              ...row,
+              status: 'Resolved',
+              statusClass: 'bg-secondary-container text-on-secondary-container',
+            }
+          : row,
+      ),
+    )
+    setActionFeedback(`${selectedRow.title} marked as resolved.`)
+  }
+
+  const handleAssign = () => {
+    if (!selectedRow) {
+      return
+    }
+
+    setRows((previous) =>
+      previous.map((row, index) =>
+        index === selectedIndex
+          ? {
+              ...row,
+              assigneeType: 'text',
+              assigneeName: 'Assigned to Ops Team',
+              assigneeTextClass: 'text-on-surface',
+              status: 'In Progress',
+              statusClass: 'bg-secondary-container text-on-secondary-container',
+            }
+          : row,
+      ),
+    )
+    setActionFeedback(`${selectedRow.title} assigned to operations team.`)
+  }
+
+  const handleEscalate = () => {
+    if (!selectedRow) {
+      return
+    }
+
+    setRows((previous) =>
+      previous.map((row, index) =>
+        index === selectedIndex
+          ? {
+              ...row,
+              status: 'Escalated',
+              statusClass: 'bg-surface-container-highest text-on-surface-variant',
+            }
+          : row,
+      ),
+    )
+    setActionFeedback(`${selectedRow.title} escalated to senior board.`)
+  }
+
   return (
     <div className="grievance-queue-page flex min-h-screen bg-surface text-on-surface" style={{ fontFamily: 'Inter, sans-serif' }}>
       <AdminSidebar />
@@ -142,10 +210,14 @@ export function GrievanceQueuePage() {
                 </thead>
 
                 <tbody className="divide-y divide-outline-variant/10">
-                  {grievanceRows.map((row) => (
+                  {rows.map((row, index) => (
                     <tr
                       key={row.title}
-                      className={`cubic-ease cursor-pointer hover:bg-emerald-50/30 ${row.highlighted ? 'border-l-4 border-tertiary' : ''}`}
+                      onClick={() => {
+                        setSelectedIndex(index)
+                        setActionFeedback('')
+                      }}
+                      className={`cubic-ease cursor-pointer hover:bg-emerald-50/30 ${selectedIndex === index || row.highlighted ? 'border-l-4 border-tertiary' : ''}`}
                     >
                       <td className="px-6 py-5">
                         <div className="flex flex-col">
@@ -202,9 +274,9 @@ export function GrievanceQueuePage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="label-caps text-primary">Ticket Details</p>
-                  <h3 className="authoritative-text mt-1 text-lg font-extrabold leading-tight">Crop Damage Insurance Delay</h3>
+                  <h3 className="authoritative-text mt-1 text-lg font-extrabold leading-tight">{selectedRow?.title}</h3>
                 </div>
-                <button type="button" className="rounded-full p-1.5 hover:bg-surface-container-highest">
+                <button type="button" onClick={() => setActionFeedback('Ticket panel closed. Select any row to continue.')} className="rounded-full p-1.5 hover:bg-surface-container-highest">
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
@@ -212,12 +284,12 @@ export function GrievanceQueuePage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-xl bg-surface-container-lowest p-3">
                   <p className="label-caps text-[0.6rem] text-on-surface-variant">Farmer</p>
-                  <p className="text-sm font-bold">Ramesh Kumar</p>
+                  <p className="text-sm font-bold">{selectedRow?.assigneeName || 'Not available'}</p>
                 </div>
 
                 <div className="rounded-xl bg-surface-container-lowest p-3">
                   <p className="label-caps text-[0.6rem] text-on-surface-variant">Zone</p>
-                  <p className="text-sm font-bold">Punjab-04</p>
+                  <p className="text-sm font-bold">{selectedRow?.sub?.split('•')[1]?.trim() || 'N/A'}</p>
                 </div>
               </div>
 
@@ -250,6 +322,7 @@ export function GrievanceQueuePage() {
 
                 <button
                   type="button"
+                  onClick={handleResolve}
                   className="primary-gradient cubic-ease flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white hover:opacity-90"
                 >
                   <span className="material-symbols-outlined text-sm">check_circle</span>
@@ -259,6 +332,7 @@ export function GrievanceQueuePage() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
+                    onClick={handleAssign}
                     className="cubic-ease flex items-center justify-center gap-2 rounded-lg bg-surface-container-highest px-4 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container-high"
                   >
                     <span className="material-symbols-outlined text-sm">person_add</span>
@@ -267,6 +341,7 @@ export function GrievanceQueuePage() {
 
                   <button
                     type="button"
+                    onClick={handleAssign}
                     className="cubic-ease flex items-center justify-center gap-2 rounded-lg bg-surface-container-highest px-4 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container-high"
                   >
                     <span className="material-symbols-outlined text-sm">edit</span>
@@ -276,10 +351,13 @@ export function GrievanceQueuePage() {
 
                 <button
                   type="button"
+                  onClick={handleEscalate}
                   className="cubic-ease w-full rounded-lg border border-tertiary/20 px-4 py-2.5 text-sm font-bold text-tertiary hover:bg-tertiary/5"
                 >
                   Escalate to Senior Board
                 </button>
+
+                {actionFeedback ? <p className="text-xs text-primary">{actionFeedback}</p> : null}
               </div>
 
               <div className="mt-4 space-y-3">

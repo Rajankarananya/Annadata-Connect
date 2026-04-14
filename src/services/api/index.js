@@ -128,6 +128,20 @@ export const authApi = {
   },
 
   /**
+   * Get current authenticated user from token
+   * Endpoint: GET /auth/me
+   */
+  me: async () => {
+    try {
+      const response = await apiClient.get(`/auth/me`)
+      return response.data || response
+    } catch (error) {
+      console.error('[authApi.me] Error:', error.response?.data || error.message)
+      throw error
+    }
+  },
+
+  /**
    * Logout
    */
   logout: async () => {
@@ -158,6 +172,21 @@ export const farmersApi = {
       return response.data || response
     } catch (error) {
       console.error('[farmersApi.getProfile] Error:', error.response?.data || error.message)
+      throw error
+    }
+  },
+
+  /**
+   * Get farmer profile by phone number
+   * Endpoint: GET /farmers/by-phone/{phone}
+   * @param {string} phone - Farmer phone
+   */
+  getByPhone: async (phone) => {
+    try {
+      const response = await apiClient.get(`/farmers/by-phone/${phone}`)
+      return response.data || response
+    } catch (error) {
+      console.error('[farmersApi.getByPhone] Error:', error.response?.data || error.message)
       throw error
     }
   },

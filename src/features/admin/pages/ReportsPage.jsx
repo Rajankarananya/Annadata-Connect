@@ -1,3 +1,5 @@
+import { useMemo, useState } from 'react'
+
 import { AdminSidebar } from '../../../components/layout/AdminSidebar'
 
 import './ReportsPage.css'
@@ -12,6 +14,19 @@ const trendBars = [
 ]
 
 export function ReportsPage() {
+  const [activeRange, setActiveRange] = useState('30d')
+  const [reportMessage, setReportMessage] = useState('')
+
+  const settledValue = useMemo(() => {
+    if (activeRange === 'quarterly') {
+      return '₹1.31B'
+    }
+    if (activeRange === 'yearly') {
+      return '₹4.86B'
+    }
+    return '₹482.4M'
+  }, [activeRange])
+
   return (
     <div className="reports-page bg-surface text-on-surface">
       <AdminSidebar />
@@ -68,13 +83,25 @@ export function ReportsPage() {
 
             <div className="flex items-center gap-3">
               <div className="flex items-center rounded-xl bg-surface-container-low p-1.5">
-                <button type="button" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setActiveRange('30d')}
+                  className={`rounded-lg px-4 py-2 text-sm transition-colors ${activeRange === '30d' ? 'bg-white font-semibold text-primary shadow-sm' : 'font-medium text-on-surface-variant hover:text-primary'}`}
+                >
                   Last 30 Days
                 </button>
-                <button type="button" className="px-4 py-2 text-sm font-medium text-on-surface-variant transition-colors hover:text-primary">
+                <button
+                  type="button"
+                  onClick={() => setActiveRange('quarterly')}
+                  className={`rounded-lg px-4 py-2 text-sm transition-colors ${activeRange === 'quarterly' ? 'bg-white font-semibold text-primary shadow-sm' : 'font-medium text-on-surface-variant hover:text-primary'}`}
+                >
                   Quarterly
                 </button>
-                <button type="button" className="px-4 py-2 text-sm font-medium text-on-surface-variant transition-colors hover:text-primary">
+                <button
+                  type="button"
+                  onClick={() => setActiveRange('yearly')}
+                  className={`rounded-lg px-4 py-2 text-sm transition-colors ${activeRange === 'yearly' ? 'bg-white font-semibold text-primary shadow-sm' : 'font-medium text-on-surface-variant hover:text-primary'}`}
+                >
                   Yearly
                 </button>
               </div>
@@ -89,7 +116,7 @@ export function ReportsPage() {
               <div className="absolute bottom-0 left-0 top-0 w-1 bg-primary"></div>
               <div>
                 <p className="mb-1 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant">Total Claims Settled</p>
-                <h3 className="text-4xl font-extrabold tracking-tighter text-on-surface">₹482.4M</h3>
+                <h3 className="text-4xl font-extrabold tracking-tighter text-on-surface">{settledValue}</h3>
               </div>
               <div className="mt-4 flex items-center gap-2">
                 <div className="flex items-center gap-1 rounded bg-secondary-container px-2 py-0.5 text-[0.75rem] font-bold text-on-secondary-container">
@@ -134,10 +161,10 @@ export function ReportsPage() {
               <div className="mb-8 flex items-center justify-between">
                 <h4 className="text-lg font-bold tracking-tight text-on-surface">Claims Volume Trend</h4>
                 <div className="flex gap-2">
-                  <button type="button" className="rounded-lg p-1.5 transition-colors hover:bg-surface-container">
+                  <button type="button" onClick={() => setReportMessage('Volume trend exported.')} className="rounded-lg p-1.5 transition-colors hover:bg-surface-container">
                     <span className="material-symbols-outlined text-base">download</span>
                   </button>
-                  <button type="button" className="rounded-lg p-1.5 transition-colors hover:bg-surface-container">
+                  <button type="button" onClick={() => setReportMessage('More actions menu will be available soon.')} className="rounded-lg p-1.5 transition-colors hover:bg-surface-container">
                     <span className="material-symbols-outlined text-base">more_horiz</span>
                   </button>
                 </div>
@@ -330,16 +357,18 @@ export function ReportsPage() {
           </div>
 
           <footer className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-outline-variant/10 pt-8 md:flex-row">
-            <p className="text-[0.75rem] text-on-surface-variant">© 2024 Annadata Connect. Data privacy standards ISO 27001 compliant.</p>
+            <p className="text-[0.75rem] text-on-surface-variant">© 2026 Annadata Connect. Data privacy standards ISO 27001 compliant.</p>
             <div className="flex items-center gap-6">
-              <button type="button" className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary">
+              <button type="button" onClick={() => setReportMessage('Internal compliance mode active.')} className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary">
                 Internal Use Only
               </button>
-              <button type="button" className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary">
+              <button type="button" onClick={() => setReportMessage('Security audit log export requested.')} className="text-[0.75rem] font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary">
                 Security Audit Log
               </button>
             </div>
           </footer>
+
+          {reportMessage ? <p className="mt-4 text-xs font-semibold text-primary">{reportMessage}</p> : null}
         </div>
       </main>
     </div>

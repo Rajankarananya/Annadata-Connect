@@ -1,4 +1,8 @@
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { AdminSidebar } from '../../../components/layout/AdminSidebar'
+import { ROUTES } from '../../../constants/navigation'
 
 import './ClaimsQueuePage.css'
 
@@ -62,6 +66,40 @@ const queueRows = [
 ]
 
 export function ClaimsQueuePage() {
+  const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [riskFilter, setRiskFilter] = useState('All')
+  const [page, setPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(20)
+
+  const filteredRows = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase()
+
+    return queueRows.filter((row) => {
+      const matchesQuery =
+        !query ||
+        [row.claimId, row.name, row.farmerId, row.crop, row.location].some((field) => field.toLowerCase().includes(query))
+
+      const matchesStatus = statusFilter === 'All' || row.status === statusFilter.toUpperCase()
+      const matchesRisk = riskFilter === 'All' || row.riskLabel === riskFilter.toUpperCase()
+
+      return matchesQuery && matchesStatus && matchesRisk
+    })
+  }, [searchTerm, statusFilter, riskFilter])
+
+  const totalRows = filteredRows.length
+  const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage))
+  const currentPage = Math.min(page, totalPages)
+  const pageRows = filteredRows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+
+  const resetFilters = () => {
+    setSearchTerm('')
+    setStatusFilter('All')
+    setRiskFilter('All')
+    setPage(1)
+  }
+
   return (
     <div className="claims-queue-page flex min-h-screen bg-surface text-on-surface" style={{ fontFamily: 'Inter, sans-serif' }}>
       <AdminSidebar />
@@ -75,6 +113,11 @@ export function ClaimsQueuePage() {
                 type="text"
                 className="w-full rounded-xl border-none bg-surface-container-low py-2 pl-10 pr-4 text-sm outline-none ring-0 transition-all focus:ring-2 focus:ring-primary/20"
                 placeholder="Search claims, farmers, or IDs..."
+                value={searchTerm}
+                onChange={(event) => {
+                  setSearchTerm(event.target.value)
+                  setPage(1)
+                }}
               />
             </div>
           </div>
@@ -118,6 +161,7 @@ export function ClaimsQueuePage() {
             <div className="flex gap-3">
               <button
                 type="button"
+                onClick={() => navigate(ROUTES.ADMIN.REPORTS)}
                 className="flex items-center gap-2 rounded-xl bg-surface-container-high px-5 py-2.5 text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container-highest"
               >
                 <span className="material-symbols-outlined text-[18px]">download</span>
@@ -126,6 +170,7 @@ export function ClaimsQueuePage() {
 
               <button
                 type="button"
+                onClick={() => navigate(ROUTES.ADMIN.CLAIM_REVIEW)}
                 className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-primary-container px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:shadow-lg"
               >
                 <span className="material-symbols-outlined text-[18px]">publish</span>
@@ -174,19 +219,33 @@ export function ClaimsQueuePage() {
               <span className="text-sm font-bold">Filters:</span>
             </div>
 
-            <select className="rounded-lg border-none bg-white px-4 py-2 text-xs font-semibold outline-none ring-1 ring-outline-variant/30 focus:ring-primary">
-              <option>Status: All</option>
-              <option>Pending</option>
-              <option>Approved</option>
-              <option>Flagged</option>
+            <select
+              value={statusFilter}
+              onChange={(event) => {
+                setStatusFilter(event.target.value)
+                setPage(1)
+              }}
+              className="rounded-lg border-none bg-white px-4 py-2 text-xs font-semibold outline-none ring-1 ring-outline-variant/30 focus:ring-primary"
+            >
+              <option value="All">Status: All</option>
+              <option value="PENDING">Pending</option>
+              <option value="VERIFIED">Verified</option>
+              <option value="FLAGGED">Flagged</option>
             </select>
 
-            <select className="rounded-lg border-none bg-white px-4 py-2 text-xs font-semibold outline-none ring-1 ring-outline-variant/30 focus:ring-primary">
-              <option>Risk Level: All</option>
-              <option>Critical</option>
-              <option>High</option>
-              <option>Moderate</option>
-              <option>Low</option>
+            <select
+              value={riskFilter}
+              onChange={(event) => {
+                setRiskFilter(event.target.value)
+                setPage(1)
+              }}
+              className="rounded-lg border-none bg-white px-4 py-2 text-xs font-semibold outline-none ring-1 ring-outline-variant/30 focus:ring-primary"
+            >
+              <option value="All">Risk Level: All</option>
+              <option value="CRITICAL">Critical</option>
+              <option value="MODERATE">Moderate</option>
+              <option value="LOW">Low</option>
+              <option value="RE-SUBMITTED">Re-submitted</option>
             </select>
 
             <select className="rounded-lg border-none bg-white px-4 py-2 text-xs font-semibold outline-none ring-1 ring-outline-variant/30 focus:ring-primary">
@@ -206,11 +265,11 @@ export function ClaimsQueuePage() {
             </div>
 
             <div className="ml-auto flex gap-2">
-              <button type="button" className="px-2 text-xs font-bold text-primary hover:underline">
+              <button type="button" onClick={resetFilters} className="px-2 text-xs font-bold text-primary hover:underline">
                 Clear All
               </button>
               <div className="h-4 w-px self-center bg-outline-variant/50"></div>
-              <span className="text-xs font-medium text-zinc-500">Showing 1-12 of 1,284</span>
+              <span className="text-xs font-medium text-zinc-500">Showing {pageRows.length ? (currentPage - 1) * rowsPerPage + 1 : 0}-{Math.min(currentPage * rowsPerPage, totalRows)} of {totalRows}</span>
             </div>
           </div>
 
@@ -241,7 +300,7 @@ export function ClaimsQueuePage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-surface-container">
-                  {queueRows.map((row) => (
+                  {pageRows.map((row) => (
                     <tr key={row.claimId} className="cubic-ease transition-colors hover:bg-surface-container-low">
                       <td className="px-6 py-5 font-mono text-sm font-bold text-primary">{row.claimId}</td>
                       <td className="px-6 py-5">
@@ -269,7 +328,11 @@ export function ClaimsQueuePage() {
                       <td className="px-6 py-5 text-sm text-zinc-600">{row.date}</td>
                       <td className="px-6 py-5">
                         <div className="flex justify-center gap-2">
-                          <button type="button" className="rounded-lg p-2 text-primary transition-colors hover:bg-primary/10">
+                          <button
+                            type="button"
+                            onClick={() => navigate(ROUTES.ADMIN.CLAIM_REVIEW)}
+                            className="rounded-lg p-2 text-primary transition-colors hover:bg-primary/10"
+                          >
                             <span className="material-symbols-outlined">visibility</span>
                           </button>
                           <button type="button" className="rounded-lg p-2 text-zinc-400 transition-colors hover:text-on-surface">
@@ -286,7 +349,14 @@ export function ClaimsQueuePage() {
             <div className="flex items-center justify-between border-t border-surface-container bg-surface-container-low/30 px-6 py-4">
               <div className="flex items-center gap-4">
                 <span className="text-xs font-bold text-on-surface-variant">Rows per page:</span>
-                <select defaultValue="20" className="border-none bg-transparent text-xs font-bold outline-none focus:ring-0">
+                <select
+                  value={rowsPerPage}
+                  onChange={(event) => {
+                    setRowsPerPage(Number(event.target.value))
+                    setPage(1)
+                  }}
+                  className="border-none bg-transparent text-xs font-bold outline-none focus:ring-0"
+                >
                   <option>10</option>
                   <option>20</option>
                   <option>50</option>
@@ -294,27 +364,43 @@ export function ClaimsQueuePage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <button type="button" disabled className="rounded-lg p-2 transition-colors hover:bg-surface-container-high disabled:opacity-30">
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setPage((previous) => Math.max(1, previous - 1))}
+                  className="rounded-lg p-2 transition-colors hover:bg-surface-container-high disabled:opacity-30"
+                >
                   <span className="material-symbols-outlined">chevron_left</span>
                 </button>
 
                 <div className="flex gap-1">
-                  <button type="button" className="h-8 w-8 rounded-lg bg-primary text-xs font-bold text-white">
-                    1
-                  </button>
-                  <button type="button" className="h-8 w-8 rounded-lg text-xs font-bold hover:bg-surface-container-high">
-                    2
-                  </button>
-                  <button type="button" className="h-8 w-8 rounded-lg text-xs font-bold hover:bg-surface-container-high">
-                    3
-                  </button>
-                  <span className="flex h-8 w-8 items-center justify-center text-xs">...</span>
-                  <button type="button" className="h-8 w-8 rounded-lg text-xs font-bold hover:bg-surface-container-high">
-                    64
-                  </button>
+                  {Array.from({ length: Math.min(3, totalPages) }).map((_, index) => {
+                    const pageNumber = index + 1
+                    return (
+                      <button
+                        key={pageNumber}
+                        type="button"
+                        onClick={() => setPage(pageNumber)}
+                        className={`h-8 w-8 rounded-lg text-xs font-bold ${currentPage === pageNumber ? 'bg-primary text-white' : 'hover:bg-surface-container-high'}`}
+                      >
+                        {pageNumber}
+                      </button>
+                    )
+                  })}
+                  {totalPages > 3 ? <span className="flex h-8 w-8 items-center justify-center text-xs">...</span> : null}
+                  {totalPages > 3 ? (
+                    <button type="button" onClick={() => setPage(totalPages)} className="h-8 w-8 rounded-lg text-xs font-bold hover:bg-surface-container-high">
+                      {totalPages}
+                    </button>
+                  ) : null}
                 </div>
 
-                <button type="button" className="rounded-lg p-2 transition-colors hover:bg-surface-container-high">
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setPage((previous) => Math.min(totalPages, previous + 1))}
+                  className="rounded-lg p-2 transition-colors hover:bg-surface-container-high disabled:opacity-30"
+                >
                   <span className="material-symbols-outlined">chevron_right</span>
                 </button>
               </div>

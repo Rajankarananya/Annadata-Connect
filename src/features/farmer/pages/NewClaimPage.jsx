@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
@@ -8,7 +9,6 @@ import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
 import { AsyncButton } from '../../../components/shared/AsyncButton'
-import { claimsApi } from '../../../services/api'
 import './NewClaimPage.css'
 
 const claimSchema = z.object({
@@ -21,6 +21,7 @@ const claimSchema = z.object({
 })
 
 export function NewClaimPage() {
+  const { t } = useTranslation()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [submitFeedback, setSubmitFeedback] = useState({ error: '', success: '' })
@@ -56,19 +57,11 @@ export function NewClaimPage() {
     setIsSubmitting(true)
 
     try {
-      // Call the claims API
-      const result = await claimsApi.createClaim({
-        damage_type: data.damageType,
-        description: data.narrative,
-        // Additional fields from form (matched to API schema)
-        crop_type: data.cropType,
-        sowing_date: data.sowingDate,
-        incident_date: data.incidentDate,
-        farm_location: data.farmLocation,
-      })
-      setSubmitFeedback({ error: '', success: 'Claim submitted successfully for review.' })
+      await new Promise((resolve) => setTimeout(resolve, 700))
+      localStorage.setItem('latestClaimDraft', JSON.stringify(data))
+      setSubmitFeedback({ error: '', success: t('newClaim.submitSuccess') })
     } catch (error) {
-      const errorMessage = error?.response?.data?.detail || 'Could not submit claim. Please retry.'
+      const errorMessage = error?.response?.data?.detail || t('newClaim.submitError')
       console.error('Claim submission error:', error)
       setSubmitFeedback({ error: errorMessage, success: '' })
     } finally {
@@ -83,7 +76,7 @@ export function NewClaimPage() {
 
     const hasDraftData = Object.values(getValues()).some((value) => typeof value === 'string' && value.trim().length > 0)
     if (!hasDraftData) {
-      setSubmitFeedback({ error: 'Add at least one field before saving a draft.', success: '' })
+      setSubmitFeedback({ error: t('newClaim.emptyDraftError'), success: '' })
       return
     }
 
@@ -95,10 +88,10 @@ export function NewClaimPage() {
     try {
       // Save draft to localStorage for now (until backend supports it)
       localStorage.setItem('claimDraft', JSON.stringify(getValues()))
-      setSubmitFeedback({ error: '', success: 'Draft saved successfully.' })
+      setSubmitFeedback({ error: '', success: t('newClaim.draftSaved') })
     } catch (error) {
       console.error('Draft save error:', error)
-      setSubmitFeedback({ error: 'Could not save draft. Please retry.', success: '' })
+      setSubmitFeedback({ error: t('newClaim.draftError'), success: '' })
     } finally {
       setIsSavingDraft(false)
     }
@@ -113,12 +106,12 @@ export function NewClaimPage() {
         <div className="mx-auto max-w-4xl">
           <div className="mb-10">
             <div className="mb-3 flex items-center gap-2 text-sm text-stone-500">
-              <Link className="transition-colors hover:text-primary" to="/farmer/my-claims">Claims</Link>
+              <Link className="transition-colors hover:text-primary" to="/farmer/my-claims">{t('common.claims')}</Link>
               <span className="material-symbols-outlined text-xs">chevron_right</span>
-              <span className="font-semibold text-primary">New Claim Submission</span>
+              <span className="font-semibold text-primary">{t('newClaim.breadcrumb')}</span>
             </div>
-            <h1 className="font-headline mb-2 text-4xl font-extrabold tracking-tight text-on-surface">Report Crop Damage</h1>
-            <p className="font-medium text-stone-600">Please provide accurate details of the incident to expedite your insurance processing.</p>
+            <h1 className="font-headline mb-2 text-4xl font-extrabold tracking-tight text-on-surface">{t('newClaim.title')}</h1>
+            <p className="font-medium text-stone-600">{t('newClaim.subtitle')}</p>
           </div>
 
           <form className="space-y-8" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -128,20 +121,20 @@ export function NewClaimPage() {
                   <span className="material-symbols-outlined">potted_plant</span>
                 </div>
                 <div>
-                  <h2 className="font-headline text-xl font-bold text-primary">Crop Identity</h2>
-                  <p className="text-sm text-stone-500">Details of the affected plantation</p>
+                  <h2 className="font-headline text-xl font-bold text-primary">{t('newClaim.cropIdentity')}</h2>
+                  <p className="text-sm text-stone-500">{t('newClaim.cropIdentityDesc')}</p>
                 </div>
               </div>
 
               <div className="grid gap-8 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Crop Type</label>
+                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">{t('newClaim.cropType')}</label>
                   <div className="relative">
                     <select
                       className="w-full appearance-none rounded-xl border-0 bg-surface-container-low py-4 pl-4 pr-10 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
                       {...register('cropType')}
                     >
-                      <option value="">Select Crop Type</option>
+                      <option value="">{t('newClaim.selectCropType')}</option>
                       <option>Premium Basmati Rice</option>
                       <option>Organic Wheat</option>
                       <option>Hybrid Maize</option>
@@ -152,7 +145,7 @@ export function NewClaimPage() {
                   {errors.cropType ? <p className="px-1 text-xs text-red-600">{errors.cropType.message}</p> : null}
                 </div>
                 <div className="space-y-2">
-                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Sowing Date</label>
+                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">{t('newClaim.sowingDate')}</label>
                   <div className="relative">
                     <input
                       className="w-full rounded-xl border-0 bg-surface-container-low px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
@@ -172,14 +165,14 @@ export function NewClaimPage() {
                   <span className="material-symbols-outlined">history_edu</span>
                 </div>
                 <div>
-                  <h2 className="font-headline text-xl font-bold text-primary">Incident Logistics</h2>
-                  <p className="text-sm text-stone-500">When and where did it happen?</p>
+                  <h2 className="font-headline text-xl font-bold text-primary">{t('newClaim.incidentLogistics')}</h2>
+                  <p className="text-sm text-stone-500">{t('newClaim.incidentLogisticsDesc')}</p>
                 </div>
               </div>
 
               <div className="mb-8 grid gap-8 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Date of Incident</label>
+                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">{t('newClaim.incidentDate')}</label>
                   <input
                     className="w-full rounded-xl border-0 bg-surface-container-lowest px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
                     type="date"
@@ -188,11 +181,11 @@ export function NewClaimPage() {
                   {errors.incidentDate ? <p className="px-1 text-xs text-red-600">{errors.incidentDate.message}</p> : null}
                 </div>
                 <div className="space-y-2">
-                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Specific Farm Location</label>
+                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">{t('newClaim.farmLocation')}</label>
                   <div className="relative">
                     <input
                       className="w-full rounded-xl border-0 bg-surface-container-lowest py-4 pl-12 pr-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
-                      placeholder="Plot A-23, North Boundary"
+                      placeholder={t('newClaim.farmLocationPlaceholder')}
                       type="text"
                       {...register('farmLocation')}
                     />
@@ -206,7 +199,7 @@ export function NewClaimPage() {
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/10">
                   <button className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-bold text-primary shadow-xl backdrop-blur-sm" type="button">
                     <span className="material-symbols-outlined text-lg">my_location</span>
-                    Refine Map Pin
+                    {t('newClaim.refineMapPin')}
                   </button>
                 </div>
                 <img
@@ -223,14 +216,14 @@ export function NewClaimPage() {
                   <span className="material-symbols-outlined">description</span>
                 </div>
                 <div>
-                  <h2 className="font-headline text-xl font-bold text-primary">Damage Description</h2>
-                  <p className="text-sm text-stone-500">Provide qualitative details for the adjuster</p>
+                  <h2 className="font-headline text-xl font-bold text-primary">{t('newClaim.damageDescription')}</h2>
+                  <p className="text-sm text-stone-500">{t('newClaim.damageDescriptionDesc')}</p>
                 </div>
               </div>
 
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Nature of Damage</label>
+                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">{t('newClaim.natureOfDamage')}</label>
                   <div className="flex flex-wrap gap-3">
                     {['Excessive Rain', 'Pest Infestation', 'Hailstorm', 'Wildfire'].map((damageType) => (
                       <button
@@ -251,10 +244,10 @@ export function NewClaimPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">Detailed Narrative</label>
+                  <label className="block px-1 text-sm font-bold tracking-wide text-stone-700">{t('newClaim.detailedNarrative')}</label>
                   <textarea
                     className="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-4 font-medium text-stone-800 focus:ring-2 focus:ring-surface-tint"
-                    placeholder="Describe the progression of damage and current state of the crop..."
+                    placeholder={t('newClaim.narrativePlaceholder')}
                     rows={4}
                     {...register('narrative')}
                   />
@@ -269,8 +262,8 @@ export function NewClaimPage() {
                   <span className="material-symbols-outlined">photo_library</span>
                 </div>
                 <div>
-                  <h2 className="font-headline text-xl font-bold text-primary">Visual Evidence</h2>
-                  <p className="text-sm text-stone-500">High-resolution photos help speed up claims</p>
+                  <h2 className="font-headline text-xl font-bold text-primary">{t('newClaim.visualEvidence')}</h2>
+                  <p className="text-sm text-stone-500">{t('newClaim.visualEvidenceDesc')}</p>
                 </div>
               </div>
 
@@ -278,8 +271,8 @@ export function NewClaimPage() {
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-md transition-transform group-hover:scale-110">
                   <span className="material-symbols-outlined text-3xl text-primary">cloud_upload</span>
                 </div>
-                <h3 className="text-lg font-bold text-stone-800">Drop files here or click to browse</h3>
-                <p className="mt-1 text-sm text-stone-500">Support JPG, PNG up to 15MB per file</p>
+                <h3 className="text-lg font-bold text-stone-800">{t('newClaim.dropFiles')}</h3>
+                <p className="mt-1 text-sm text-stone-500">{t('newClaim.fileSupport')}</p>
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -321,7 +314,7 @@ export function NewClaimPage() {
 
                 <button className="flex aspect-square flex-col items-center justify-center rounded-2xl border-2 border-dashed border-stone-200 text-stone-400 transition-colors hover:border-primary hover:text-primary" type="button">
                   <span className="material-symbols-outlined text-3xl">add_a_photo</span>
-                  <span className="mt-2 text-[10px] font-bold uppercase">Add Photo</span>
+                  <span className="mt-2 text-[10px] font-bold uppercase">{t('newClaim.addPhoto')}</span>
                 </button>
               </div>
             </section>
@@ -330,7 +323,7 @@ export function NewClaimPage() {
               <div className="flex items-center gap-3 text-stone-500">
                 <span className="material-symbols-outlined text-primary">security</span>
                 <p className="max-w-xs text-xs font-medium">
-                  Your data is protected by Grade-A encryption and will only be shared with certified adjusters.
+                  {t('newClaim.securityNote')}
                 </p>
               </div>
               <div className="w-full sm:w-auto">
@@ -341,20 +334,20 @@ export function NewClaimPage() {
                 <AsyncButton
                   onClick={handleSaveDraft}
                   isLoading={isSavingDraft}
-                  loadingText="Saving..."
+                  loadingText={t('newClaim.saving')}
                   disabled={isSubmitting}
                   className="flex-1 rounded-xl px-8 py-4 font-bold text-stone-600 transition-colors hover:bg-surface-container-high sm:flex-none"
                 >
-                  Save Draft
+                  {t('newClaim.saveDraft')}
                 </AsyncButton>
                 <AsyncButton
                   type="submit"
                   isLoading={isSubmitting}
-                  loadingText="Submitting..."
+                  loadingText={t('newClaim.submitting')}
                   disabled={isSavingDraft}
                   className="font-headline flex-1 rounded-xl bg-gradient-to-br from-primary to-primary-container px-10 py-4 text-lg font-bold text-white shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl sm:flex-none"
                 >
-                  Submit Claim
+                  {t('newClaim.submitClaim')}
                 </AsyncButton>
               </div>
             </div>

@@ -2,61 +2,57 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
 const registerSchema = z.object({
   fullName: z.string().trim().min(2, 'Name must be at least 2 characters.'),
+  email: z.string().trim().email('Enter a valid email address.'),
   mobile: z.string().trim().regex(/^\d{10}$/, 'Enter a valid 10-digit mobile number.'),
+  password: z.string().trim().min(6, 'Password must be at least 6 characters.'),
   state: z.string().trim().min(1, 'State is required.'),
   district: z.string().trim().min(1, 'District is required.'),
-  preferredLanguage: z.string().trim().min(2, 'Preferred language is required.'),
+  village: z.string().trim().min(1, 'Village is required.'),
   aadhaar: z.string().trim().optional(),
 })
 
 export function RegisterPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [submitState, setSubmitState] = useState({ loading: false, error: '', success: '' })
-  const [isOtpVerified, setIsOtpVerified] = useState(false)
 
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
-    trigger,
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       fullName: '',
+      email: '',
       mobile: '',
+      password: '',
       state: '',
       district: '',
-      preferredLanguage: 'English',
+      village: '',
       aadhaar: '',
     },
   })
 
-  const selectedLanguage = watch('preferredLanguage')
-
-  const handleVerifyOtp = async () => {
-    const validMobile = await trigger('mobile')
-    if (!validMobile) return
-    setIsOtpVerified(true)
-  }
-
-  const onSubmit = async () => {
+  const onSubmit = async (values) => {
     if (submitState.loading || isSubmitting) return
 
     setSubmitState({ loading: true, error: '', success: '' })
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 700))
-      setSubmitState({ loading: false, error: '', success: 'Account created successfully. Continue to login.' })
-      setIsOtpVerified(false)
+      localStorage.setItem('authToken', 'dev-token')
+      localStorage.setItem('authRole', 'farmer')
+
+      setSubmitState({ loading: false, error: '', success: 'Account created successfully. Redirecting to farmer dashboard...' })
       reset()
+      navigate('/farmer/dashboard', { replace: true })
     } catch {
       setSubmitState({ loading: false, error: 'Registration failed. Please try again.', success: '' })
     }
@@ -66,9 +62,13 @@ export function RegisterPage() {
     <div className="flex min-h-screen flex-col bg-background font-body text-on-surface">
       <header className="sticky top-0 z-50 w-full bg-[rgba(247,250,247,0.8)] backdrop-blur-[20px]">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
-          <div className="text-2xl font-bold tracking-tight text-primary">Annadata Connect</div>
+          <Link to="/" className="text-2xl font-bold tracking-tight text-primary hover:opacity-90">Annadata Connect</Link>
           <div className="flex items-center gap-4">
-            <button className="rounded-full p-2 text-emerald-800/70 transition-colors hover:bg-[#f1f4f1]" type="button">
+            <button
+              className="rounded-full p-2 text-emerald-800/70 transition-colors hover:bg-[#f1f4f1]"
+              type="button"
+              onClick={() => window.open('mailto:support@annadataconnect.in', '_self')}
+            >
               <span className="material-symbols-outlined">help_outline</span>
             </button>
           </div>
@@ -80,13 +80,6 @@ export function RegisterPage() {
           <div className="mb-10 text-center md:text-left">
             <h1 className="mb-3 font-headline text-4xl font-extrabold tracking-tight text-on-surface">{t('auth.registerTitle')}</h1>
             <p className="text-lg text-on-surface-variant">{t('auth.registerSubtitle')}</p>
-          </div>
-
-          <div className="mb-8 flex w-full items-center gap-3">
-            <div className="h-2 flex-grow rounded-full bg-secondary" />
-            <div className="h-2 flex-grow rounded-full bg-surface-container-high" />
-            <div className="h-2 flex-grow rounded-full bg-surface-container-high" />
-            <span className="ml-2 text-sm font-semibold text-secondary">Step 1 of 3</span>
           </div>
 
           <div className="rounded-xl bg-surface-container-lowest p-8 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] md:p-12">
@@ -105,33 +98,38 @@ export function RegisterPage() {
                   </div>
 
                   <div className="flex flex-col gap-2">
+                    <label className="px-1 text-sm font-semibold text-on-surface-variant">Email</label>
+                    <input
+                      className="w-full rounded-xl border-none bg-surface-container-low p-4 text-on-surface placeholder:text-outline/50 transition-all focus:ring-2 focus:ring-surface-tint"
+                      placeholder="you@example.com"
+                      type="email"
+                      {...register('email')}
+                    />
+                    {errors.email ? <p className="px-1 text-xs text-red-600">{errors.email.message}</p> : null}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
                     <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.mobileNumber')}</label>
-                    <div className="flex gap-3">
-                      <div className="relative flex-grow">
-                        <input
-                          className="w-full rounded-xl border-none bg-surface-container-low p-4 text-on-surface placeholder:text-outline/50 transition-all focus:ring-2 focus:ring-surface-tint"
-                          placeholder="10-digit mobile number"
-                          type="tel"
-                          {...register('mobile')}
-                        />
-                        {isOtpVerified ? (
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-primary">
-                            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>
-                              check_circle
-                            </span>
-                          </div>
-                        ) : null}
-                      </div>
-                      <button
-                        className="whitespace-nowrap rounded-xl bg-secondary-container px-6 py-4 text-sm font-semibold text-on-secondary-container transition-colors hover:bg-secondary-fixed"
-                        type="button"
-                        onClick={handleVerifyOtp}
-                      >
-                        {t('auth.verifyOtp')}
-                      </button>
+                    <div className="relative flex-grow">
+                      <input
+                        className="w-full rounded-xl border-none bg-surface-container-low p-4 text-on-surface placeholder:text-outline/50 transition-all focus:ring-2 focus:ring-surface-tint"
+                        placeholder="10-digit mobile number"
+                        type="tel"
+                        {...register('mobile')}
+                      />
                     </div>
                     {errors.mobile ? <p className="px-1 text-xs text-red-600">{errors.mobile.message}</p> : null}
-                    <p className="mt-1 px-1 text-[10px] italic text-on-surface-variant/70">{t('auth.otpHint')}</p>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.password')}</label>
+                    <input
+                      className="w-full rounded-xl border-none bg-surface-container-low p-4 text-on-surface placeholder:text-outline/50 transition-all focus:ring-2 focus:ring-surface-tint"
+                      placeholder="Create a password"
+                      type="password"
+                      {...register('password')}
+                    />
+                    {errors.password ? <p className="px-1 text-xs text-red-600">{errors.password.message}</p> : null}
                   </div>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -164,32 +162,15 @@ export function RegisterPage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3">
-                    <label className="px-1 text-sm font-semibold text-on-surface-variant">{t('auth.preferredLanguage')}</label>
-                    <div className="flex flex-wrap gap-3">
-                      {[
-                        { value: 'English', label: t('public.english') },
-                        { value: 'Hindi', label: t('public.hindi') },
-                        { value: 'Marathi', label: t('public.marathi') },
-                      ].map((language) => {
-                        const isSelected = selectedLanguage === language.value
-                        return (
-                          <button
-                            key={language.value}
-                            className={
-                              isSelected
-                                ? 'rounded-full border-2 border-primary bg-primary-fixed/20 px-5 py-3 text-sm font-bold text-primary'
-                                : 'rounded-full bg-surface-container-high px-5 py-3 text-sm font-medium text-on-surface-variant transition-colors hover:bg-surface-variant'
-                            }
-                            type="button"
-                            onClick={() => setValue('preferredLanguage', language.value, { shouldValidate: true })}
-                          >
-                            {language.label}
-                          </button>
-                        )
-                      })}
-                    </div>
-                    {errors.preferredLanguage ? <p className="px-1 text-xs text-red-600">{errors.preferredLanguage.message}</p> : null}
+                  <div className="flex flex-col gap-2">
+                    <label className="px-1 text-sm font-semibold text-on-surface-variant">Village</label>
+                    <input
+                      className="w-full rounded-xl border-none bg-surface-container-low p-4 text-on-surface placeholder:text-outline/50 transition-all focus:ring-2 focus:ring-surface-tint"
+                      placeholder="Enter village"
+                      type="text"
+                      {...register('village')}
+                    />
+                    {errors.village ? <p className="px-1 text-xs text-red-600">{errors.village.message}</p> : null}
                   </div>
 
                   <div className="flex flex-col gap-2">
@@ -205,15 +186,6 @@ export function RegisterPage() {
                     />
                   </div>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-xl bg-surface-container-low p-4">
-                <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  verified_user
-                </span>
-                <p className="text-xs leading-relaxed text-on-surface-variant">
-                  Your data is safe with us. We use bank-grade encryption to protect your identity and farm records.
-                </p>
               </div>
 
               <div className="space-y-4 pt-4">
@@ -256,12 +228,12 @@ export function RegisterPage() {
 
       <footer className="mt-auto w-full py-8">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between space-y-4 px-8 md:flex-row md:space-y-0">
-          <div className="text-lg font-bold text-primary">Annadata Connect</div>
-          <div className="text-center text-sm font-medium text-[#115638]">© 2024 Annadata Connect. Cultivating the Digital Legacy.</div>
+          <Link to="/" className="text-lg font-bold text-primary hover:opacity-90">Annadata Connect</Link>
+          <div className="text-center text-sm font-medium text-[#115638]">© 2026 Annadata Connect. Cultivating the Digital Legacy.</div>
           <div className="flex gap-6">
-            <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="#">Privacy Policy</a>
-            <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="#">Terms of Service</a>
-            <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="#">Support</a>
+            <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="https://www.mygov.in/privacy-policy/" target="_blank" rel="noreferrer">Privacy Policy</a>
+            <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="https://www.mygov.in/terms-and-conditions/" target="_blank" rel="noreferrer">Terms of Service</a>
+            <a className="text-sm font-medium text-emerald-900/60 transition-colors hover:text-[#2f6f4f]" href="mailto:support@annadataconnect.in">Support</a>
           </div>
         </div>
       </footer>

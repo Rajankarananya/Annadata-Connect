@@ -30,7 +30,9 @@ export function FarmerTopNav() {
     <header className="fixed top-0 z-50 w-full bg-[#f7faf7]/80 shadow-[0px_24px_48px_-12px_rgba(18,28,27,0.06)] backdrop-blur-md lg:left-64 lg:w-[calc(100%-16rem)]">
       <div className="flex w-full items-center justify-between px-6 py-3">
         <div className="flex items-center gap-8">
-          <span className="font-headline text-xl font-bold tracking-tight text-[#115638]">{t('common.appName')}</span>
+          <Link to={ROUTES.FARMER.DASHBOARD} className="font-headline text-xl font-bold tracking-tight text-[#115638] hover:opacity-90">
+            {t('common.appName')}
+          </Link>
           <nav className="hidden items-center gap-6 md:flex">
             <Link className={linkClass(isHomeActive)} to={ROUTES.FARMER.DASHBOARD}>
               {t('common.home')}
