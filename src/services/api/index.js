@@ -236,7 +236,7 @@ export const claimsApi = {
    */
   createClaim: async (data) => {
     try {
-      const response = await apiClient.post(`/claims`, data)
+      const response = await apiClient.post(`/claims/`, data)
       return response.data || response
     } catch (error) {
       console.error('[claimsApi.createClaim] Error:', error.response?.data || error.message)
@@ -266,7 +266,7 @@ export const claimsApi = {
    */
   listClaims: async (filters = {}) => {
     try {
-      const response = await apiClient.get(`/claims`, {
+      const response = await apiClient.get(`/claims/`, {
         params: filters,
       })
       return response.data || response

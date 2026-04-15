@@ -42,24 +42,32 @@ export function LoginPage() {
     if (submitState.loading || isSubmitting) return
 
     setSubmitState({ loading: true, error: '', success: '' })
+    console.log('[LoginPage] Attempting login with:', { email: values.email, role: values.role })
 
     try {
-<<<<<<< HEAD
-      await new Promise((resolve) => setTimeout(resolve, 500))
-      localStorage.setItem('authToken', 'dev-token')
-      localStorage.setItem('authRole', values.role)
       const response = await authApi.login(values.email, values.password)
+      console.log('[LoginPage] Login response:', response)
 
       // Store token and role
       localStorage.setItem('authToken', response.access_token)
       localStorage.setItem('authRole', response.role || values.role)
+      console.log('[LoginPage] Token stored, redirecting to:', values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard')
 
       setSubmitState({ loading: false, error: '', success: `Login successful. Redirecting...` })
 
       navigate(values.role === ROLES.ADMIN ? '/admin/dashboard' : '/farmer/dashboard', { replace: true })
     } catch (err) {
-      const errorDetail = err.response?.data?.detail || 'Unable to login right now. Please try again.'
-      setSubmitState({ loading: false, error: errorDetail, success: '' }
+      console.error('[LoginPage] Login failed:', {
+        error: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      })
+      const errorDetail = err.response?.data?.detail || err.message || 'Unable to login right now. Please try again.'
+      setSubmitState({ loading: false, error: errorDetail, success: '' })
+    }
+  }
+
+  return (
     <div className="relative flex min-h-screen flex-col bg-surface font-body text-on-surface">
       <div className="fixed inset-0 z-0">
         <img
@@ -132,11 +140,7 @@ export function LoginPage() {
                     htmlFor="email"
                     className="pointer-events-none absolute left-4 top-4 text-on-surface-variant transition-opacity duration-150 peer-focus:opacity-0 peer-not-placeholder-shown:opacity-0"
                   >
-<<<<<<< HEAD
-                    Email
-=======
                     {t('auth.email')}
->>>>>>> f5983842 (Integration: Connect all components - auth flow, data display, config)
                   </label>
                   {errors.email ? <p className="mt-1 text-xs text-red-600">{errors.email.message}</p> : null}
                 </div>
@@ -144,7 +148,11 @@ export function LoginPage() {
                 <div className="relative">
                   <input
                     id="password"
-                    {t('auth.email')}
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder=" "
+                    className="peer w-full rounded-xl border-none bg-surface-container-lowest px-4 pb-2 pt-6 text-on-surface transition-all focus:ring-2 focus:ring-surface-tint/20"
+                    {...register('password')}
+                  />
                   <label
                     htmlFor="password"
                     className="pointer-events-none absolute left-4 top-4 text-on-surface-variant transition-opacity duration-150 peer-focus:opacity-0 peer-not-placeholder-shown:opacity-0"

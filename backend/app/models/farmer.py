@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, DateTime, func
+from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from app.utils.db import Base
 
@@ -6,6 +6,7 @@ class Farmer(Base):
     __tablename__ = "farmers"
 
     id              = Column(Integer, primary_key=True, index=True)
+    user_id         = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
     full_name       = Column(String(100), nullable=False)
     phone           = Column(String(15), unique=True, nullable=False)
     aadhaar_number  = Column(String(12), unique=True, nullable=True)

@@ -45,14 +45,14 @@ const statCards = [
   },
 ]
 
-const trendBars = [
-  { day: 'Mon', height: '40%' },
-  { day: 'Tue', height: '65%' },
-  { day: 'Wed', height: '55%' },
-  { day: 'Thu', height: '85%' },
-  { day: 'Fri', height: '70%' },
-  { day: 'Sat', height: '45%' },
-  { day: 'Sun', height: '30%' },
+const trendData = [
+  { day: 'Mon', value: 160 },
+  { day: 'Tue', value: 80 },
+  { day: 'Wed', value: 100 },
+  { day: 'Thu', value: 50 },
+  { day: 'Fri', value: 85 },
+  { day: 'Sat', value: 45 },
+  { day: 'Sun', value: 140 },
 ]
 
 const alerts = [
@@ -98,6 +98,18 @@ const regions = [
   { name: 'Madhya Pradesh', progress: 48 },
 ]
 
+const chartPoints = trendData.map((d, i) => ({
+  x: (i / (trendData.length - 1)) * 460 + 20,
+  y: d.value,
+  day: d.day,
+}))
+
+const linePath = chartPoints
+  .map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`))
+  .join(' ')
+
+const areaPath = `${linePath} L${chartPoints[chartPoints.length - 1].x},200 L${chartPoints[0].x},200 Z`
+
 export function AdminDashboardPage() {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
@@ -105,13 +117,12 @@ export function AdminDashboardPage() {
 
   const filteredClaims = useMemo(() => {
     const query = searchTerm.trim().toLowerCase()
-    if (!query) {
-      return claims
-    }
-
-    return claims.filter((claim) => {
-      return [claim.id, claim.farmer, claim.region, claim.status].some((field) => field.toLowerCase().includes(query))
-    })
+    if (!query) return claims
+    return claims.filter((claim) =>
+      [claim.id, claim.farmer, claim.region, claim.status].some((field) =>
+        field.toLowerCase().includes(query)
+      )
+    )
   }, [searchTerm])
 
   return (
@@ -217,7 +228,7 @@ export function AdminDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2 flex flex-col gap-6 overflow-hidden rounded-xl bg-surface-container-lowest p-6">
+            <div className="lg:col-span-2 flex flex-col gap-4 overflow-hidden rounded-xl bg-surface-container-lowest p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-on-surface">Weekly Claim Trends</h3>
@@ -226,14 +237,28 @@ export function AdminDashboardPage() {
                 <span className="material-symbols-outlined cursor-pointer text-on-surface-variant transition-colors hover:text-primary">more_vert</span>
               </div>
 
-              <div className="flex h-64 w-full items-end gap-2 px-2">
-                {trendBars.map((bar) => (
-                  <div key={bar.day} className="group flex flex-1 flex-col items-center gap-2">
-                    <div style={{ height: bar.height }} className="w-full rounded-t-sm bg-emerald-100 transition-all duration-300 group-hover:bg-primary"></div>
-                    <span className="text-[10px] font-bold text-on-surface-variant">{bar.day}</span>
-                  </div>
+              <svg viewBox="0 0 500 210" className="w-full" style={{ height: '220px' }}>
+                <defs>
+                  <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#115638" stopOpacity="0.15" />
+                    <stop offset="100%" stopColor="#115638" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+
+                {[40, 80, 120, 160].map((y) => (
+                  <line key={y} x1="20" y1={y} x2="480" y2={y} stroke="rgba(191,201,192,0.25)" strokeWidth="1" />
                 ))}
-              </div>
+
+                <path d={areaPath} fill="url(#areaGrad)" />
+                <path d={linePath} fill="none" stroke="#115638" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+                {chartPoints.map((p) => (
+                  <g key={p.day}>
+                    <circle cx={p.x} cy={p.y} r="5" fill="#115638" stroke="white" strokeWidth="2" />
+                    <text x={p.x} y="198" textAnchor="middle" fontSize="10" fontWeight="700" fill="#6b7280">{p.day}</text>
+                  </g>
+                ))}
+              </svg>
             </div>
 
             <div className="flex flex-col gap-6 rounded-xl bg-surface-container-lowest p-6">

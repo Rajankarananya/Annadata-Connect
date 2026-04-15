@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
+import { claimsApi } from '../../../services/api'
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
@@ -22,6 +23,7 @@ const claimSchema = z.object({
 
 export function NewClaimPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [submitFeedback, setSubmitFeedback] = useState({ error: '', success: '' })
@@ -57,12 +59,38 @@ export function NewClaimPage() {
     setIsSubmitting(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 700))
-      localStorage.setItem('latestClaimDraft', JSON.stringify(data))
+      // Map form data to API schema
+      // Map damage types from form to API damage_type values
+      const damageTypeMap = {
+        'Excessive Rain': 'flood',
+        'Pest Infestation': 'pest',
+        'Hailstorm': 'hail',
+        'Wildfire': 'fire',
+      }
+
+      const claimPayload = {
+        // farmer_id will be set automatically by the backend
+        damage_type: damageTypeMap[data.damageType] || data.damageType.toLowerCase(),
+        description: data.narrative,
+        gps_lat: '0', // TODO: Get from map component
+        gps_lng: '0', // TODO: Get from map component
+        image_path: null, // TODO: Handle image uploads
+      }
+
+      console.log('[NewClaimPage] Submitting claim:', claimPayload)
+      
+      const response = await claimsApi.createClaim(claimPayload)
+      
+      console.log('[NewClaimPage] Claim created successfully:', response)
       setSubmitFeedback({ error: '', success: t('newClaim.submitSuccess') })
+      
+      // Redirect to my claims page after 1.5 seconds
+      setTimeout(() => {
+        navigate('/farmer/my-claims', { replace: true })
+      }, 1500)
     } catch (error) {
-      const errorMessage = error?.response?.data?.detail || t('newClaim.submitError')
-      console.error('Claim submission error:', error)
+      const errorMessage = error?.response?.data?.detail || error.message || t('newClaim.submitError')
+      console.error('[NewClaimPage] Claim submission error:', error)
       setSubmitFeedback({ error: errorMessage, success: '' })
     } finally {
       setIsSubmitting(false)

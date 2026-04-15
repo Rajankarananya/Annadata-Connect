@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class ClaimCreate(BaseModel):
-    farmer_id: int
+    farmer_id: Optional[int] = None  # Optional - will be auto-set from current user if not provided
     damage_type: Optional[str] = None   # rice_blast, wheat_rust, healthy
     description: Optional[str] = None
     image_path: Optional[str] = None

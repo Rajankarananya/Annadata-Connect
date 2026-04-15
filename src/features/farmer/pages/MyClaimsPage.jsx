@@ -14,6 +14,7 @@ export function MyClaimsPage() {
 	const [filteredClaims, setFilteredClaims] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
+	const [retrying, setRetrying] = useState(false)
 	const [filters, setFilters] = useState({
 		searchId: '',
 		status: '',
@@ -26,15 +27,25 @@ export function MyClaimsPage() {
 		const fetchClaims = async () => {
 			try {
 				setLoading(true)
-				const data = await claimsApi.listClaims()
-				setClaims(Array.isArray(data) ? data : data.claims || [])
 				setError(null)
+				const data = await claimsApi.listClaims()
+				
+				// Handle both array response and {claims: [...]} response
+				const claimsArray = Array.isArray(data) ? data : (data?.claims || [])
+				setClaims(claimsArray)
+				
+				console.log('[MyClaimsPage] Loaded', claimsArray.length, 'claims')
 			} catch (err) {
-				console.error('Error fetching claims:', err)
-				setError('Failed to load claims. Please try again.')
+				console.error('[MyClaimsPage] Error fetching claims:', {
+					message: err.message,
+					status: err.response?.status,
+					data: err.response?.data,
+				})
+				setError(err.response?.data?.detail || err.message || 'Failed to load claims. Please try again.')
 				setClaims([])
 			} finally {
 				setLoading(false)
+				setRetrying(false)
 			}
 		}
 
@@ -62,6 +73,11 @@ export function MyClaimsPage() {
 
 	const handleFilterChange = (field, value) => {
 		setFilters(prev => ({ ...prev, [field]: value }))
+	}
+
+	const handleRetry = () => {
+		setRetrying(true)
+		window.location.reload()
 	}
 
 	const getStatusColor = (status) => {
@@ -107,18 +123,23 @@ export function MyClaimsPage() {
 			<FarmerSidebar />
 
 			<main className="mx-auto min-h-screen max-w-7xl px-4 pb-32 pt-24 md:px-8 lg:ml-64">
-				<header className="mb-10">
-					<h1 className="font-headline mb-2 text-4xl font-extrabold tracking-tight text-on-surface md:text-5xl">{t('farmerClaims.title')}</h1>
-					<p className="font-medium text-stone-600">{t('farmerClaims.subtitle')}</p>
+				<header className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+					<div>
+						<h1 className="font-headline mb-2 text-4xl font-extrabold tracking-tight text-on-surface md:text-5xl">{t('farmerClaims.title')}</h1>
+						<p className="font-medium text-stone-600">{t('farmerClaims.subtitle')}</p>
+					</div>
+					<Link to="/farmer/new-claim" className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-on-primary shadow-lg transition-transform active:scale-95 whitespace-nowrap" style={{ background: 'linear-gradient(135deg, #115638, #2f6f4f)' }}>
+						<span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+							add_circle
+						</span>
+						{t('farmerClaims.addClaim') || 'Add Claim'}
+					</Link>
 				</header>
 
 				<section className="editorial-shadow mb-8 rounded-[2rem] bg-surface-container-low p-6">
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
 						<div className="relative">
 							<span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
-<<<<<<< HEAD
-							<input className="w-full rounded-xl border-none bg-surface-container-lowest py-3 pl-12 pr-4 font-medium text-stone-700 placeholder:text-stone-400 focus:ring-2 focus:ring-surface-tint" placeholder={t('farmerClaims.searchById')} type="text" />
-=======
 							<input
 								className="w-full rounded-xl border-none bg-surface-container-lowest py-3 pl-12 pr-4 font-medium text-stone-700 placeholder:text-stone-400 focus:ring-2 focus:ring-surface-tint"
 								placeholder={t('farmerClaims.searchById')}
@@ -146,7 +167,10 @@ export function MyClaimsPage() {
 								value={filters.cropType}
 								onChange={(e) => handleFilterChange('cropType', e.target.value)}
 							>
-								<option value="">{t('farmerClaims.allCrops')}pot">Bacterial Spot</option>
+								<option value="">{t('farmerClaims.allCrops')}</option>
+								<option value="rice_blast">Rice Blast</option>
+								<option value="wheat_rust">Wheat Rust</option>
+								<option value="bacterial_spot">Bacterial Spot</option>
 								<option value="healthy">Healthy</option>
 							</select>
 							<span className="material-symbols-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-outline">expand_more</span>
@@ -164,7 +188,14 @@ export function MyClaimsPage() {
 
 				{error && (
 					<div className="mb-8 rounded-lg bg-error-container p-4 text-on-error-container">
-						<p className="font-medium">{error}</p>
+						<p className="font-medium mb-2">{error}</p>
+						<button
+							onClick={handleRetry}
+							disabled={retrying}
+							className="text-sm font-semibold underline hover:opacity-80 disabled:opacity-50"
+						>
+							{retrying ? 'Retrying...' : 'Try Again'}
+						</button>
 					</div>
 				)}
 
@@ -176,7 +207,7 @@ export function MyClaimsPage() {
 					</div>
 				) : filteredClaims.length === 0 ? (
 					<div className="rounded-[2rem] bg-surface-container-low p-8 text-center">
-						<p className="text-lg text-stone-600">No claims found. Create your first claim to get started!</p>
+						<p className="text-lg text-stone-600">{claims.length === 0 ? 'No claims yet.' : 'No claims match your filters.'} Create your first claim to get started!</p>
 						<Link to="/farmer/new-claim" className="mt-4 inline-block rounded-lg bg-primary px-6 py-2 font-semibold text-on-primary hover:bg-primary-container">
 							Create Claim
 						</Link>
@@ -247,117 +278,6 @@ export function MyClaimsPage() {
 						</div>
 					</>
 				)}
-
-			</main>
-		</div>
-	)
-}
-
-				<section className="editorial-shadow mb-8 rounded-[2rem] bg-surface-container-low p-6">
-	lassName="transition-colors hover:bg-surface-container-low/30">
-								<td className="px-8 py-6 font-bold text-on-surface">CLM-2026-8841</td>
-								<td className="px-8 py-6">
-									<div className="flex items-center gap-2">
-										<span className="material-symbols-outlined text-[18px] text-primary">grass</span>
-										<span className="font-medium">Premium Wheat</span>
-									</div>
-								</td>
-								<td className="px-8 py-6 font-medium text-stone-600">Oct 12, 2023</td>
-								<td className="px-8 py-6 font-bold text-primary">Rs 42,500</td>
-								<td className="px-8 py-6">
-									<span className="inline-flex items-center rounded-full bg-secondary-container px-3 py-1 text-xs font-bold text-on-secondary-container">
-										<span className="mr-2 h-1.5 w-1.5 rounded-full bg-secondary" />
-										{t('farmerDashboard.approved')}
-									</span>
-								</td>
-								<td className="px-8 py-6"><Link className="text-sm font-bold text-primary hover:underline" to="/farmer/claim-details">{t('farmerClaims.details')}</Link></td>
-							</tr>
-							<tr className="transition-colors hover:bg-surface-container-low/30">
-								<td className="px-8 py-6 font-bold text-on-surface">CLM-2026-9012</td>
-								<td className="px-8 py-6">
-									<div className="flex items-center gap-2">
-										<span className="material-symbols-outlined text-[18px] text-primary">eco</span>
-										<span className="font-medium">Kharif Paddy</span>
-									</div>
-								</td>
-								<td className="px-8 py-6 font-medium text-stone-600">Oct 28, 2023</td>
-								<td className="px-8 py-6 font-bold text-primary">Rs 18,200</td>
-								<td className="px-8 py-6">
-									<span className="inline-flex items-center rounded-full bg-surface-container-highest px-3 py-1 text-xs font-bold text-stone-700">
-										<span className="mr-2 h-1.5 w-1.5 rounded-full bg-stone-400" />
-										{t('farmerDashboard.pending')}
-									</span>
-								</td>
-								<td className="px-8 py-6"><Link className="text-sm font-bold text-primary hover:underline" to="/farmer/claim-details">{t('farmerClaims.view')}</Link></td>
-							</tr>
-							<tr className="transition-colors hover:bg-surface-container-low/30">
-								<td className="px-8 py-6 font-bold text-on-surface">CLM-2026-7721</td>
-								<td className="px-8 py-6">
-									<div className="flex items-center gap-2">
-										<span className="material-symbols-outlined text-[18px] text-primary">local_florist</span>
-										<span className="font-medium">Organic Cotton</span>
-									</div>
-								</td>
-								<td className="px-8 py-6 font-medium text-stone-600">Sep 15, 2023</td>
-								<td className="px-8 py-6 font-bold text-primary">Rs 65,000</td>
-								<td className="px-8 py-6">
-									<span className="inline-flex items-center rounded-full bg-error-container px-3 py-1 text-xs font-bold text-on-error-container">
-										<span className="mr-2 h-1.5 w-1.5 rounded-full bg-error" />
-										{t('farmerDashboard.rejected')}
-									</span>
-								</td>
-								<td className="px-8 py-6"><Link className="text-sm font-bold text-primary hover:underline" to="/farmer/claim-details">{t('farmerClaims.appeal')}</Link></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<div className="space-y-4 md:hidden">
-					<div className="editorial-shadow rounded-3xl bg-surface-container-lowest p-6">
-						<div className="mb-4 flex items-start justify-between">
-							<div>
-								<p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-stone-400">CLM-2026-8841</p>
-								<h3 className="font-headline text-lg font-bold">Premium Wheat</h3>
-							</div>
-							<span className="rounded-full bg-secondary-container px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-container">{t('farmerDashboard.approved')}</span>
-						</div>
-						<div className="flex items-end justify-between">
-							<div className="text-sm text-stone-600">
-								<p>Oct 12, 2023</p>
-								<p className="text-lg font-bold text-primary">Rs 42,500</p>
-							</div>
-							<Link className="rounded-xl bg-surface-container-low px-6 py-2 text-sm font-bold text-primary" to="/farmer/claim-details">{t('farmerClaims.details')}</Link>
-						</div>
-					</div>
-					<div className="editorial-shadow rounded-3xl bg-surface-container-lowest p-6">
-						<div className="mb-4 flex items-start justify-between">
-							<div>
-								<p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-stone-400">CLM-2026-9012</p>
-								<h3 className="font-headline text-lg font-bold">Kharif Paddy</h3>
-							</div>
-							<span className="rounded-full bg-surface-container-highest px-3 py-1 text-[10px] font-bold uppercase text-stone-600">{t('farmerDashboard.pending')}</span>
-						</div>
-						<div className="flex items-end justify-between">
-							<div className="text-sm text-stone-600">
-								<p>Oct 28, 2023</p>
-								<p className="text-lg font-bold text-primary">Rs 18,200</p>
-							</div>
-							<Link className="rounded-xl bg-surface-container-low px-6 py-2 text-sm font-bold text-primary" to="/farmer/claim-details">{t('farmerClaims.view')}</Link>
-						</div>
-					</div>
-				</div>
-
-				<footer className="mt-12 flex flex-col items-center justify-between gap-6 md:flex-row">
-					<p className="text-sm font-medium text-stone-500">{t('farmerClaims.showing')} <span className="font-bold text-on-surface">1 - 3</span> {t('farmerClaims.of')} <span className="font-bold text-on-surface">24</span> {t('farmerClaims.claims')}</p>
-					<div className="flex items-center gap-2">
-						<button type="button" className="flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-xl bg-surface-container-low text-stone-400"><span className="material-symbols-outlined">chevron_left</span></button>
-						<button type="button" className="signature-gradient flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white">1</button>
-						<button type="button" className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-container-low font-bold text-stone-700 transition-colors hover:bg-surface-container-high">2</button>
-						<button type="button" className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-container-low font-bold text-stone-700 transition-colors hover:bg-surface-container-high">3</button>
-						<span className="mx-2 text-stone-400">...</span>
-						<button type="button" className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-container-low text-stone-700 transition-colors hover:bg-surface-container-high"><span className="material-symbols-outlined">chevron_right</span></button>
-					</div>
-				</footer>
 			</main>
 
 			<FarmerBottomNav />

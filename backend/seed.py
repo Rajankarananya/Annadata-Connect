@@ -5,7 +5,7 @@ from app.models.claim import Claim
 from app.models.grievance import Grievance
 from app.models.user import User
 from app.utils.db import Base
-import bcrypt
+from app.utils.auth import hash_password
 import os
 from dotenv import load_dotenv
 
@@ -14,6 +14,16 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_async_engine(DATABASE_URL, echo=False)
 AsyncSession = async_sessionmaker(engine, expire_on_commit=False)
+
+# Default test password for all seeded users: "Password123!"
+DEFAULT_PASSWORD = "Password123!"
+
+async def create_tables():
+    """Create all tables from models"""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)  # Drop existing tables
+        await conn.run_sync(Base.metadata.create_all)  # Create fresh tables
+    print("✓ Tables dropped and recreated")
 
 farmers_data = [
     {"full_name": "Ramesh Patil", "phone": "9876500001", "village": "Latur", "district": "Latur", "state": "Maharashtra"},
@@ -61,10 +71,39 @@ grievances_data = [
 
 async def seed():
     async with AsyncSession() as db:
-        # seed farmers
+        # seed users (one for each farmer)
+        user_objects = []
+        for i, f in enumerate(farmers_data):
+            # Create email from name (e.g., "ramesh.patil@farmer.local")
+            first_name = f["full_name"].split()[0].lower()
+            last_name = f["full_name"].split()[-1].lower()
+            email = f"{first_name}.{last_name}@farmer.local"
+            
+            user = User(
+                full_name=f["full_name"],
+                email=email,
+                phone=f["phone"],
+                password=hash_password(DEFAULT_PASSWORD),
+                role="farmer"
+            )
+            db.add(user)
+            user_objects.append(user)
+        await db.commit()
+        for u in user_objects:
+            await db.refresh(u)
+        print(f"✅ Seeded {len(user_objects)} users")
+        
+        # seed farmers (link to users)
         farmer_objects = []
-        for f in farmers_data:
-            farmer = Farmer(**f)
+        for i, f in enumerate(farmers_data):
+            farmer = Farmer(
+                user_id=user_objects[i].id,  # Link to corresponding user
+                full_name=f["full_name"],
+                phone=f["phone"],
+                village=f["village"],
+                district=f["district"],
+                state=f["state"]
+            )
             db.add(farmer)
             farmer_objects.append(farmer)
         await db.commit()
@@ -103,7 +142,33 @@ async def seed():
         await db.commit()
         print(f"✅ Seeded {len(grievances_data)} grievances")
 
+        # Print login credentials for testing
+        print("\n📋 Test Login Credentials:")
+        print("=" * 50)
+        print(f"{'Email':<25} {'Password':<20}")
+        print("=" * 50)
+        for u in user_objects:
+            print(f"{u.email:<25} {DEFAULT_PASSWORD:<20}")        
+        # Create admin user
+        admin_user = User(
+            full_name="Admin User",
+            email="admin@farmer.local",
+            phone="9999999999",
+            password=hash_password(DEFAULT_PASSWORD),
+            role="admin"
+        )
+        db.add(admin_user)
+        await db.commit()
+        print(f"{'admin@farmer.local':<25} {DEFAULT_PASSWORD:<20}")
+        print("=" * 50)
+        
         print("\n🎉 Database seeded successfully!")
 
 if __name__ == "__main__":
-    asyncio.run(seed())
+    async def main():
+        # Create tables first
+        await create_tables()
+        # Then seed the data
+        await seed()
+    
+    asyncio.run(main())

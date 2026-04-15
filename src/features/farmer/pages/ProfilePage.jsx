@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
+import { authApi, farmersApi } from '../../../services/api'
 import { FarmerBottomNav } from '../../../components/layout/FarmerBottomNav'
 import { FarmerSidebar } from '../../../components/layout/FarmerSidebar'
 import { FarmerTopNav } from '../../../components/layout/FarmerTopNav'
@@ -15,6 +16,37 @@ export function ProfilePage() {
   const [weatherAlerts, setWeatherAlerts] = useState(() => localStorage.getItem('profileWeatherAlerts') !== 'false')
   const [aiInsights, setAiInsights] = useState(() => localStorage.getItem('profileAiInsights') !== 'false')
   const [savedFeedback, setSavedFeedback] = useState('')
+  const [userProfile, setUserProfile] = useState(null)
+  const [farmerProfile, setFarmerProfile] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  // Fetch user profile on component mount
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        setLoading(true)
+        // Get current user info
+        const user = await authApi.me()
+        setUserProfile(user)
+        
+        // Try to get farmer profile (if user_id is the same as farmer_id)
+        try {
+          const farmer = await farmersApi.getProfile(user.id)
+          setFarmerProfile(farmer)
+        } catch (err) {
+          console.warn('[ProfilePage] Could not fetch farmer profile:', err.message)
+          // Continue without farmer profile, use user data
+        }
+      } catch (err) {
+        console.error('[ProfilePage] Error fetching profile:', err)
+        navigate('/login', { replace: true })
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchProfiles()
+  }, [navigate])
 
   const handleLanguageChange = (languageCode) => {
     const next = setAppLanguage(languageCode)
@@ -40,9 +72,21 @@ export function ProfilePage() {
     navigate('/login', { replace: true })
   }
 
-  const fullName = 'Rajesh Kumar'
-  const mobile = '+91 98765 43210'
-  const location = t('profile.locationValue')
+  if (loading) {
+    return (
+      <div className="profile-root min-h-screen bg-background pb-24 text-on-surface lg:pb-0">
+        <FarmerTopNav />
+        <main className="mx-auto max-w-3xl space-y-6 px-4 pt-24 lg:ml-64">
+          <p>{t('loading') || 'Loading profile...'}</p>
+        </main>
+      </div>
+    )
+  }
+
+  // Use farmer profile if available, otherwise use user profile
+  const fullName = farmerProfile?.full_name || userProfile?.full_name || 'N/A'
+  const mobile = farmerProfile?.phone || userProfile?.phone || 'N/A'
+  const location = `${farmerProfile?.village || ''}, ${farmerProfile?.district || ''}`.trim() || t('profile.locationValue')
 
   return (
     <div className="profile-root min-h-screen bg-background pb-24 text-on-surface lg:pb-0">
